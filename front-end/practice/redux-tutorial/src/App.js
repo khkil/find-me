@@ -1,16 +1,8 @@
-import Counter from './components/ColorBox';
-import Todos from './components/Todos';
-import { increase, decrease } from './modules/conunter';
+import React from 'react';
+import CounterContainer from './containers/CounterContainer';
 
-const App = () => {
-
-  return (
-    <div>
-      <Counter number={0} onIncrease={increase} onDecrease={decrease}/>
-      <hr/>
-      <Todos/>
-    </div>
-  );
+function App() {
+  return <CounterContainer />;
 }
 
 export default App;
