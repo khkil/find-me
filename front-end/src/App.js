@@ -1,29 +1,8 @@
-import React, {useCallback, useState} from 'react';
-import { Route } from 'react-router-dom';
-import NewsPages from './pages/NewsPages';
+import React from 'react';
+import CounterContainer from './containers/CounterContainer';
 
-const App = () => {
-
-
-  return (
-    <>
-      <Route path="/:category?" component={NewsPages}></Route>
-    </>
-  )
+function App() {
+  return <CounterContainer />;
 }
-
-
-/* const App = () => {
-  const [category, setCategory] = useState('all');
-  const onSelect = useCallback(category => setCategory(category), []);
-
-
-  return (
-    <>
-      <Categories category={category} onSelect={onSelect}/>
-      <NewsList category={category}/>
-    </>
-  )
-} */
 
 export default App;
