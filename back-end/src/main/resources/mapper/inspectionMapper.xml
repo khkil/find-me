@@ -9,7 +9,7 @@
     </select>
 
     <select id="getInspectionDetail" resultType="com.example.backend.model.Inspection">
-        SELECT * FROM inspection WHERE idx = #{idx};
+        SELECT * FROM inspection WHERE inspection_idx = #{idx};
     </select>
 
 </mapper>

@@ -33,7 +33,7 @@ public class InspectionController {
 
         Inspection inspectionDetail = inspectionServcice.getInspectionDetail(idx);
         if(inspectionDetail == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Inspection>(inspectionServcice.getInspectionDetail(idx), HttpStatus.OK);
     }
