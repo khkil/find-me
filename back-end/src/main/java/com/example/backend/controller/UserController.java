@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.CommonResponse;
 import com.example.backend.model.Inspection;
 import com.example.backend.model.User;
 import com.example.backend.service.InspectionServcice;
@@ -19,18 +20,9 @@ public class UserController {
     @Autowired
     UserServcice userServcice;
     @PostMapping(value = "/insert")
-    public ResponseEntity<String> insertUser(@RequestBody User user){
+    public ResponseEntity<CommonResponse> insertUser(@RequestBody User user){
 
-        ResponseEntity<String> result = null;
-        try{
-            userServcice.insertUser(user);
-            result = new ResponseEntity<String>("success", HttpStatus.OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            result = new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        ResponseEntity<CommonResponse> result = new ResponseEntity<CommonResponse>(CommonResponse.successResult(), HttpStatus.OK);
         return result;
     }
-
-
 }
