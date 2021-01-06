@@ -8,11 +8,20 @@ import { createStore } from 'redux';
 import rootReducer from './modules';
 import { Provider } from 'react-redux';
 
+import './App.css';
+
+// modules에서 정의된 reducer를 store안에 넣어주어 서로 연결한다.
 const store = createStore(rootReducer);
 
 ReactDOM.render(
   <Provider store={store}>
     <App />
+
+    <div>
+      <h1 className="titleTextColor">TestCode!</h1>
+      <button>시작하기</button>
+    </div>
+
   </Provider>,
   document.getElementById('root')
 );

@@ -1,0 +1,12 @@
+.testBody{
+    background-color: white;
+    color: blue;
+    margin: 10px;
+    font-family: Arial;
+    text-align: center;
+  }
+
+.titleTextColor{
+    color: blue;
+    font-size:12mm;
+}

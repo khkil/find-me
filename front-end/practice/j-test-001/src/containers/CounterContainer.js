@@ -4,7 +4,6 @@ import Counter from '../components/Counter';
 import { increment, decrement, multple, division } from '../modules/counter';
 
 //useSelector : 상태 조회.
-
 const CounterContainer = () => {
   const counter = useSelector(state => state.counter);
   const dispatch = useDispatch();
