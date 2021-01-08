@@ -1,12 +1,18 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import Loading from './components/common/Loading';
+import { Route, Switch } from 'react-router-dom';
 import QuestionPage from './pages/QuestionPage';
+import UserRegistPage from './pages/UserRegistPage';
+import { Container } from 'react-bootstrap';
 
 function App() {
   return (
     <>
-      <Route path="/pages/:page" component={QuestionPage} />
+      <Container>
+        <Switch>
+          <Route path="/pages/user" component={UserRegistPage} exact/>
+          <Route path="/pages/:page" component={QuestionPage} />
+        </Switch>
+      </Container>
     </>
   );
 }
