@@ -18,7 +18,7 @@ export const getQuestions = (id) => async dispatch => {
 }
 
 const initialState = {
-  data: [],
+  data: null,
   loading: false,
   error: ''
 };
