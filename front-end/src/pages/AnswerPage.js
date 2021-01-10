@@ -16,7 +16,9 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers }) => {
         if(key === name){
           const chnagedAnswers = userAnswers.filter((chnagedAnswer) => chnagedAnswer !== userAnswer);
           setUserAnswers([...chnagedAnswers, { [name]: value }]);
+          break;
         }
+        
       }
     });
   }
