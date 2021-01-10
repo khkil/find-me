@@ -1,26 +1,40 @@
 import React, { useState } from 'react';
 import { Form, Button, Row} from 'react-bootstrap';
+import { useLocation } from "react-router";
 
-const UserRegistPage = () => {
+const UserRegistPage = ({ history }) => {
 
   const [validated, setValidated] = useState(false);
   const [inputs, setInputs] = useState({});
+
   const onChange = (e) => {
+    const { name, value } = e.target;
     setInputs({
       ...inputs,
-      [e.target.name]: e.target.value
+      [name]: value
     });
   }
+
+  const { state } = useLocation();
+  console.log(state);
+  if(state && state.userInfo){
+    delete state.userInfo;
+  }
+  
   const handleSubmit = (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
     e.preventDefault();
-    setValidated(true);
- 
+
+    if (!form.checkValidity()) {
+      e.stopPropagation();
+      setValidated(true);
+
+    }else{
+      console.log(inputs);
+      history.push({pathname: '/pages/1', state: {userInfo: inputs} });
+    }
+    
+      
   };
 
   return (
@@ -57,9 +71,8 @@ const UserRegistPage = () => {
         
         <Row className="justify-content-md-center">
           <Button variant="primary" type="submit"size="lg">
-              Start
+            시작
           </Button>
-    
         </Row>
 
       </Form>

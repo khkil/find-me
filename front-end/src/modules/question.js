@@ -9,7 +9,7 @@ export const getQuestions = (id) => async dispatch => {
   dispatch({ type: GET_QUESTIONS_LOADING });
   try {
     const questions = await questionAPI.getQuestionsAPI(id);
-    console.log(questions);
+    //console.log(questions);
     dispatch({ type: GET_QUESTIONS_SUCCESS, data: questions });
 
   }catch(e) {
