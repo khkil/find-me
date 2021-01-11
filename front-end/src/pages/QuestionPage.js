@@ -12,23 +12,29 @@ const QuestionPage = ({ match, history }) => {
   const { state } = useLocation();
   useEffect(() => {
     if(!state || !state.userInfo){
-      //history.push('/pages/user');
+     history.push('/pages/user');
+    }else{
+      console.log(state.answerState);
     }
-  })
-  const { userInfo, userAnswers } = state;
-  const [ userAnswer, setUserAnswer ] = useState({});
+  }, [state]);
+  const [ userAnswers, setUserAnswers ] = useState([]);
 
-  console.log(userInfo);
   
   const page = parseInt(match.params.page);
   const goNextPage = (e) => {
     e.preventDefault();
+    const { userInfo, answerState } = state;
     const nextPageNum = page + 1;
     history.push({
       pathname: `/pages/${nextPageNum}`, 
       state: { 
         userInfo: userInfo,  
-        userAnswers: { ...userAnswers, ...userAnswer } 
+        answerState: { 
+          ...answerState, 
+          ['page_'+page]: {
+            answers: userAnswers
+          }
+         } 
       }
     });
   }
@@ -39,6 +45,8 @@ const QuestionPage = ({ match, history }) => {
     dispatch(getQuestions(page));
   }, [page]);
 
+  console.log(data);
+
   if (loading || !data) return <Loading loading={loading} />
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
@@ -46,10 +54,10 @@ const QuestionPage = ({ match, history }) => {
     <Container>
       <Form name='question_form'>
         {data.map(({ question_idx, question_text, answers, question_number, state }) => (
-          <Question number={question_number} text={question_text} key={question_idx} answers={answers} question_idx={question_idx} state={state} setUserAnswer={setUserAnswer} userAnswer={userAnswer} />
+          <Question number={question_number} text={question_text} key={question_idx} answers={answers} question_idx={question_idx} state={state} setUserAnswers={setUserAnswers} userAnswers={userAnswers} />
         ))}
         <Row className="justify-content-md-center">
-          <h2>{JSON.stringify(userAnswer)}</h2>
+          <h2>{JSON.stringify(userAnswers)}</h2>
           <Button variant="primary" type="submit"size="lg" onClick={goNextPage}>
             다음
           </Button>
