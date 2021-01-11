@@ -22,7 +22,7 @@ public class UserController {
     @PostMapping(value = "/insert")
     public ResponseEntity<CommonResponse> insertUser(@RequestBody User user){
 
-        ResponseEntity<CommonResponse> result = new ResponseEntity<CommonResponse>(CommonResponse.successResult(), HttpStatus.OK);
-        return result;
+        userServcice.insertUser(user);
+        return new ResponseEntity<CommonResponse>(CommonResponse.successResult(), HttpStatus.OK);
     }
 }

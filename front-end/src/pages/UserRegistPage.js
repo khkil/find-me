@@ -31,7 +31,7 @@ const UserRegistPage = ({ history }) => {
 
     }else{
       console.log(inputs);
-      history.push({pathname: '/pages/1', state: {userInfo: inputs} });
+      history.push({pathname: '/pages/1', state: {userInfo: inputs, userAnswers: {} } });
     }
     
       
