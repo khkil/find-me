@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Row} from 'react-bootstrap';
 import { useLocation } from "react-router";
 
-const UserRegistPage = ({ history }) => {
+const UserRegistPage = ({ history, number }) => {
 
   const [validated, setValidated] = useState(false);
   const [inputs, setInputs] = useState({});
@@ -16,7 +16,6 @@ const UserRegistPage = ({ history }) => {
   }
 
   const { state } = useLocation();
-  console.log(state);
   if(state && state.userInfo){
     delete state.userInfo;
   }

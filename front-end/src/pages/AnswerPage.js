@@ -35,7 +35,7 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers }) => {
   
   return (
     <>
-      <div>
+      <div >
         {answers.map(({ answer_idx, answer_text, answer_score, question_idx }, index) => (
           <Answer key={index} idx={answer_idx} text={answer_text} answer_score={answer_score} question_idx={question_idx} onChange={onChange} />
         ))}
