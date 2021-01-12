@@ -8,7 +8,6 @@ const HeaderPage = () => {
   const dispatch = useDispatch();
   const { host } = window.location;
   useEffect(() => {
-    console.log(1);
     dispatch(getInspection(host));
   }, [host]);
   const { data, loading, error } = useSelector(state => state.inspection);

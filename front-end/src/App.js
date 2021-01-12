@@ -5,6 +5,7 @@ import UserRegistPage from './pages/UserRegistPage';
 import { Container } from 'react-bootstrap';
 import ErrorPage from './components/common/ErrorPage';
 import HeaderPage from './pages/common/HeaderPage';
+import ResultPage from './pages/ResultPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Container>
         <Switch>
           <Route path="/pages/user" component={UserRegistPage} exact/>
+          <Route path="/pages/result" component={ResultPage} exact/>
           <Route path="/pages/:page" component={QuestionPage} />
           <Route path="*" component={ErrorPage}/>
         </Switch>

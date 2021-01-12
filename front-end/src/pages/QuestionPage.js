@@ -16,20 +16,20 @@ const QuestionPage = ({ match, history }) => {
 
   const { state } = useLocation();
   const [ userAnswers, setUserAnswers ] = useState([]);
-  
+  console.log(state.answerState);
   useEffect(() => {
-    console.log(2);
     dispatch(getQuestions(page));
   }, [page]);
 
   const { data, loading, error } = useSelector(state => state.question);
   const inspection = useSelector(state => state.inspection);
-  const totalPages = 15;
-
+  
   const goNextPage = (e) => {
     e.preventDefault();
     const { userInfo, answerState } = state;
+    const  { totalPages }  = inspection.data && inspection.data;
     const nextPageNum = page + 1;
+
     history.push({
       pathname: (page < totalPages ? `/pages/${nextPageNum}` : '/pages/result'), 
       state: { 
@@ -64,7 +64,6 @@ const QuestionPage = ({ match, history }) => {
         ))}
         <Row className="justify-content-md-center">
           <h2>{JSON.stringify(userAnswers)}</h2>
-          <h2>{JSON.stringify(inspection)}</h2>
           <Button variant="primary" type="submit"size="lg" onClick={goNextPage}>
             다음
           </Button>
