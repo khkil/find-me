@@ -8,8 +8,8 @@
         SELECT * FROM result
             WHERE inspection_idx = #{inspection_idx}
             AND result_idx IN
-            <foreach collection="types" item="type" index="i" open="(" close=")" separator=",">
-                #{type}
+            <foreach collection="results" item="result" index="i" open="(" close=")" separator=",">
+                #{result}
             </foreach>
     </select>
 

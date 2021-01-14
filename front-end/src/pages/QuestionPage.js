@@ -34,8 +34,8 @@ const QuestionPage = ({ match, history }) => {
 
     let answers = {};
     for(const userAnswer of userAnswers){
-      const { type } = userAnswer;
-      const key = `type_${type}`;
+      const { result_idx } = userAnswer;
+      const key = `result_${result_idx}`;
       if(!answers[key]){
           answers[key] =  [userAnswer];
       }else{
@@ -62,17 +62,17 @@ const QuestionPage = ({ match, history }) => {
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
 
-  
+
 
   return (
     <>
       <CardPage/>
       <Form name='question_form' style={{padding: '10%'}}>
-        {data.map(({ question_idx, question_text, question_type, answers, question_number }) => (
+        {data.map(({ question_idx, question_text, result_idx, answers, question_number }) => (
           <Question
             key={question_idx} 
             number={question_number} 
-            type={question_type}
+            result_idx={result_idx}
             text={question_text} 
             answers={answers} 
             question_idx={question_idx} 
