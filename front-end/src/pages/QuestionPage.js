@@ -16,11 +16,12 @@ const QuestionPage = ({ match, history }) => {
 
   const { state } = useLocation();
   const [ userAnswers, setUserAnswers ] = useState([]);
-  console.log(state.answerState);
   useEffect(() => {
     setUserAnswers([]);
     dispatch(getQuestions(page));
   }, [page]);
+
+  console.log(state);
 
   const { data, loading, error } = useSelector(state => state.question);
   const inspection = useSelector(state => state.inspection);
@@ -31,17 +32,26 @@ const QuestionPage = ({ match, history }) => {
     const  { totalPages }  = inspection.data && inspection.data;
     const nextPageNum = page + 1;
 
-    //To-do : 마지막 페이지일때 버튼 db저장
+    let answers = {};
+    for(const userAnswer of userAnswers){
+      const { type } = userAnswer;
+      const key = `type_${type}`;
+      if(!answers[key]){
+          answers[key] =  [userAnswer];
+      }else{
+        answers[key] = [...answers[key], userAnswer]
+      }
+    }
 
+
+    //To-do : 마지막 페이지일때 버튼 db저장
     history.push({
       pathname: (page < totalPages ? `/pages/${nextPageNum}` : '/pages/result'), 
       state: { 
         userInfo: userInfo,  
         answerState: { 
           ...answerState, 
-          ['page_'+page]: {
-            answers: userAnswers
-          }
+          ...answers
         } 
       }
     });
@@ -52,15 +62,17 @@ const QuestionPage = ({ match, history }) => {
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
 
-  console.log(data);
+  
+
   return (
     <>
       <CardPage/>
       <Form name='question_form' style={{padding: '10%'}}>
-        {data.map(({ question_idx, question_text, answers, question_number }) => (
+        {data.map(({ question_idx, question_text, question_type, answers, question_number }) => (
           <Question
             key={question_idx} 
             number={question_number} 
+            type={question_type}
             text={question_text} 
             answers={answers} 
             question_idx={question_idx} 

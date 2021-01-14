@@ -3,17 +3,18 @@ import { useSelector } from 'react-redux';
 import { useLocation } from "react-router";
 import { Redirect } from 'react-router-dom';
 
-const ResultPage = ({ match }) => {
+const Resulttype = () => {
   const inspection = useSelector(state => state.inspection);
   const { state } = useLocation();
   if(!state || !state.userInfo) return <Redirect to= "/"/>;
   const { answerState } = state; 
   let highScore = 0;
   let allAnswers = [];
+  console.log(answerState);
 
   for(const key in answerState){
-    const page = key.replace('page_', '');
-    const { answers } = answerState[key];
+    const type = key.replace('type_', '');
+    const answers = answerState[key];
     let totalScore = 0;
     answers.forEach(answer => {
       totalScore += parseInt(answer.score);
@@ -23,7 +24,7 @@ const ResultPage = ({ match }) => {
       highScore = totalScore;
     }
     allAnswers = allAnswers.concat({ 
-      page: page,
+      type: type,
       totalScore: totalScore
     });
   }
@@ -33,16 +34,14 @@ const ResultPage = ({ match }) => {
     const { inspection_idx } = inspection.data;
     resultMap = {
       inspection_idx: inspection_idx,
-      pages: results.map(result => result.page)
+      types: results.map(result => result.type)
     }
-
   }
-  
   return (
     <>
-      {JSON.stringify(resultMap)}
+      {JSON.stringify(resultMap)} 
     </>
   )
 }
 
-export default ResultPage;
+export default Resulttype;

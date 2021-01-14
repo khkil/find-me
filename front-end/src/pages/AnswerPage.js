@@ -1,6 +1,6 @@
 import Answer from '../components/inspection/Answer';
 
-const AnswerPage = ({ answers, userAnswers, setUserAnswers }) => {
+const AnswerPage = ({ answers, userAnswers, setUserAnswers, type }) => {
 
   const onChange = (e) => {
     const { value } = e.target;
@@ -10,7 +10,8 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers }) => {
       ...userAnswers, { 
         question: question_idx,
         answer: value,
-        score: answer_score
+        score: answer_score,
+        type: type
       }
       //[name]: value
     ]);
@@ -23,14 +24,13 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers }) => {
           { 
             question: question_idx,
             answer: value,
-            score: answer_score
+            score: answer_score,
+            type: type
           }
         ]);
         return false;
       }
     })
-
-    console.log(userAnswers);
   }
   
   return (

@@ -29,7 +29,6 @@ const UserRegistPage = ({ history, number }) => {
       setValidated(true);
 
     }else{
-      console.log(inputs);
       history.push({pathname: '/pages/1', state: {userInfo: inputs, answerState: {} } });
     }
     
