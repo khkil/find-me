@@ -21,11 +21,7 @@ public class ResultController {
     @PostMapping("/user")
     public ResponseEntity<?> getInspectionDetail(@RequestBody Map<String, Object> map){
 
-        JSONObject obj = new JSONObject(map);
-        int inspectionIdx = obj.getInt("inspection_idx");
-        JSONArray results = obj.getJSONArray("results");
-
-        List<Result> resultList = resultServcice.getResultList(inspectionIdx);
+        List<Result> resultList = resultServcice.getUserResult(map);
         return new ResponseEntity<>(resultList, HttpStatus.OK);
     }
 }

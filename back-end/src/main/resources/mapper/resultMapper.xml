@@ -4,8 +4,13 @@
 
 <mapper namespace="com.example.backend.mapper.ResultMapper">
 
-    <select id="getResultList" resultType="com.example.backend.model.Result">
-        SELECT * FROM result WHERE inspection_idx = #{inspection_idx};
+    <select id="getUserResult" resultType="com.example.backend.model.Result" parameterType="map">
+        SELECT * FROM result
+            WHERE inspection_idx = #{inspection_idx}
+            AND question_page IN
+            <foreach collection="pages" item="page" index="i" open="(" close=")" separator=",">
+                #{page}
+            </foreach>
     </select>
 
 </mapper>

@@ -7,7 +7,7 @@ const ResultPage = ({ match }) => {
   const inspection = useSelector(state => state.inspection);
   const { state } = useLocation();
   if(!state || !state.userInfo) return <Redirect to= "/"/>;
-  const { userInfo, answerState } = state; 
+  const { answerState } = state; 
   let highScore = 0;
   let allAnswers = [];
 
@@ -27,20 +27,20 @@ const ResultPage = ({ match }) => {
       totalScore: totalScore
     });
   }
-  let resultParams = {};
+  let resultMap = {};
   const results = allAnswers.filter(allAnswer => allAnswer.totalScore === highScore);
   if(inspection.data){
     const { inspection_idx } = inspection.data;
-    resultParams = {
+    resultMap = {
       inspection_idx: inspection_idx,
-      results: results
+      pages: results.map(result => result.page)
     }
 
   }
   
   return (
     <>
-      {JSON.stringify(resultParams)}
+      {JSON.stringify(resultMap)}
     </>
   )
 }
