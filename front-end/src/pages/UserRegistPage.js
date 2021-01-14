@@ -69,7 +69,7 @@ const UserRegistPage = ({ history, number }) => {
         </Form.Group>
         
         <Row className="justify-content-md-center">
-          <Button variant="primary" type="submit"size="lg">
+          <Button variant="secondary" type="submit"size="lg">
             시작
           </Button>
         </Row>

@@ -18,6 +18,7 @@ const QuestionPage = ({ match, history }) => {
   const [ userAnswers, setUserAnswers ] = useState([]);
   console.log(state.answerState);
   useEffect(() => {
+    setUserAnswers([]);
     dispatch(getQuestions(page));
   }, [page]);
 
@@ -29,6 +30,8 @@ const QuestionPage = ({ match, history }) => {
     const { userInfo, answerState } = state;
     const  { totalPages }  = inspection.data && inspection.data;
     const nextPageNum = page + 1;
+
+    //To-do : 마지막 페이지일때 버튼 db저장
 
     history.push({
       pathname: (page < totalPages ? `/pages/${nextPageNum}` : '/pages/result'), 
@@ -51,7 +54,7 @@ const QuestionPage = ({ match, history }) => {
   return (
     <>
       <CardPage/>
-      <Form name='question_form'>
+      <Form name='question_form' style={{padding: '10%'}}>
         {data.map(({ question_idx, question_text, answers, question_number }) => (
           <Question
             key={question_idx} 
@@ -64,7 +67,7 @@ const QuestionPage = ({ match, history }) => {
         ))}
         <Row className="justify-content-md-center">
           <h2>{JSON.stringify(userAnswers)}</h2>
-          <Button variant="primary" type="submit"size="lg" onClick={goNextPage}>
+          <Button variant="secondary" type="submit"size="lg" onClick={goNextPage}>
             다음
           </Button>
         </Row>
