@@ -12,6 +12,7 @@
     <resultMap type="com.example.backend.model.Question" id="ResultMap">
         <result property="question_idx" column="question_idx"/>
         <result property="inspection_idx" column="inspection_idx"/>
+        <result property="question_type" column="question_type"/>
         <result property="question_page" column="question_page"/>
         <collection property="answers" column="question_idx" ofType="Post" select="getAnswerList"/>
     </resultMap>

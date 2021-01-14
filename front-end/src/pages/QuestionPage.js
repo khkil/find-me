@@ -51,6 +51,8 @@ const QuestionPage = ({ match, history }) => {
   if (loading || !data) return <Loading loading={loading} />
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
+
+  console.log(data);
   return (
     <>
       <CardPage/>
