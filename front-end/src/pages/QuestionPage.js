@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useRouter } from 'react-router-dom';
 import Loading from '../components/common/Loading';
 import { getQuestions } from '../modules/question'
 import { Row, Form, Button } from 'react-bootstrap';
@@ -15,8 +15,10 @@ const QuestionPage = ({ match, history }) => {
   const page = parseInt(match.params.page);
 
   const { state } = useLocation();
+  
   const [ userAnswers, setUserAnswers ] = useState([]);
   useEffect(() => {
+
     setUserAnswers([]);
     dispatch(getQuestions(page));
   }, [page]);

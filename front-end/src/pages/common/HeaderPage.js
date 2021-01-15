@@ -1,19 +1,7 @@
-import { useEffect } from 'react';
 import { Navbar,Nav,NavDropdown } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux';
-import { getInspection } from '../../modules/inspection';
 
 const HeaderPage = () => {
 
-  const dispatch = useDispatch();
-  const { host } = window.location;
-  useEffect(() => {
-    dispatch(getInspection(host));
-  }, [host]);
-  // const { data, loading, error } = useSelector(state => state.inspection);
-  // if (loading || !data) return null
-  // if (error) return <div>에러 발생!</div>;
-  // if (!data) return null;
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top" >
       <Navbar.Brand href="#home">React Bootstrap Navbar</Navbar.Brand>

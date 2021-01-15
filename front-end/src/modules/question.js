@@ -8,7 +8,7 @@ const GET_QUESTIONS_ERROR = 'GET_QUESTIONS_ERROR';
 export const getQuestions = (id) => async dispatch => {
   dispatch({ type: GET_QUESTIONS_LOADING });
   try {
-    const questions = await questionAPI.getQuestionsAPI(id);
+    const questions = await questionAPI.getQuestions(id);
     //console.log(questions);
     dispatch({ type: GET_QUESTIONS_SUCCESS, data: questions });
 
