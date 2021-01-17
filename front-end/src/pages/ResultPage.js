@@ -4,7 +4,6 @@ import { useLocation } from "react-router";
 import { Redirect } from 'react-router-dom';
 import { gerUserResult } from '../modules/result'
 import Loading from '../components/common/Loading';
-import CardPage from './CardPage';
 import { Row, Col, Carousel, Card } from 'react-bootstrap';
 
 const ResultPage = ({ history }) => {

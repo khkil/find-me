@@ -9,6 +9,8 @@ import reduxThunk from 'redux-thunk';
 import { BrowserRouter } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './css/global.css'
+
 
 const store = createStore(
   rootReducer,

@@ -15,8 +15,10 @@ const AppPage = ({ children }) => {
   if (!data) return null;
   console.log('test');
   return (
-    <div test={1}>
-      {children}
+    <div className="findme__common__container">
+      <div className="findme__common__wrapper">
+        {children}
+      </div>
     </div>
   )
 }
