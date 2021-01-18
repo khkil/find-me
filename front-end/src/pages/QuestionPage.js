@@ -19,6 +19,8 @@ const QuestionPage = ({ match, history }) => {
   const [validated, setValidated] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
 
+  console.log(state);
+
   const goNextPage = (e) => {
     const { userInfo, answerState } = state;
     const { totalPages } = inspection.data && inspection.data;
@@ -34,19 +36,31 @@ const QuestionPage = ({ match, history }) => {
         answers[key] = [...answers[key], userAnswer]
       }
     }
+    const isLastPage = page === totalPages;
+    // history.push({
+    //   pathname: (isLastPage ? '/pages/result' : `/pages/${nextPageNum}` ),
+    //   state: {
+    //     userInfo: userInfo,
+    //     answerState: {
+    //       ...answerState,
+    //       ...answers
+    //     }
+    //   }
+    // });
 
-
-    //To-do : 마지막 페이지일때 버튼 db저장
-    history.push({
-      pathname: (page < totalPages ? `/pages/${nextPageNum}` : '/pages/result'),
-      state: {
+    if(isLastPage){
+      const state = {
         userInfo: userInfo,
         answerState: {
           ...answerState,
           ...answers
         }
       }
-    });
+      console.log(JSON.stringify(state));
+    }
+
+    //To-do : 마지막 페이지일때 버튼 db저장
+    
   }
 
   const handleSubmit = (e) => {
@@ -61,12 +75,11 @@ const QuestionPage = ({ match, history }) => {
   };
 
   useEffect(() => {
-
+    setValidated(false);
     setUserAnswers([]);
     dispatch(getQuestions(page));
   }, [page]);
 
-  console.log(state);
 
   const { data, loading, error } = useSelector(state => state.question);
   const inspection = useSelector(state => state.inspection);
@@ -82,7 +95,7 @@ const QuestionPage = ({ match, history }) => {
     <>
       <div className="findme__question__explanation">
         평소의 나와 가장 가까울 수록 10점에 가깝게,<br />
-        평소의 나와 같지 않을 수록 1점에 가깝게 체크하세요.
+        평소의 나와 같지 않을 수록 1점에 가깝게 체크하세요. 
       </div>
       <ToolbarPage match={match} />
       <Form noValidate validated={validated} onSubmit={handleSubmit} className="information_form">
@@ -97,7 +110,8 @@ const QuestionPage = ({ match, history }) => {
                 answers={answers}
                 question_idx={question_idx}
                 setUserAnswers={setUserAnswers}
-                userAnswers={userAnswers} />
+                userAnswers={userAnswers}
+                validated={validated}/>
             ))}
           </div>
         </div>

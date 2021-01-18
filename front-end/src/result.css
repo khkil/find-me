@@ -1,3 +1,7 @@
+div.findme__result {
+  margin-bottom: 10%;
+}
+
 .findme__result__title {
   font-family: GmarketSans, sans-serif;
   font-weight: bold;

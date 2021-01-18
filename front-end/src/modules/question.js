@@ -13,7 +13,7 @@ export const getQuestions = (id) => async dispatch => {
     dispatch({ type: GET_QUESTIONS_SUCCESS, data: questions });
 
   }catch(e) {
-    dispatch( {type: GET_QUESTIONS_ERROR, error: e} )
+    dispatch({ type: GET_QUESTIONS_ERROR, error: e })
   }
 }
 
