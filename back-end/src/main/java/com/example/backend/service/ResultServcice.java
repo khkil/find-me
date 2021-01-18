@@ -22,4 +22,8 @@ public class ResultServcice {
         return resultMapper.getUserResult(params);
     }
 
+    public void insertUserResult(int user_idx, int question_idx, int answer_idx){
+        resultMapper.insertUserResult(user_idx, question_idx, answer_idx);
+    }
+
 }

@@ -13,4 +13,8 @@
             </foreach>
     </select>
 
+    <insert id="insertUserResult" parameterType="int">
+        INSERT INTO user_answer VALUES (#{user_idx}, #{question_idx}, #{answer_idx});
+    </insert>
+
 </mapper>

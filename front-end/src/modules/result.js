@@ -5,11 +5,10 @@ const GET_RESULT_SUCCESS  = 'GET_RESULT_SUCCESS ';
 const GET_RESULT_ERROR = 'GET_RESULT_ERROR';
 
 
-export const gerUserResult = (params) => async dispatch => {
+export const getUserResult = (params) => async dispatch => {
   dispatch({ type: GET_RESULT_LOADING });
   try {
     const result = await resultAPI.getUserResult(params);
-    console.log(1);
     dispatch({ type: GET_RESULT_SUCCESS, data: result });
 
   }catch(e) {

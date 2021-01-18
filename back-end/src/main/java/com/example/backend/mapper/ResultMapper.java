@@ -10,5 +10,6 @@ import java.util.Map;
 public interface ResultMapper {
 
     List<Result> getUserResult(Map<String, Object> params);
+    void insertUserResult(int user_idx, int question_idx, int answer_idx);
 
 }

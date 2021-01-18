@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from "react-router";
 import { Redirect } from 'react-router-dom';
-import { gerUserResult } from '../modules/result'
+import { getUserResult } from '../modules/result'
 import Loading from '../components/common/Loading';
 import { Row, Col, Carousel, Card } from 'react-bootstrap';
 import '../css/result.css'
@@ -49,7 +49,7 @@ const ResultPage = () => {
       inspection_idx: inspection_idx,
       results: results.map(result => result.result)
     }
-    dispatch(gerUserResult(params));
+    dispatch(getUserResult(params));
 
 
   }, []);

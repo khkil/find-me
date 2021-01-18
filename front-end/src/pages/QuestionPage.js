@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import Loading from '../components/common/Loading';
-import { getQuestions } from '../modules/question'
+import { getQuestions } from '../modules/question';
 import Question from '../components/inspection/Question';
 import { useLocation } from "react-router";
 import { Form } from 'react-bootstrap'
 import FooterPage from './common/FooterPage';
 import ToolbarPage from './common/ToolbarPage';
+import * as resultAPI from '../api/resultAPI';
 import '../css/question.css'
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
@@ -18,13 +19,13 @@ const QuestionPage = ({ match, history }) => {
   const { state } = useLocation();
   const [validated, setValidated] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
+  const [proceeding, setProceeding] = useState(false);
 
   console.log(state);
 
   const goNextPage = (e) => {
     const { userInfo, answerState } = state;
     const { totalPages } = inspection.data && inspection.data;
-    const nextPageNum = page + 1;
 
     let answers = {};
     for (const userAnswer of userAnswers) {
@@ -36,31 +37,34 @@ const QuestionPage = ({ match, history }) => {
         answers[key] = [...answers[key], userAnswer]
       }
     }
-    const isLastPage = page === totalPages;
-    // history.push({
-    //   pathname: (isLastPage ? '/pages/result' : `/pages/${nextPageNum}` ),
-    //   state: {
-    //     userInfo: userInfo,
-    //     answerState: {
-    //       ...answerState,
-    //       ...answers
-    //     }
-    //   }
-    // });
-
-    if(isLastPage){
-      const state = {
-        userInfo: userInfo,
-        answerState: {
-          ...answerState,
-          ...answers
-        }
+    const userState = {
+      userInfo: userInfo,
+      answerState: {
+        ...answerState,
+        ...answers
       }
-      console.log(JSON.stringify(state));
+    }
+    const isLastPage = page === totalPages;
+    if(isLastPage){
+      
+      setProceeding(true);
+      // try {
+      //   setProceeding(false);
+      //   const result = resultAPI.insertUserResult(userState);
+      //   console.log(result);
+      // }catch(e) {
+
+      // }
+      
+      //https://loy124.tistory.com/249
+
     }
 
-    //To-do : 마지막 페이지일때 버튼 db저장
-    
+    /* history.push({
+      pathname: (isLastPage ? '/pages/result' : `/pages/${nextPageNum}` ),
+      state: userState
+    }) */;
+
   }
 
   const handleSubmit = (e) => {
@@ -85,7 +89,7 @@ const QuestionPage = ({ match, history }) => {
   const inspection = useSelector(state => state.inspection);
 
   if (!state || !state.userInfo) return <Redirect to="/" />;
-  if (loading || !data) return <Loading loading={loading} />
+  if (loading || !data || proceeding ) return <Loading loading={loading || proceeding} />
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
 
