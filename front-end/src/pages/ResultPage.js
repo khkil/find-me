@@ -51,7 +51,6 @@ const ResultPage = () => {
     }
     dispatch(getUserResult(params));
 
-
   }, []);
 
   const { data, loading, error } = useSelector(state => state.result);

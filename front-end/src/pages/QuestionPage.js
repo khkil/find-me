@@ -46,24 +46,24 @@ const QuestionPage = ({ match, history }) => {
     }
     const isLastPage = page === totalPages;
     if(isLastPage){
-      
-      setProceeding(true);
-      // try {
-      //   setProceeding(false);
-      //   const result = resultAPI.insertUserResult(userState);
-      //   console.log(result);
-      // }catch(e) {
-
-      // }
-      
+      let userAllAnswers = [];
+      for(const [key, value] of Object.entries(userState.answerState)){
+        userAllAnswers = [...userAllAnswers, ...value];
+        
+      }
+      const params = {
+        userInfo : userInfo,
+        userAnswers : userAllAnswers
+      }
+      console.log(params);
+      //const result = resultAPI.insertUserResult(userState);
       //https://loy124.tistory.com/249
-
     }
 
-    /* history.push({
-      pathname: (isLastPage ? '/pages/result' : `/pages/${nextPageNum}` ),
-      state: userState
-    }) */;
+    // history.push({
+    //   pathname: (isLastPage ? '/pages/result' : `/pages/${page + 1}` ),
+    //   state: userState
+    // });
 
   }
 
@@ -119,7 +119,7 @@ const QuestionPage = ({ match, history }) => {
             ))}
           </div>
         </div>
-        {/* <h2>{JSON.stringify(userAnswers)}</h2> */}
+        <h2>{JSON.stringify(userAnswers)}</h2>
         <div className="findme__common__next">
           <button type="submit" className="findme__common__next__button">
             NEXT

@@ -21,9 +21,9 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers, result_idx, validate
       }
     ]);
     userAnswers.map(userAnswer => {
-      const { question } = userAnswer;
-      if (question_idx === question) {
-        const newAnswers = userAnswers.filter(newAnswer => newAnswer.question !== question_idx);
+      
+      if (question_idx === userAnswer.question_idx) {
+        const newAnswers = userAnswers.filter(newAnswer => newAnswer.question_idx !== question_idx);
 
         setUserAnswers([...newAnswers,
         {
