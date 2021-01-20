@@ -6,15 +6,22 @@
 
     <select id="getUserResult" resultType="com.example.backend.model.Result" parameterType="map">
         SELECT * FROM result
-            WHERE inspection_idx = #{inspection_idx}
-            AND result_idx IN
-            <foreach collection="results" item="result" index="i" open="(" close=")" separator=",">
-                #{result}
-            </foreach>
+        WHERE inspection_idx = #{inspection_idx}
+        AND result_idx IN
+        <foreach collection="results" item="result" index="i" open="(" close=")" separator=",">
+            #{result}
+        </foreach>
     </select>
 
-    <insert id="insertUserResult" parameterType="int">
-        INSERT INTO user_answer VALUES (#{user_idx}, #{question_idx}, #{answer_idx});
+    <insert id="insertUserInfoResult" parameterType="com.example.backend.model.UserResult" useGeneratedKeys="true">
+        INSERT INTO user(user_name, user_age, user_gender) VALUES (#{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender});
+        <selectKey keyProperty="user_idx" resultType="int" order="AFTER">
+            select LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+    <insert id="insertUserAnswerResult" parameterType="int">
+            INSERT INTO user_answer(user_idx, question_idx, answer_idx) VALUES (#{user_idx}, #{question_idx}, #{answer_idx} )
+
     </insert>
 
 </mapper>

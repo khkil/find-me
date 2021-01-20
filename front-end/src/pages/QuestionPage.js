@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import Loading from '../components/common/Loading';
 import { getQuestions } from '../modules/question';
+import { insertUserResult } from '../modules/result';
+import * as resultAPI from '../api/resultAPI';
 import Question from '../components/inspection/Question';
 import { useLocation } from "react-router";
 import { Form } from 'react-bootstrap'
 import FooterPage from './common/FooterPage';
 import ToolbarPage from './common/ToolbarPage';
-import * as resultAPI from '../api/resultAPI';
 import '../css/question.css'
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
@@ -22,6 +23,24 @@ const QuestionPage = ({ match, history }) => {
   const [proceeding, setProceeding] = useState(false);
 
   console.log(state);
+
+  const insertUserResult = (params, userState) => {
+
+    resultAPI.insertUserResult(params).then(({ data }) => {
+      const { success } = data;
+      if (success) {
+        alert(1);
+        history.push({
+          pathname: ('/pages/result'),
+          state: userState
+        });
+
+      }
+    }).catch(e => {
+      alert('서버와 통신오류가 발생하였습니다.')
+      console(e);
+    })
+  }
 
   const goNextPage = (e) => {
     const { userInfo, answerState } = state;
@@ -44,27 +63,26 @@ const QuestionPage = ({ match, history }) => {
         ...answers
       }
     }
-    const isLastPage = page === totalPages;
-    if(isLastPage){
+    const isLastPage = (page === totalPages);
+    if (isLastPage) {
       let userAllAnswers = [];
-      for(const [key, value] of Object.entries(userState.answerState)){
+      for (const [key, value] of Object.entries(userState.answerState)) {
         userAllAnswers = [...userAllAnswers, ...value];
-        
+
       }
       const params = {
-        userInfo : userInfo,
-        userAnswers : userAllAnswers
+        user_info: userInfo,
+        user_answers: userAllAnswers
       }
-      console.log(params);
-      //const result = resultAPI.insertUserResult(userState);
-      //https://loy124.tistory.com/249
+      insertUserResult(params, userState);
+
+    }else{
+      history.push({
+        pathname: (isLastPage ? '/pages/result' : `/pages/${page + 1}` ),
+        state: userState
+      })
+
     }
-
-    // history.push({
-    //   pathname: (isLastPage ? '/pages/result' : `/pages/${page + 1}` ),
-    //   state: userState
-    // });
-
   }
 
   const handleSubmit = (e) => {
@@ -89,7 +107,7 @@ const QuestionPage = ({ match, history }) => {
   const inspection = useSelector(state => state.inspection);
 
   if (!state || !state.userInfo) return <Redirect to="/" />;
-  if (loading || !data || proceeding ) return <Loading loading={loading || proceeding} />
+  if (loading || !data || proceeding) return <Loading loading={loading || proceeding} />
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
 
@@ -99,7 +117,7 @@ const QuestionPage = ({ match, history }) => {
     <>
       <div className="findme__question__explanation">
         평소의 나와 가장 가까울 수록 10점에 가깝게,<br />
-        평소의 나와 같지 않을 수록 1점에 가깝게 체크하세요. 
+        평소의 나와 같지 않을 수록 1점에 가깝게 체크하세요.
       </div>
       <ToolbarPage match={match} />
       <Form noValidate validated={validated} onSubmit={handleSubmit} className="information_form">
@@ -115,7 +133,7 @@ const QuestionPage = ({ match, history }) => {
                 question_idx={question_idx}
                 setUserAnswers={setUserAnswers}
                 userAnswers={userAnswers}
-                validated={validated}/>
+                validated={validated} />
             ))}
           </div>
         </div>

@@ -4,7 +4,6 @@ const GET_RESULT_LOADING = 'GET_RESULT';
 const GET_RESULT_SUCCESS  = 'GET_RESULT_SUCCESS ';
 const GET_RESULT_ERROR = 'GET_RESULT_ERROR';
 
-
 export const getUserResult = (params) => async dispatch => {
   dispatch({ type: GET_RESULT_LOADING });
   try {

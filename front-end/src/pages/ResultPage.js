@@ -4,7 +4,6 @@ import { useLocation } from "react-router";
 import { Redirect } from 'react-router-dom';
 import { getUserResult } from '../modules/result'
 import Loading from '../components/common/Loading';
-import { Row, Col, Carousel, Card } from 'react-bootstrap';
 import '../css/result.css'
 
 const makeStringArr = (str) => {
