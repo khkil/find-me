@@ -29,15 +29,15 @@ const QuestionPage = ({ match, history }) => {
     resultAPI.insertUserResult(params).then(({ data }) => {
       const { success } = data;
       if (success) {
-        alert(1);
         history.push({
           pathname: ('/pages/result'),
           state: userState
         });
-
+      }else{
+        alert('정보 저장에 실패 하였습니다');
       }
     }).catch(e => {
-      alert('서버와 통신오류가 발생하였습니다.')
+      alert('서버와 통신오류가 발생하였습니다.');
       console(e);
     })
   }
