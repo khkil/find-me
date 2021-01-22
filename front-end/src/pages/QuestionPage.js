@@ -137,7 +137,6 @@ const QuestionPage = ({ match, history }) => {
             ))}
           </div>
         </div>
-        <h2>{JSON.stringify(userAnswers)}</h2>
         <div className="findme__common__next">
           <button type="submit" className="findme__common__next__button">
             NEXT

@@ -8,6 +8,7 @@ import '../css/result.css'
 
 const makeStringArr = (str) => {
   const tag = '</br>';
+  if(!str) return [];
   return str.split(tag);
 }
 
