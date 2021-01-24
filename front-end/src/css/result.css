@@ -1,7 +1,3 @@
-.findme__result {
-  margin-bottom: 10%;
-}
-
 .findme__result__title {
   font-family: GmarketSans, sans-serif;
   font-weight: bold;
@@ -156,22 +152,3 @@
   color: #0057A5;
   background-color: transparent;
 }
-
-.findme__result__logos{
-  padding-bottom: 44px;
-}
-.findme__result__logos--kcac,
-.findme__result__logos--octagnosis{
-  display: block;
-  margin: 0 auto;
-}
-.findme__result__logos--octagnosis{
-  width: 146px;
-}
-
-.findme__result__logos--kcac{
-  width: 155px;
-}
-
-
-

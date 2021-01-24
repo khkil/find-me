@@ -1,7 +1,7 @@
 .findme__main__title {
   font-family: GmarketSans, sans-serif;
   font-weight: 700;
-  font-size: 36px;
+  font-size: 30px;
   margin-top: 32px;
   text-align: center;
 }
@@ -11,19 +11,21 @@
   line-height: 1.7;
   text-align: center;
   padding: 10px;
+  color: #202528;
 }
 
 .findme__main__illustration {
   flex: 1;
-  padding: 28px 0 40px;
+  padding: 12px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
   align-content: center;
+  margin-bottom: -60px;
 }
 .findme__main__illustration--image {
-  width: 210px;
-  height: 210px;
+  width: 100%;
+  max-width: 360px;
 }
 
 .findme__main__start {
@@ -35,16 +37,24 @@
   width: 100%;
   background-color: var(--primary-blue);
   color: #ffffff;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 8px 16px;
-  height: 56px;
-  border-radius: 28px;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.2;
+  padding: 4px 16px 8px;
+  height: 71px;
+  border-radius: 36px;
   border: none;
 }
+
+.findme__main__start__button__count {
+  font-size: 12px;
+  font-weight: 300;
+}
+
 .findme__main__start__disclaimer {
   font-size: 12px;
   line-height: 1.6;
+  color: #7E7E7E;
 }
 
 .findme__main__logo__wrapper {

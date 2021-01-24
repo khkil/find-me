@@ -9,9 +9,9 @@ export const getQuestions = (id) => async dispatch => {
   dispatch({ type: GET_QUESTIONS_LOADING });
   try {
     const questions = await questionAPI.getQuestions(id);
-    //console.log(questions);
-    dispatch({ type: GET_QUESTIONS_SUCCESS, data: questions });
-
+    setTimeout(() => {
+      dispatch({ type: GET_QUESTIONS_SUCCESS, data: questions });  
+    }, 100);
   }catch(e) {
     dispatch({ type: GET_QUESTIONS_ERROR, error: e })
   }

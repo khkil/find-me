@@ -3,11 +3,9 @@ import { Route, Switch } from 'react-router-dom';
 import QuestionPage from './pages/QuestionPage';
 import UserRegistPage from './pages/UserRegistPage';
 import ErrorPage from './components/common/ErrorPage';
-import HeaderPage from './pages/common/HeaderPage';
 import ResultPage from './pages/ResultPage';
 import StartPage from './pages/StartPage';
 import AppPage from './pages/common/AppPage';
-import FooterPage from './pages/common/FooterPage';
 
 function App() {
   

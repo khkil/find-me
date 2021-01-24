@@ -55,6 +55,20 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+.eslintcache
+.cache
+/packages/**/node_modules
+/tools/internal-rules/node_modules
+/.vscode
+.sublimelinterrc
+.eslint-release-info.json
+.nyc_output
+/test-results.xml
+.temp-eslintcache
+/tests/fixtures/autofix-integration/temp.js
+yarn.lock
+package-lock.json
+
 
 ### VS Code ###
 .vscode/

@@ -1,4 +1,4 @@
-.findme__info__select, form.information_form {
+.findme__info__select, .information_form {
   display: flex;
   flex: 1;
   flex-direction: column;
