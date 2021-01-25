@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface UserMapper {
 
-    void insertUser(User user);
-
+    int getUserCount(int inspection_idx);
 }

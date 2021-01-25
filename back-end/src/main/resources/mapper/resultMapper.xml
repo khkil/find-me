@@ -14,7 +14,7 @@
     </select>
 
     <insert id="insertUserInfoResult" parameterType="com.example.backend.model.UserResult" useGeneratedKeys="true">
-        INSERT INTO user(user_name, user_age, user_gender) VALUES (#{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender});
+        INSERT INTO user(inspection_idx, user_name, user_age, user_gender,cdate) VALUES (#{inspection_idx}, #{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender}, now());
         <selectKey keyProperty="user_idx" resultType="int" order="AFTER">
             select LAST_INSERT_ID();
         </selectKey>

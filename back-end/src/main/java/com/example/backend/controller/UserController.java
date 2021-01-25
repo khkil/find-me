@@ -19,10 +19,9 @@ public class UserController {
 
     @Autowired
     UserServcice userServcice;
-    @PostMapping(value = "/insert")
-    public ResponseEntity<CommonResponse> insertUser(@RequestBody User user){
 
-        userServcice.insertUser(user);
-        return new ResponseEntity<CommonResponse>(CommonResponse.successResult(), HttpStatus.OK);
+    @GetMapping("/count/{inspection_idx}")
+    public int getUserCount(@PathVariable int inspection_idx){
+        return userServcice.getUserCount(inspection_idx);
     }
 }

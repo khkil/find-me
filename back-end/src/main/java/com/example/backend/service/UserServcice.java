@@ -17,7 +17,7 @@ public class UserServcice {
     @Autowired
     UserMapper userMapper;
 
-    public void insertUser(User user){
-        userMapper.insertUser(user);
+    public int getUserCount(int inspection_idx){
+       return userMapper.getUserCount(inspection_idx);
     }
 }

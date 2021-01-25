@@ -39,7 +39,7 @@ const QuestionPage = ({ match, history }) => {
         }
       }).catch(e => {
         alert('서버와 통신오류가 발생하였습니다.');
-        console(e);
+        console.log(e);
       })
     }, 500)
 
@@ -47,7 +47,7 @@ const QuestionPage = ({ match, history }) => {
 
   const goNextPage = (e) => {
     const { userInfo, answerState } = state;
-    const { totalPages } = inspection.data && inspection.data;
+    const { inspection_idx, totalPages } = inspection.data && inspection.data;
 
     let answers = {};
     for (const userAnswer of userAnswers) {
@@ -74,6 +74,7 @@ const QuestionPage = ({ match, history }) => {
 
       }
       const params = {
+        inspection_idx: inspection_idx,
         user_info: userInfo,
         user_answers: userAllAnswers
       }

@@ -1,11 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Loading from '../components/common/Loading';
 import '../css/index.css'
+import { getUserCount } from '../modules/user';
 import FooterPage from './common/FooterPage';
 import HeaderPage from './common/HeaderPage';
 
 const StartPage = () => {
+
   const PUBLIC_URL = process.env.PUBLIC_URL;
+  const dispatch = useDispatch();
+  const inspection = useSelector(state => state.inspection);
+
+  const { data, loading, error } = useSelector(state => state.user);
+  
+
+  useEffect(() => {
+    const inspectionIdx = inspection.data.inspection_idx;
+    dispatch(getUserCount(inspectionIdx));
+  },[])
+
+  if (loading || !data) return <Loading loading={loading} />
+  if (error) return <div>에러 발생!</div>;
+  if (!data) return null;
+  
   return (
 
     <>
@@ -27,8 +46,8 @@ const StartPage = () => {
           <Link to={{ pathname: "/pages/user" }}>
             <button className="findme__main__start__button">
               시작하기<br/>
-              <span class="findme__main__start__button__count">
-                현재 총 0명이 참여했어요.
+              <span className="findme__main__start__button__count">
+                현재 총 {data}명이 참여했어요.
               </span>
             </button>
           </Link>

@@ -4,12 +4,9 @@
 
 <mapper namespace="com.example.backend.mapper.UserMapper">
 
-    <insert id="insertUser" parameterType="com.example.backend.model.User">
-        INSERT INTO user(user_name, user_age, user_gender) VALUES (#{user_name}, #{user_age}, #{user_gender});
-        <selectKey resultType="int" keyProperty="user_idx" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-    </insert>
+    <select id="getUserCount" parameterType="com.example.backend.model.Inspection" resultType="int">
+        SELECT COUNT(*) FROM user WHERE inspection_idx = #{inspection_idx};
+    </select>
 
 
 </mapper>
