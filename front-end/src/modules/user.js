@@ -9,9 +9,7 @@ export const getUserCount = (inspectionIdx) => async dispatch => {
   dispatch({ type: GET_USER_LOADING });
   try {
     const userCount = await userAPI.getUserCount(inspectionIdx);
-    setTimeout(() => {
-      dispatch({ type: GET_USER_SUCCESS, data: userCount });  
-    }, 100);
+    dispatch({ type: GET_USER_SUCCESS, data: userCount });  
   }catch(e) {
     dispatch({ type: GET_USER_ERROR, error: e })
   }

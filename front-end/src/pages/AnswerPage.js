@@ -1,5 +1,5 @@
 import Answer from '../components/inspection/Answer';
-import { Form, ButtonGroup } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { useState } from 'react';
 
 const AnswerPage = ({ answers, userAnswers, setUserAnswers, result_idx, validated }) => {
@@ -42,14 +42,11 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers, result_idx, validate
     <Form.Group>
       <div className="findme__question__element__options">
         
-          {answers.map(({ answer_idx, answer_text, answer_score, question_idx }, index) => (
+          {answers.map((answer, index) => (
             <Answer
               key={index}
               index={index}
-              idx={answer_idx}
-              text={answer_text}
-              answer_score={answer_score}
-              question_idx={question_idx}
+              answer={answer}
               onChange={onChange} />
           ))}
           <br/>

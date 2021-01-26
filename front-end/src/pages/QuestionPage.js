@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import Loading from '../components/common/Loading';
 import { getQuestions } from '../modules/question';
-import { insertUserResult } from '../modules/result';
 import * as resultAPI from '../api/resultAPI';
 import Question from '../components/inspection/Question';
 import { useLocation } from "react-router";
@@ -21,28 +19,23 @@ const QuestionPage = ({ match, history }) => {
   const { state } = useLocation();
   const [validated, setValidated] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
-  const [proceeding, setProceeding] = useState(false);
-
+  console.log(state.answerState);
   const insertUserResult = (params, userState) => {
 
-    setProceeding(true);
-    setTimeout(() => {
-      resultAPI.insertUserResult(params).then(({ data }) => {
-        const { success } = data;
-        if (success) {
-          history.replace({
-            pathname: ('/pages/result'),
-            state: userState
-          });
-        } else {
-          alert('정보 저장에 실패 하였습니다');
-        }
-      }).catch(e => {
-        alert('서버와 통신오류가 발생하였습니다.');
-        console.log(e);
-      })
-    }, 500)
-
+    resultAPI.insertUserResult(params).then(({ data }) => {
+      const { success } = data;
+      if (success) {
+        history.replace({
+          pathname: ('/pages/result'),
+          state: userState
+        });
+      } else {
+        alert('정보 저장에 실패 하였습니다');
+      }
+    }).catch(e => {
+      alert('서버와 통신오류가 발생하였습니다.');
+      console.log(e);
+    })
   }
 
   const goNextPage = (e) => {
@@ -111,32 +104,25 @@ const QuestionPage = ({ match, history }) => {
   const inspection = useSelector(state => state.inspection);
 
   if (!state || !state.userInfo) return <Redirect to="/" />;
-  if (loading || !data || proceeding) return <Loading loading={loading || proceeding} />
+  if (loading) return null;
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
-
-
-
 
   return (
     <>
       <HeaderPage/>
         <div className="findme__question__explanation">
-          평소의 나와 가장 가까울 수록 10점에 가깝게,<br />
-          평소의 나와 같지 않을 수록 1점에 가깝게 체크하세요.
+          평소의 <b>나와 가장 가까울 수록 6점에 가깝게,</b><br />
+          평소의 <b>나와 같지 않을 수록 1점에 가깝게</b> 체크하세요.
         </div>
         <ToolbarPage match={match} />
         <Form noValidate validated={validated} onSubmit={handleSubmit} className="information_form">
           <div className="findme__question__wrapper">
             <div className="findme__question__element">
-              {data.map(({ question_idx, question_text, result_idx, answers, question_number }) => (
+              {data.map((question, index) => (
                 <Question
-                  key={question_idx}
-                  number={question_number}
-                  result_idx={result_idx}
-                  text={question_text}
-                  answers={answers}
-                  question_idx={question_idx}
+                  key={index}
+                  question={question}
                   setUserAnswers={setUserAnswers}
                   userAnswers={userAnswers}
                   validated={validated} />

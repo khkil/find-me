@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Loading from '../components/common/Loading';
-import '../css/index.css'
 import { getUserCount } from '../modules/user';
 import FooterPage from './common/FooterPage';
 import HeaderPage from './common/HeaderPage';
+import '../css/index.css'
 
 const StartPage = () => {
 
@@ -21,7 +20,7 @@ const StartPage = () => {
     dispatch(getUserCount(inspectionIdx));
   },[])
 
-  if (loading || !data) return <Loading loading={loading} />
+  if (loading || !data) return null;
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
   
@@ -37,10 +36,17 @@ const StartPage = () => {
           내가 어떤 사람인지 알고싶다면?
         </div>
         <div className="findme__main__illustration">
+        <div class="findme__main__illustration__text--ask">
+        <img class="findme__main__illustration--icon" alt="mic icon" src={PUBLIC_URL + '/images/icons/mic.svg'}/>
+          옥스, 나를 찾아줘
+        </div>
           <img
             className="findme__main__illustration--image"
             alt="main illustration"
             src={PUBLIC_URL + '/images/illustration/main.png'} />
+            <div class="findme__main__illustration__text--answer">
+              “네, 당신을 찾아드릴게요. 검사를 시작하세요.”
+            </div>
         </div>
         <div className="findme__main__start">
           <Link to={{ pathname: "/pages/user" }}>
