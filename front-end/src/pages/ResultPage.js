@@ -11,6 +11,8 @@ import { Helmet } from 'react-helmet';
 import queryString from "query-string"
 import KakaoShareButton from '../components/share/KakaoShareButton';
 import Result from '../components/inspection/Result';
+import FacebookShareButton from '../components/share/FacebookShareButton';
+import NaverBlogShareButton from '../components/share/NaverBlogShareButton';
 
 const ResultPage = ({ history }) => {
 
@@ -68,6 +70,10 @@ const ResultPage = ({ history }) => {
     }
   }
 
+  const goSite = () => {
+    window.open("http://aptitude-x.com/");
+  }
+
   useEffect(() => {
 
     const { inspection_idx } = inspection.data;
@@ -96,9 +102,6 @@ const ResultPage = ({ history }) => {
 
   return (
     <>
-      <Helmet>
-        <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-      </Helmet>
       <HeaderPage />
       {data.map((result, index) => {
         return (
@@ -110,19 +113,12 @@ const ResultPage = ({ history }) => {
           결과 공유하기
       </div>
         <div className="findme__result__share__buttons">
-          <button className="findme__result__share__buttons--kakao">
-            <img src={process.env.PUBLIC_URL + "/images/icons/kakao.png"} alt='kakao_share_image' />
-          </button>
-          <button className="findme__result__share__buttons--link">
-            <img src={process.env.PUBLIC_URL + "/images/icons/blog.png"} alt='blog_share_image' />
-          </button>
-          <button className="findme__result__share__buttons--link">
-            <img src={process.env.PUBLIC_URL + "/images/icons/facebook.png"} alt='facebook_share_image' />
-          </button>
+          <KakaoShareButton shareUrl={shareUrl}/>
+          <NaverBlogShareButton/>
+          <FacebookShareButton shareUrl={shareUrl}/>
           <button className="findme__result__share__buttons--link" onClick={copyToClipboard}>
             <img src={process.env.PUBLIC_URL + "/images/icons/url.png"} alt='url_share_image' />
           </button>
-          {/* <KakaoShareButton/> */}
         </div>
       </div>
 
@@ -131,7 +127,7 @@ const ResultPage = ({ history }) => {
           내게 맞는 전공·직업·직무·학습법·교과목 등등<br />
           더 구체적으로 알고 싶다면
         </div>
-        <button className="findme__result__more__button">
+        <button className="findme__result__more__button" onClick={goSite}>
           한국진로적성센터 바로가기
         </button>
       </div>

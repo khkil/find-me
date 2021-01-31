@@ -7,7 +7,6 @@ export const getInspection = (host) => async dispatch => {
   dispatch({ type: GET_INSPECTION_LOADING });
   try {
     const inspection = {inspection_idx: 1, totalPages: 15, inspection_name: '나를 찾아줘'}; //To-do insectopn api 구현 해야함
-    //console.log(questions);
     dispatch({ type: GET_INSPECTION_SUCCESS, data: inspection });
     
 

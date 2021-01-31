@@ -26,7 +26,6 @@ const NewsList = ({ category }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        console.log(category);
         const query = category === 'all' || !category ? '' : `&category=${category}`;
         const { data } = await axios.get(`http://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=${API_KEY}`);
         const { articles } = data;

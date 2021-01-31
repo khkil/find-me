@@ -24,7 +24,8 @@ const AppPage = ({ children }) => {
           { property: "og:title", content: inspection_name },
           { property: "og:description", content: "설명" },
           { property: "og:image", content: process.env.PUBLIC_URL + '/images/logo-octagnosis.png' }
-        ]}>
+        ]}
+        >
         <title>{inspection_name}</title>
         
       </Helmet>

@@ -1,29 +1,26 @@
 import React, { useEffect } from 'react'
-const KakaoShareButton = () => {
+
+const KakaoShareButton = ({ shareUrl }) => {
   useEffect(() => {
     createKakaoButton();
   }, [])
   const createKakaoButton = () => {
-      console.log(1);
-    // kakao sdk script이 정상적으로 불러와졌으면 window.Kakao로 접근이 가능합니다
+      
     if (window.Kakao) {
-      const kakao = window.Kakao
-      // 중복 initialization 방지
+      const kakao = window.Kakao;
       if (!kakao.isInitialized()) {
-        // 두번째 step 에서 가져온 javascript key 를 이용하여 initialize
         kakao.init(process.env.REACT_APP_KAKAO_KEY)
       }
       kakao.Link.createDefaultButton({
-        // Render 부분 id=kakao-link-btn 을 찾아 그부분에 렌더링을 합니다
         container: '#kakao-link-btn',
         objectType: 'feed',
         content: {
-          title: '타이틀',
-          description: '#리액트 #카카오 #공유버튼',
-          imageUrl: 'IMAGE_URL', // i.e. process.env.FETCH_URL + '/logo.png'
+          title: '나를 찾아줘',
+          description: '#옥타그노시스  #Human-x',
+          imageUrl: 'IMAGE_URL',
           link: {
-            mobileWebUrl: window.location.href,
-            webUrl: window.location.href,
+            mobileWebUrl: shareUrl,
+            webUrl: shareUrl
           },
         },
         social: {
@@ -35,30 +32,21 @@ const KakaoShareButton = () => {
           {
             title: '웹으로 보기',
             link: {
-              mobileWebUrl: window.location.href,
-              webUrl: window.location.href,
+              mobileWebUrl: shareUrl,
+              webUrl: shareUrl,
             },
-          },
-          {
-            title: '앱으로 보기',
-            link: {
-              mobileWebUrl: window.location.href,
-              webUrl: window.location.href,
-            },
-          },
+          }
         ],
       })
 
-      console.log(kakao);
     }
   }
   return (
-    <div className="kakao-share-button">
-      {/* Kakao share button */}
-      <button id="kakao-link-btn">
-        <img src="/icons/kakao.png" alt="kakao-share-icon" />
+    <>
+      <button id="kakao-link-btn" className="findme__result__share__buttons--kakao">
+        <img src={process.env.PUBLIC_URL + "/images/icons/kakao.png"} alt='kakao_share_image' />
       </button>
-    </div>
+    </>
   )
 }
 export default KakaoShareButton

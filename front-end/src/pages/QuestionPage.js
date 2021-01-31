@@ -37,7 +37,7 @@ const QuestionPage = ({ match, history }) => {
         }
       }).catch(e => {
         alert('서버와 통신오류가 발생하였습니다.');
-        console.log(e);
+        console.error(e);
       })
     }, 3000);
   }
