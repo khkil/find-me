@@ -13,10 +13,11 @@ function App() {
     <>
       <AppPage>
           <Switch>
+            <Route path="/" component={StartPage} exact />
+            <Route path="/test/:id" component={StartPage} />
             <Route path="/pages/user" component={UserRegistPage} exact/>
             <Route path="/pages/result" component={ResultPage} exact/>
             <Route path="/pages/:page" component={QuestionPage} />
-            <Route path="/" component={StartPage} exact />
             <Route path="*" component={ErrorPage}/>
           </Switch>
       </AppPage>

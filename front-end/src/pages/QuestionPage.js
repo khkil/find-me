@@ -8,8 +8,10 @@ import { useLocation } from "react-router";
 import { Form } from 'react-bootstrap'
 import FooterPage from './common/FooterPage';
 import ToolbarPage from './common/ToolbarPage';
-import '../css/question.css'
+import Loading from '../components/common/Loading';
 import HeaderPage from './common/HeaderPage';
+import '../css/question.css'
+import Proceeding from '../components/common/Proceeding';
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
 const QuestionPage = ({ match, history }) => {
@@ -19,23 +21,25 @@ const QuestionPage = ({ match, history }) => {
   const { state } = useLocation();
   const [validated, setValidated] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
-  console.log(state.answerState);
+  const [proceeding, setProceeding] = useState(false);
   const insertUserResult = (params, userState) => {
-
-    resultAPI.insertUserResult(params).then(({ data }) => {
-      const { success } = data;
-      if (success) {
-        history.replace({
-          pathname: ('/pages/result'),
-          state: userState
-        });
-      } else {
-        alert('정보 저장에 실패 하였습니다');
-      }
-    }).catch(e => {
-      alert('서버와 통신오류가 발생하였습니다.');
-      console.log(e);
-    })
+    setProceeding(true);
+    setTimeout(() => {
+      resultAPI.insertUserResult(params).then(({ data }) => {
+        const { success } = data;
+        if (success) {
+          history.replace({
+            pathname: ('/pages/result'),
+            state: userState
+          });
+        } else {
+          alert('정보 저장에 실패 하였습니다');
+        }
+      }).catch(e => {
+        alert('서버와 통신오류가 발생하였습니다.');
+        console.log(e);
+      })
+    }, 3000);
   }
 
   const goNextPage = (e) => {
@@ -104,7 +108,8 @@ const QuestionPage = ({ match, history }) => {
   const inspection = useSelector(state => state.inspection);
 
   if (!state || !state.userInfo) return <Redirect to="/" />;
-  if (loading) return null;
+  if (loading) return <Loading loading={loading}/>;
+  if (proceeding) return <Proceeding loading={proceeding} />;
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
 

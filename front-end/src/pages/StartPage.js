@@ -36,15 +36,15 @@ const StartPage = () => {
           내가 어떤 사람인지 알고싶다면?
         </div>
         <div className="findme__main__illustration">
-        <div class="findme__main__illustration__text--ask">
-        <img class="findme__main__illustration--icon" alt="mic icon" src={PUBLIC_URL + '/images/icons/mic.svg'}/>
+        <div className="findme__main__illustration__text--ask">
+        <img className="findme__main__illustration--icon" alt="mic icon" src={PUBLIC_URL + '/images/icons/mic.svg'}/>
           옥스, 나를 찾아줘
         </div>
           <img
             className="findme__main__illustration--image"
             alt="main illustration"
             src={PUBLIC_URL + '/images/illustration/main.png'} />
-            <div class="findme__main__illustration__text--answer">
+            <div className="findme__main__illustration__text--answer">
               “네, 당신을 찾아드릴게요. 검사를 시작하세요.”
             </div>
         </div>

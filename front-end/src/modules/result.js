@@ -8,9 +8,7 @@ export const getUserResult = (params) => async dispatch => {
   dispatch({ type: GET_RESULT_LOADING });
   try {
     const result = await resultAPI.getUserResult(params);
-    setTimeout(() => {
-      dispatch({ type: GET_RESULT_SUCCESS, data: result });  
-    }, 3000);
+    dispatch({ type: GET_RESULT_SUCCESS, data: result });  
 
   }catch(e) {
     dispatch( {type: GET_RESULT_ERROR, error: e} )
