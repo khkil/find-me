@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from "react-router";
-import { Redirect } from 'react-router-dom';
 import { getUserResult } from '../modules/result'
-import Loading from '../components/common/Loading';
 import '../css/result.css'
 import HeaderPage from './common/HeaderPage';
 import FooterPage from './common/FooterPage';
-import { Helmet } from 'react-helmet';
 import queryString from "query-string"
 import KakaoShareButton from '../components/share/KakaoShareButton';
 import Result from '../components/inspection/Result';
@@ -73,6 +70,9 @@ const ResultPage = ({ history }) => {
   const goSite = () => {
     window.open("http://aptitude-x.com/");
   }
+  const goHome = () => {
+    history.push({ pathname: ( '/') })
+  }
 
   useEffect(() => {
 
@@ -103,18 +103,19 @@ const ResultPage = ({ history }) => {
   return (
     <>
       <HeaderPage />
-      {data.map((result, index) => {
+      {/* {data.map((result, index) => {
         return (
           <Result result={result} key={index} />
         )
-      })}
+      })} */}
+      <Result result={data[0]}  />
       <div className="findme__result__share">
         <div className="findme__result__share__label">
           결과 공유하기
       </div>
         <div className="findme__result__share__buttons">
           <KakaoShareButton shareUrl={shareUrl}/>
-          <NaverBlogShareButton/>
+          <NaverBlogShareButton shareUrl={shareUrl}/>
           <FacebookShareButton shareUrl={shareUrl}/>
           <button className="findme__result__share__buttons--link" onClick={copyToClipboard}>
             <img src={process.env.PUBLIC_URL + "/images/icons/url.png"} alt='url_share_image' />
@@ -127,6 +128,9 @@ const ResultPage = ({ history }) => {
           내게 맞는 전공·직업·직무·학습법·교과목 등등<br />
           더 구체적으로 알고 싶다면
         </div>
+        <button className="findme__result__back__button" onClick={goHome}>
+          나도 찾으러가기
+        </button>
         <button className="findme__result__more__button" onClick={goSite}>
           한국진로적성센터 바로가기
         </button>
