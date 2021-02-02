@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from "react-router";
+import { Redirect, useLocation } from "react-router";
 import { getUserResult } from '../modules/result'
 import '../css/result.css'
 import HeaderPage from './common/HeaderPage';
@@ -44,9 +44,10 @@ const ResultPage = ({ history }) => {
   }
 
   const getShareUrl = (results) => {
-    let url = window.location.origin + pathname;
+   /*  let url = window.location.origin + pathname;
     const key = 'result_idx';
-    url += `?${key}=${results.join(`&${key}=`)}`;
+    url += `?${key}=${results.join(`&${key}=`)}`; */
+    const url = window.location.origin + pathname + `?result_idx=${results[0]}`;
     return url;
   }
 
@@ -80,12 +81,13 @@ const ResultPage = ({ history }) => {
     let results = [];
     if (state && state.answerState) {
       const { answerState } = state;
-      results = calculatedResults(answerState);
+      results = [calculatedResults(answerState)[0] ];
 
     } else if (search) {
       const query = queryString.parse(search);
       const { result_idx } = query;
-      results = [...result_idx];
+      const value = typeof result_idx === 'string' ? [result_idx] : [result_idx[0]]   
+      results = value;
     }
     const params = {
       inspection_idx: inspection_idx,
@@ -99,16 +101,16 @@ const ResultPage = ({ history }) => {
   const { data, loading, error } = useSelector(state => state.result);
   if (loading || !data) return null
   if (error) return <div>에러 발생!</div>;
+  if (data.length === 0) return <Redirect path="/"/>
 
   return (
     <>
       <HeaderPage />
-      {/* {data.map((result, index) => {
+      {data.map((result, index) => {
         return (
           <Result result={result} key={index} />
         )
-      })} */}
-      <Result result={data[0]}  />
+      })}
       <div className="findme__result__share">
         <div className="findme__result__share__label">
           결과 공유하기
