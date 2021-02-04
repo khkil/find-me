@@ -19,15 +19,8 @@ const AppPage = ({ children }) => {
   const { inspection_name } = data;
   return (
     <>
-      <Helmet
-        meta={[
-          { property: "og:title", content: inspection_name },
-          { property: "og:description", content: "설명" },
-          { property: "og:image", content: process.env.PUBLIC_URL + '/images/logo-octagnosis.png' }
-        ]}
-        >
+      <Helmet>
         <title>{inspection_name}</title>
-        
       </Helmet>
       <div className="findme__common__container">
         <div className="findme__common__wrapper">
