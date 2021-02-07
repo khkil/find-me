@@ -5,10 +5,10 @@ const GET_QUESTIONS_SUCCESS  = 'GET_QUESTIONS_SUCCESS ';
 const GET_QUESTIONS_ERROR = 'GET_QUESTIONS_ERROR';
 
 
-export const getQuestions = (id) => async dispatch => {
+export const getQuestions = (inspection_idx, id) => async dispatch => {
   dispatch({ type: GET_QUESTIONS_LOADING });
   try {
-    const questions = await questionAPI.getQuestions(id);
+    const questions = await questionAPI.getQuestions(inspection_idx ,id);
     dispatch({ type: GET_QUESTIONS_SUCCESS, data: questions });  
   }catch(e) {
     dispatch({ type: GET_QUESTIONS_ERROR, error: e })

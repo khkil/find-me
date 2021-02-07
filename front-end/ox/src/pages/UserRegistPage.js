@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useLocation } from "react-router";
 import { Form } from 'react-bootstrap'
 import FooterPage from './common/FooterPage';
-import '../css/information.css'
 import HeaderPage from './common/HeaderPage';
 
 const PUBLIC_URL = process.env.PUBLIC_URL;

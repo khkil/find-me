@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../css/found_me.css';
 
 const Proceeding = ({ loading }) => {
   if (loading) {

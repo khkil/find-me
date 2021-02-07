@@ -17,17 +17,17 @@ const KakaoShareButton = ({ shareUrl }) => {
         content: {
           title: '나를 찾아줘',
           description: '#옥타그노시스  #Human-x',
-          imageUrl: 'IMAGE_URL',
+          imageUrl: 'http://www.humannx.com/images/logo-octagnosis_og.png',
           link: {
             mobileWebUrl: shareUrl,
             webUrl: shareUrl
           },
         },
-        social: {
+        /* social: {
           likeCount: 77,
           commentCount: 55,
           sharedCount: 333,
-        },
+        }, */
         buttons: [
           {
             title: '웹으로 보기',

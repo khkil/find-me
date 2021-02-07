@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from "react-router";
 import { getUserResult } from '../modules/result'
-import '../css/result.css'
 import HeaderPage from './common/HeaderPage';
 import FooterPage from './common/FooterPage';
 import queryString from "query-string"

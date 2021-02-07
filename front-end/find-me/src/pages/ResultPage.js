@@ -122,6 +122,9 @@ const ResultPage = ({ history }) => {
           <button className="findme__result__share__buttons--link" onClick={copyToClipboard}>
             <img src={process.env.PUBLIC_URL + "/images/icons/url.png"} alt='url_share_image' />
           </button>
+          <button className="findme__result__back__button" onClick={goHome}>
+          나도 찾으러가기
+        </button>
         </div>
       </div>
 
@@ -130,9 +133,6 @@ const ResultPage = ({ history }) => {
           내게 맞는 전공·직업·직무·학습법·교과목 등등<br />
           더 구체적으로 알고 싶다면
         </div>
-        <button className="findme__result__back__button" onClick={goHome}>
-          나도 찾으러가기
-        </button>
         <button className="findme__result__more__button" onClick={goSite}>
           한국진로적성센터 바로가기
         </button>

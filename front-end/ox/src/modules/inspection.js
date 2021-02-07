@@ -6,7 +6,7 @@ const GET_INSPECTION_ERROR = 'GET_INSPECTION_ERROR';
 export const getInspection = (host) => async dispatch => {
   dispatch({ type: GET_INSPECTION_LOADING });
   try {
-    const inspection = {inspection_idx: 1, totalPages: 15, inspection_name: '나를 찾아줘'}; //To-do insectopn api 구현 해야함
+    const inspection = {inspection_idx: 2, totalPages: 3, inspection_name: '나는 어떤 소'}; //To-do insectopn api 구현 해야함
     dispatch({ type: GET_INSPECTION_SUCCESS, data: inspection });
     
 

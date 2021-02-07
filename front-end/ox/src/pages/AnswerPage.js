@@ -1,16 +1,18 @@
 import Answer from '../components/inspection/Answer';
 import { Form } from 'react-bootstrap'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useReactRouter from 'use-react-router';
 
-const AnswerPage = ({ answers, userAnswers, setUserAnswers, result_idx, validated }) => {
-  const [selectedVal, setselectedVal] = useState('');
+const AnswerPage = ({ match, answers, userAnswers, setUserAnswers, result_idx, validated }) => {
+  const [selectedVal, setSelectedVal] = useState('');
+  const { page } = match.params;
   const onChange = (e) => {
 
     const { value } = e.target;
     const { question_idx, answer_score } = e.currentTarget.dataset;
 
     
-    setselectedVal(value);
+    setSelectedVal(value);
     setUserAnswers([
       ...userAnswers, {
         question_idx: question_idx,
@@ -38,10 +40,14 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers, result_idx, validate
     })
   }
 
+  useEffect(() => {
+    setSelectedVal('');
+  }, [page])
+ 
+
   return (
-    <Form.Group>
-      <div className="findme__question__element__options">
-        
+    <Form.Group className="radio-wrap">
+          {selectedVal}
           {answers.map((answer, index) => (
             <Answer
               key={index}
@@ -50,8 +56,7 @@ const AnswerPage = ({ answers, userAnswers, setUserAnswers, result_idx, validate
               onChange={onChange} />
           ))}
           <br/>
-      </div>
-      <div className="invalid-feedback-custom">{(!selectedVal && validated) && '문항을 체크해주세요'}</div>
+      <div className="invalid-feedback-custom">{(!selectedVal && validated) && '문항을 체크해주세요'}</div> 
     </Form.Group>
   )
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import Loader from 'react-loader-spinner';
-import '../../css/found_me.css';
 
 const Loading = ({ loading }) => {
   if (loading) {
