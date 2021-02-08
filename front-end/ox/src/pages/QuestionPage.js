@@ -43,7 +43,7 @@ const QuestionPage = ({ match, history }) => {
 
   const goNextPage = (e) => {
     const { userInfo, answerState } = state;
-    const { inspection_idx, totalPages } = inspection;
+    const { inspection_idx, totalPages } = inspection.data;
 
     let answers = {};
     for (const userAnswer of userAnswers) {
@@ -63,6 +63,8 @@ const QuestionPage = ({ match, history }) => {
       }
     }
     const isLastPage = (page === totalPages);
+    console.log(page);
+    console.log(totalPages);
     if (isLastPage) {
       let userAllAnswers = [];
       for (const [key, value] of Object.entries(userState.answerState)) {
@@ -98,7 +100,6 @@ const QuestionPage = ({ match, history }) => {
   const { data, loading, error } = useSelector(state => state.question);
   useEffect(() => {
     const inspection_idx = inspection.data.inspection_idx;
-    alert(1);
     setValidated(false);
     dispatch(getQuestions(inspection_idx, page));
     setUserAnswers([]);
@@ -108,6 +109,7 @@ const QuestionPage = ({ match, history }) => {
 
 
   if (proceeding) return <Proceeding loading={proceeding} />;
+  if (loading) return <Loading loading={loading}/>
   if (error) return <div>에러 발생!</div>;
   if (!data) return null;
 
@@ -135,30 +137,8 @@ const QuestionPage = ({ match, history }) => {
           </ul>
           <button class="btn md white_gra btn-next">다음</button>
         </Form>
-
-        <h2>{JSON.stringify(userAnswers)}</h2>
       </div>
-      {/* <Form noValidate validated={validated} onSubmit={handleSubmit} className="information_form">
-        <div className="findme__question__wrapper">
-          <div className="findme__question__element">
-            {data.map((question, index) => (
-              <Question
-                key={index}
-                question={question}
-                setUserAnswers={setUserAnswers}
-                userAnswers={userAnswers}
-                validated={validated} />
-            ))}
-          </div>
-        </div>
-        <div className="findme__common__next">
-          <button type="submit" className="findme__common__next__button">
-            NEXT
-            <img className="findme__common__next__button--image" src={PUBLIC_URL + '/images/icons/next.svg'} alt="next" />
-          </button>
-        </div>
-      </Form> */}
-    </div>
+    </div> 
   )
 }
 

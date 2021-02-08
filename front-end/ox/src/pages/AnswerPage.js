@@ -47,15 +47,14 @@ const AnswerPage = ({ match, answers, userAnswers, setUserAnswers, result_idx, v
 
   return (
     <Form.Group className="radio-wrap">
-          {selectedVal}
-          {answers.map((answer, index) => (
-            <Answer
-              key={index}
-              index={index}
-              answer={answer}
-              onChange={onChange} />
-          ))}
-          <br/>
+      {answers.map((answer, index) => (
+        <Answer
+          key={index}
+          index={index}
+          answer={answer}
+          onChange={onChange} />
+      ))}
+      <br/>
       <div className="invalid-feedback-custom">{(!selectedVal && validated) && '문항을 체크해주세요'}</div> 
     </Form.Group>
   )
