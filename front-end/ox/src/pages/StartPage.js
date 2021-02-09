@@ -1,30 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { getUserCount } from '../modules/user';
-import FooterPage from './common/FooterPage';
-import HeaderPage from './common/HeaderPage';
 import mascot from '../img/mascot.png'
 import logo2 from '../img/logo2.png'
 
 const StartPage = ({ history }) => {
-  /* 
-   const PUBLIC_URL = process.env.PUBLIC_URL;
-   const dispatch = useDispatch();
-   const inspection = useSelector(state => state.inspection);
- 
-   const { data, loading, error } = useSelector(state => state.user);
-   
- 
-   useEffect(() => {
-     const inspectionIdx = inspection.data.inspection_idx;
-     dispatch(getUserCount(inspectionIdx));
-   },[]);
- 
-   console.log(data);
- 
-   if (loading) return null;
-   if (error) return <div>에러 발생!</div>;
-   if (!data) return <div>null</div>; */
+
   const start = () => {
     history.replace({ 
       pathname: '/pages/1', 
@@ -35,7 +13,6 @@ const StartPage = ({ history }) => {
   return (
 
     <>
-
       <div className="main">
         <h2>2021 올해는 소의 해!! <br />
           <strong>나는 어떤 소??</strong>
@@ -49,7 +26,7 @@ const StartPage = ({ history }) => {
         </div>
         <button className="btn md blue-gra" onClick={start}>
           <i><img src={logo2} alt="" /></i>
-                시작1
+                시작
               </button>
         <p>* 본  무료테스트는 옥타그노시스 검사의 축약본으로 <br />옥타그노시스 온라인검사에서 나타나는 성향들 중에서 <br />일부 성향만 보여질 수 있습니다. </p>
         <img src={mascot} alt="" className="mascot" />

@@ -15,7 +15,7 @@ const UserRegistPage = ({ history, match }) => {
     { down: 0, top: 18, text: '18세 이하' },
     { down: 19, top: 25, text: '19~25세' },
     { down: 26, top: 50, text: '26~50세' },
-    { down: 50, top: 100, text: '50세 이상' }
+    { down: 50, top: 100, text: '51세 이상' }
   ]
 
   const onChange = (e) => {

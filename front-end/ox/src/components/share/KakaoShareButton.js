@@ -15,9 +15,9 @@ const KakaoShareButton = ({ shareUrl }) => {
         container: '#kakao-link-btn',
         objectType: 'feed',
         content: {
-          title: '나를 찾아줘',
-          description: '#옥타그노시스  #Human-x',
-          imageUrl: 'IMAGE_URL',
+          title: '나를 찾으소',
+          description: '#한국진로적성센터 #옥타그노시스 #Human-x ',
+          imageUrl: process.env.PUBLIC_URL + "/og_image.png",
           link: {
             mobileWebUrl: shareUrl,
             webUrl: shareUrl
@@ -43,9 +43,10 @@ const KakaoShareButton = ({ shareUrl }) => {
   }
   return (
     <>
-      <button id="kakao-link-btn" className="findme__result__share__buttons--kakao">
+      <button id="kakao-link-btn"  class="btn sm white"><i><img src={process.env.PUBLIC_URL + "/images/btn_ico_kakao.png"} alt=""/></i>카카오톡 공유</button>
+      {/* <button id="kakao-link-btn" className="findme__result__share__buttons--kakao">
         <img src={process.env.PUBLIC_URL + "/images/icons/kakao.png"} alt='kakao_share_image' />
-      </button>
+      </button> */}
     </>
   )
 }

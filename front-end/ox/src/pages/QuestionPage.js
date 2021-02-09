@@ -103,6 +103,7 @@ const QuestionPage = ({ match, history }) => {
     setValidated(false);
     dispatch(getQuestions(inspection_idx, page));
     setUserAnswers([]);
+    //setProceeding(true);
   }, [page]);
 
 

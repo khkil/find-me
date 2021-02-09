@@ -1,22 +1,27 @@
+import { Card, Button } from 'react-bootstrap'
 import React from 'react';
 
 const Proceeding = ({ loading }) => {
+  const style = {
+    width: '50%'
+  }
   if (loading) {
     return (
-      <div className="findme__loading">
-        <div className="findme__loading__text">
-          나를 찾았어!
-        </div>
-        <div className="findme__loading__animation">
-          <div className="findme__loading__animation--objet objet--1"></div>
-          <div className="findme__loading__animation--objet objet--2"></div>
-          <div className="findme__loading__animation--objet objet--3"></div>
-        </div>
-        <div className="findme__loading__explanation">
-          10만 명의 데이터들 중에서<br />
-          당신의 데이터를 추출중입니다!
-        </div>
+      <div class="exam-wrap" style={style}>
+      
+      <div class="exam-head"></div>
+      <div className="board">
+        <div class="board-frame01"></div>
+        <div class="board-frame02"></div>
+        <div class="board-frame03"></div>
+        <div class="board-frame04"></div>
+        <p class="txt-guide">
+          <strong>나를 찾으소!</strong><br/>
+          당신의 데이터를 분석중입니다
+        </p>
+     
       </div>
+    </div> 
     )
   } 
   return null;
