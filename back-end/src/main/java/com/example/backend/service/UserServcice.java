@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -19,5 +20,9 @@ public class UserServcice {
 
     public int getUserCount(int inspection_idx){
        return userMapper.getUserCount(inspection_idx);
+    }
+
+    public User getUserInfo(Map<String, Object> user){
+        return userMapper.getUserInfo(user);
     }
 }

@@ -149,7 +149,7 @@ const ResultPage = ({ history }) => {
             </div>
           </div>
           <div class="share-btn-wrap">
-          <KakaoShareButton shareUrl={shareUrl}/>
+            <KakaoShareButton shareUrl={shareUrl}/>
             <button class="btn sm white crl-litegreen"><i><img src="../img/btn_ico_blog.png" alt="" /></i>네이버블로그 공유</button>
             <button class="btn sm white crl-blue"><i><img src="../img/btn_ico_facebook.png" alt="" /></i>페이스북 공유</button>
             <button class="btn sm blue"><i><img src="../img/btn_ico_url.png" alt="" /></i>URL 복사</button>

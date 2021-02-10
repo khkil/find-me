@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -23,5 +24,11 @@ public class UserController {
     @GetMapping("/count/{inspection_idx}")
     public int getUserCount(@PathVariable int inspection_idx){
         return userServcice.getUserCount(inspection_idx);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<User> login(@RequestBody Map<String, Object> map){
+        User user = userServcice.getUserInfo(map);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
