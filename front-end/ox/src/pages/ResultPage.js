@@ -9,6 +9,8 @@ import KakaoShareButton from '../components/share/KakaoShareButton';
 import Result from '../components/inspection/Result';
 import FacebookShareButton from '../components/share/FacebookShareButton';
 import NaverBlogShareButton from '../components/share/NaverBlogShareButton';
+import img_logo from '../img/img_logo.png'
+import logo from '../img/logo.png'
 
 const ResultPage = ({ history }) => {
 
@@ -39,14 +41,12 @@ const ResultPage = ({ history }) => {
       });
     }
     const results = allAnswers.filter(allAnswer => allAnswer.totalScore === highScore);
+    console.log(results);
     return results.map(result => result.result_idx);
   }
 
-  const getShareUrl = (results) => {
-    /*  let url = window.location.origin + pathname;
-     const key = 'result_idx';
-     url += `?${key}=${results.join(`&${key}=`)}`; */
-    const url = window.location.origin + pathname + `?result_idx=${results[0]}`;
+  const getShareUrl = (result_idx) => {
+    const url = window.location.origin + pathname + `?result_idx=${result_idx}`;
     return url;
   }
 
@@ -77,22 +77,21 @@ const ResultPage = ({ history }) => {
   useEffect(() => {
 
     const { inspection_idx } = inspection.data;
-    let results = [];
+    let result;
     if (state && state.answerState) {
       const { answerState } = state;
-      results = [calculatedResults(answerState)[0]];
+      result = calculatedResults(answerState)[0];
 
     } else if (search) {
       const query = queryString.parse(search);
       const { result_idx } = query;
-      const value = typeof result_idx === 'string' ? [result_idx] : [result_idx[0]]
-      results = value;
+      result = result_idx;
     }
     const params = {
       inspection_idx: inspection_idx,
-      results: results
+      result_idx: result
     }
-    setShareUrl(getShareUrl(results));
+    setShareUrl(getShareUrl(result));
     dispatch(getUserResult(params));
 
   }, []);
@@ -100,11 +99,11 @@ const ResultPage = ({ history }) => {
   const { data, loading, error } = useSelector(state => state.result);
   if (loading) return null;
   if (error) return <Redirect path="/" />;
-  if (!data ) return null;
-  if(data.length === 0) return <Redirect path="/" />;
+  if (!data) return null;
+  if (data.length === 0) return <Redirect path="/" />;
 
   return (
-    <>  
+    <>
       <HeaderPage />
       <div class="exam-wrap">
         <div class="exam-head"></div>
@@ -114,54 +113,38 @@ const ResultPage = ({ history }) => {
           <div class="board-frame03"></div>
           <div class="board-frame04"></div>
 
-          <div class="user-result">
-            <div class="img-wrap">
-              <img src="../img/img_type01.png" alt="" />
-            </div>
-            <div class="txt-wrap">
-              <p class="tit">당신은 리더십이 뛰어난 <strong> ‘나를따르소’ </strong></p>
-              <ul>
-                <li>당신은 눈에 보이는 자연, 환경, 기상 천문, 우주에 관심이 많습니다.</li>
-                <li>말 수가 적고 조용하며 느리지만 뛰어난 관찰력을 갖고 있습니다.</li>
-                <li>안정적이고 편안한 환경 속에서 성과를 낼 수 있습니다.</li>
-                <li>자신만의 분명한 관심 영역을 확보하고 있으며, 관심 있는 분야에는 오랫동안 집중합니다.</li>
-                <li>소리 없이 자신의 일을 묵묵하게 수행해냅니다.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="relation-result">
-            <div class="good-type">
-              <div class="inner">
-                <p class="txt-type">잘맞소</p>
-                <div class="img-wrap">
-                  <img src="../img/img_type02.png" alt="" />
-                </div>
-              </div>
-            </div>
-            <div class="bad-type">
-              <div class="inner">
-                <p class="txt-type">안맞소</p>
-                <p class="txt-ex">생각많고 걱정많은 <strong>‘탐정같소’</strong></p>
-                <div class="img-wrap">
-                  <img src="../img/img_type03.png" alt="" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <Result result={data[0]}/>
           <div class="share-btn-wrap">
-            <KakaoShareButton shareUrl={shareUrl}/>
-            <button class="btn sm white crl-litegreen"><i><img src="../img/btn_ico_blog.png" alt="" /></i>네이버블로그 공유</button>
-            <button class="btn sm white crl-blue"><i><img src="../img/btn_ico_facebook.png" alt="" /></i>페이스북 공유</button>
-            <button class="btn sm blue"><i><img src="../img/btn_ico_url.png" alt="" /></i>URL 복사</button>
-            <button class="btn sm green"><i><img src="../img/btn_ico_link.png" alt="" /></i>한국진로적성센터 바로가기</button>
+            <KakaoShareButton shareUrl={shareUrl} />
+            <NaverBlogShareButton shareUrl={shareUrl} />
+            <FacebookShareButton shareUrl={shareUrl} />
+            
+            <button class="btn sm blue" onClick={copyToClipboard}>
+              <i>
+                <img src={process.env.PUBLIC_URL + "/images/btn_ico_url.png"} alt="" />
+              </i>URL 복사
+            </button>
+
+            <button class="btn sm green" onClick={goSite}>
+              <i>
+                <img src={process.env.PUBLIC_URL + "/images/btn_ico_link.png"} alt="" />
+              </i>한국진로적성센터 바로가기
+            </button>
           </div>
-        </div>          
-{shareUrl}
+
+
+
+        </div>
 
         <div class="exam-foot"></div>
         <img src="../img/mascot.png" alt="" class="mascot" />
         <div class="btn-wrap">
-          <button class="btn lg white"><img src="../img/img_logo.png" alt="" /></button><button class="btn lg white"><img src="../img/logo.png" alte="" /></button>
+          <button class="btn lg white" style={{cursor: 'auto'}}>
+            <img src={img_logo} alt="" />
+          </button>
+          <button class="btn lg white" style={{cursor: 'auto'}}>
+            <img src={logo} alt="" />
+          </button>
         </div>
       </div>
 
@@ -197,7 +180,6 @@ const ResultPage = ({ history }) => {
           한국진로적성센터 바로가기
         </button>
       </div> */}
-      <FooterPage />
     </>
   )
 }

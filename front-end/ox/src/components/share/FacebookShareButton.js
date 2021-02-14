@@ -6,8 +6,10 @@ const FacebookShareButton = ({ shareUrl }) => {
   }
   return (
     <>
-      <button className="findme__result__share__buttons--link" onClick={onClick}>
-        <img src={process.env.PUBLIC_URL + "/images/icons/facebook.png"} alt='facebook_share_image' />
+      <button class="btn sm white crl-blue" onClick={onClick}>
+        <i>
+          <img src={process.env.PUBLIC_URL + "/images/btn_ico_facebook.png"} alt="" />
+        </i>페이스북 공유
       </button>
 
     </>

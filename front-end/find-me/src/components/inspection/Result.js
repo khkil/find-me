@@ -3,11 +3,11 @@ import React from 'react';
 const Result = ({ result }) => {
 
   const makeStringArr = (str) => {
-    const tag = '</br>';
+    const tag = '<br/>';
     if(!str) return [];
     return str.split(tag);
   }
-  const { result_idx, result_name, result_title, main_sentence, sub_sentence, keyword1, keyword2 } = result;
+  const { result_idx, result_name, result_title, main_sentence, sub_sentence, good_keyword, bad_keyword } = result;
 
   return (
     <>
@@ -40,7 +40,7 @@ const Result = ({ result }) => {
           <div className="findme__result__pros-cons__label">
             {result_name}의 강점 키워드
                   </div>
-          {makeStringArr(keyword1).map((str, index) => {
+          {makeStringArr(good_keyword).map((str, index) => {
             return (
               <div className="findme__result__pros-cons__element" key={index}>
                 #{str}
@@ -52,7 +52,7 @@ const Result = ({ result }) => {
           <div className="findme__result__pros-cons__label">
           {result_name}의 약점 키워드
                   </div>
-          {makeStringArr(keyword2).map((str, index) => {
+          {makeStringArr(bad_keyword).map((str, index) => {
             return (
               <div className="findme__result__pros-cons__element" key={index}>
                 #{str}

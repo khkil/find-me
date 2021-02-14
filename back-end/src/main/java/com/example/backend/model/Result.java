@@ -10,9 +10,14 @@ public class Result {
     private String result_title;
     private String main_sentence;
     private String sub_sentence;
-    private String keyword1;
-    private String keyword2;
+    private String good_keyword;
+    private String bad_keyword;
+    private int good_result_idx;
+    private int bad_result_idx;
     private int inspection_idx;
     private int question_page;
+
+    private Result good_result;
+    private Result bad_result;
 
 }

@@ -20,7 +20,7 @@
 		SELECT * FROM answer WHERE question_idx = #{question_idx};
 	</select>
     <select id="getQuestionListToPages" resultMap="ResultMap">
-        select * from question WHERE question_page = #{page} AND inspection_idx = #{inspection_idx};
+        SELECT * from question WHERE question_page = #{page} AND inspection_idx = #{inspection_idx};
     </select>
 
 </mapper>

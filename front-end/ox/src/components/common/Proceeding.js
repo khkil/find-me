@@ -1,30 +1,20 @@
-import { Card, Button } from 'react-bootstrap'
 import React from 'react';
-
+import img_character2 from '../../img/img_character2.png'
 const Proceeding = ({ loading }) => {
-  const style = {
-    width: '50%',
-    minHeigth: '1000px'
-  }
+  
   if (loading) {
     return (
-      <div class="exam-wrap" style={style}>
-      
-      <div class="exam-head"></div>
-      <div className="board">
-        <div class="board-frame01"></div>
-        <div class="board-frame02"></div>
-        <div class="board-frame03"></div>
-        <div class="board-frame04"></div>
-        <p class="txt-guide" style={{padding: '10%'}}>
-          <strong>나를 찾으소!</strong><br/>
-          당신의 데이터를 분석중입니다
-        </p>
-     
+      <div class="loading-wrap">
+        <div class="inner">
+          <div class="loading">
+            <div class="bar"></div>
+            <img src={img_character2} alt="" />
+          </div>
+          <p class="txt">10만명의 데이터들 중에서 <br />당신의 데이터를 추출중입니다!</p>
+        </div>
       </div>
-    </div> 
     )
-  } 
+  }
   return null;
 }
 export default Proceeding;
