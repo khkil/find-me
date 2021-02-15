@@ -7,8 +7,8 @@
     <select id="getUserCount" parameterType="com.example.backend.model.Inspection" resultType="int">
         SELECT COUNT(*) FROM user WHERE inspection_idx = #{inspection_idx};
     </select>
-    <select id="getUserInfo" parameterType="map" resultType="com.example.backend.model.User">
-        SELECT * FROM user WHERE user_id = #{user_id} AND user_pwd = #{user_pwd};
+    <select id="loadUserByUserName" parameterType="map" resultType="com.example.backend.model.User">
+        SELECT * FROM user WHERE user_id = #{user_id};
     </select>
 
 

@@ -22,7 +22,7 @@ public class UserServcice {
        return userMapper.getUserCount(inspection_idx);
     }
 
-    public User getUserInfo(Map<String, Object> user){
-        return userMapper.getUserInfo(user);
+    public User loadUserByUserName(String user_id){
+        return userMapper.loadUserByUserName(user_id);
     }
 }

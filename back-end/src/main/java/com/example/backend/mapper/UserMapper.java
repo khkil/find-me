@@ -12,5 +12,5 @@ import java.util.Map;
 public interface UserMapper {
 
     int getUserCount(int inspection_idx);
-    User getUserInfo(Map<String, Object> user);
+    User loadUserByUserName(String user_id);
 }
