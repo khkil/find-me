@@ -18,11 +18,13 @@ public class ExceptionAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected CommonResponse badRequestException(HttpServletRequest request, Exception e) {
+        e.printStackTrace();
         return CommonResponse.failResult(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResponse internalServerErrorException(HttpServletRequest request, Exception e) {
+        e.printStackTrace();
         return CommonResponse.failResult(e.getMessage());
     }
 }
