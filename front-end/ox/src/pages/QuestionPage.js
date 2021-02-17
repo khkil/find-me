@@ -78,7 +78,7 @@ const QuestionPage = ({ match, history }) => {
       insertUserResult(params, userState);
 
     } else {
-      history.push({
+      history.replace({
         pathname: (isLastPage ? '/pages/result' : `/pages/${page + 1}`),
         state: userState
       })

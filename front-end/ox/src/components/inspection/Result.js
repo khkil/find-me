@@ -29,7 +29,7 @@ const Result = ({ result }) => {
       <div class="relation-result">
         <div class="good-type">
           <div class="inner">
-            <p class="txt-type">안맞소</p>
+            <p class="txt-type">잘맞소</p>
             {good_result != null &&
               <>
                 <p class="txt-ex">{good_keyword} <strong>‘{good_result.result_title}’</strong></p>

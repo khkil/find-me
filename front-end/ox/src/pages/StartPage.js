@@ -4,7 +4,7 @@ import logo2 from '../img/logo2.png'
 const StartPage = ({ history }) => {
 
   const start = () => {
-    history.replace({ 
+    history.push({ 
       pathname: '/pages/1', 
       state: { userInfo: {}, answerState: {} } 
     });

@@ -17,16 +17,13 @@ const KakaoShareButton = ({ shareUrl }) => {
         content: {
           title: '나를 찾으소',
           description: '#한국진로적성센터 #옥타그노시스 #Human-x ',
-          imageUrl: process.env.PUBLIC_URL + "/og_image.png",
+          imageUrl: "http://ox.humannx-test.com/images/og_image.png",
+          imageWidth: 1056,
+          imageHeight: 560,
           link: {
             mobileWebUrl: shareUrl,
             webUrl: shareUrl
           },
-        },
-        social: {
-          likeCount: 77,
-          commentCount: 55,
-          sharedCount: 333,
         },
         buttons: [
           {
