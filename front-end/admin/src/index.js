@@ -7,6 +7,9 @@ import rootReducer from './modules';
 import reduxThunk from 'redux-thunk';
 import { BrowserRouter } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension'; 
+import { CookiesProvider } from 'react-cookie';
+
+
 
 
 const store = createStore(
@@ -16,9 +19,11 @@ const store = createStore(
 
 ReactDOM.render(
   <BrowserRouter>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <CookiesProvider>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </CookiesProvider>
   </BrowserRouter>,
   document.getElementById('root')
 );
