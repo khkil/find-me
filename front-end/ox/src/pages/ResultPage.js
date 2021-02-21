@@ -11,6 +11,7 @@ import FacebookShareButton from '../components/share/FacebookShareButton';
 import NaverBlogShareButton from '../components/share/NaverBlogShareButton';
 import img_logo from '../img/img_logo.png'
 import logo from '../img/logo.png'
+import ErrorPage from '../components/common/ErrorPage';
 
 const ResultPage = ({ history }) => {
 
@@ -67,12 +68,7 @@ const ResultPage = ({ history }) => {
     }
   }
 
-  const goSite = () => {
-    window.open("http://aptitude-x.com/");
-  }
-  const goHome = () => {
-    history.push({ pathname: ('/') })
-  }
+
 
   useEffect(() => {
 
@@ -98,9 +94,8 @@ const ResultPage = ({ history }) => {
 
   const { data, loading, error } = useSelector(state => state.result);
   if (loading) return null;
-  if (error) return <Redirect path="/" />;
-  if (!data) return null;
-  if (data.length === 0) return <Redirect path="/" />;
+  if (error) return <div>에러 발생!</div>;
+  if (!data || data.length === 0) return <ErrorPage/>
 
   return (
     <>
@@ -112,7 +107,6 @@ const ResultPage = ({ history }) => {
           <div class="board-frame02"></div>
           <div class="board-frame03"></div>
           <div class="board-frame04"></div>
-
           <Result result={data[0]}/>
           <div class="share-btn-wrap">
             <KakaoShareButton shareUrl={shareUrl} />
@@ -125,10 +119,10 @@ const ResultPage = ({ history }) => {
               </i>URL 복사
             </button>
 
-            <button class="btn sm green" onClick={goSite}>
+            <button class="btn sm green" onClick={() => { history.push('/')}}>
               <i>
                 <img src={process.env.PUBLIC_URL + "/images/btn_ico_link.png"} alt="" />
-              </i>한국진로적성센터 바로가기
+              </i>나도 검사하러 가기
             </button>
           </div>
 
@@ -139,10 +133,10 @@ const ResultPage = ({ history }) => {
         <div class="exam-foot"></div>
         <img src="../img/mascot.png" alt="" class="mascot" />
         <div class="btn-wrap">
-          <button class="btn lg white" style={{cursor: 'auto'}}>
+          <button class="btn lg white" style={{cursor: 'pointer'}} onClick={() => { window.open('https://aptitude-x.com/octagnosis.php') }}>
             <img src={img_logo} alt="" />
           </button>
-          <button class="btn lg white" style={{cursor: 'auto'}}>
+          <button class="btn lg white" style={{cursor: 'pointer'}} onClick={() => { window.open('https://aptitude-x.com/') }}>
             <img src={logo} alt="" />
           </button>
         </div>

@@ -34,7 +34,7 @@ const Result = ({ result }) => {
               <>
                 <p class="txt-ex">{good_keyword} <strong>‘{good_result.result_title}’</strong></p>
                 <div class="img-wrap">
-                  <img src={process.env.PUBLIC_URL + `/images/results/result_${good_result.result_idx}.png`} alt="" />
+                  <img src={process.env.PUBLIC_URL + `/images/results/result_${good_result.result_idx}.png`} alt="" style={{width: '131px', height: '127px' }} />
                 </div>
               </>
             }
@@ -47,13 +47,13 @@ const Result = ({ result }) => {
               <>
                 <p class="txt-ex">{bad_keyword} <strong>‘{bad_result.result_title}’</strong></p>
                 <div class="img-wrap">
-                  <img src={process.env.PUBLIC_URL + `/images/results/result_${bad_result.result_idx}.png`} alt="" />
+                  <img src={process.env.PUBLIC_URL + `/images/results/result_${bad_result.result_idx}.png`} alt="" style={{width: '131px', height: '127px' }} />
                 </div>
               </>
               :
               result_idx === 23 ?
               <>
-                <p class="txt-ex">{bad_keyword}</p>
+                <p class="txt-ex" style={{color: 'yellow'}}><strong>{bad_keyword}</strong></p>
                 
               </>
               :

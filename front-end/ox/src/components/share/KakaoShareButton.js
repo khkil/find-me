@@ -10,12 +10,14 @@ const KakaoShareButton = ({ shareUrl }) => {
       const kakao = window.Kakao;
       if (!kakao.isInitialized()) {
         kakao.init(process.env.REACT_APP_KAKAO_KEY)
+       
       }
+      
       kakao.Link.createDefaultButton({
         container: '#kakao-link-btn',
         objectType: 'feed',
         content: {
-          title: '나를 찾으소',
+          title: '한국진로적성센터',
           description: '#한국진로적성센터 #옥타그노시스 #Human-x ',
           imageUrl: "http://ox.humannx-test.com/images/og_image.png",
           imageWidth: 1056,
@@ -34,7 +36,8 @@ const KakaoShareButton = ({ shareUrl }) => {
             },
           }
         ],
-      })
+      });
+     
 
     }
   }
