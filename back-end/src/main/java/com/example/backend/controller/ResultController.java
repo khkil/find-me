@@ -1,19 +1,14 @@
 package com.example.backend.controller;
 
-import com.example.backend.model.CommonResponse;
+import com.example.backend.model.common.CommonResponse;
 import com.example.backend.model.Result;
-import com.example.backend.model.User;
 import com.example.backend.model.UserResult;
 import com.example.backend.service.ResultServcice;
-import com.example.backend.service.UserServcice;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +31,7 @@ public class ResultController {
 
         List<Map<String, Integer>> userAnswers = userResult.getUser_answers();
         if (userAnswers.size() == 0) {
-            return new ResponseEntity<>(CommonResponse.failResult("answer size == 0"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(CommonResponse.failResult("answer is empty"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         resultServcice.insertUserInfoResult(userResult);
         if (userResult.getUser_idx() == 0) {

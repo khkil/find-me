@@ -1,7 +1,7 @@
 package com.example.backend.common.advice;
 
 
-import com.example.backend.model.CommonResponse;
+import com.example.backend.model.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

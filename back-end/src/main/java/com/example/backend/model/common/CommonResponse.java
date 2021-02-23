@@ -1,12 +1,14 @@
-package com.example.backend.model;
+package com.example.backend.model.common;
 
 import lombok.Data;
+
 @Data
 public class CommonResponse {
 
     private boolean success;
     private int code;
     private String msg;
+    private String data;
 
     private enum CommonResult {
         SUCCESS(0, "success"),
@@ -33,6 +35,16 @@ public class CommonResponse {
         result.setSuccess(true);
         result.setCode(CommonResult.SUCCESS.getCode());
         result.setMsg(CommonResult.SUCCESS.getMsg());
+
+        return result;
+    }
+    public static CommonResponse successResult(String data) {
+        CommonResponse result = new CommonResponse();
+        result.setSuccess(true);
+        result.setData(data);
+        result.setCode(CommonResult.SUCCESS.getCode());
+        result.setMsg(CommonResult.SUCCESS.getMsg());
+
 
         return result;
     }
