@@ -1,8 +1,16 @@
 import React from 'react';
 
-const Sidebar = () => {
+const Sidebar = ({ showSideTags }) => {
 	return (
-		<div>sidebar</div>
+		<>
+			{showSideTags && 
+        <div>
+          <h2>
+            sidebar
+          </h2>
+        </div>
+      }
+    </>
 	)
 }
 

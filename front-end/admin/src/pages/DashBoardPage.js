@@ -4,12 +4,10 @@ import Sidebar from '../components/common/SideBar';
 import Header from '../components/common/Header';
 
 
-const DashBoardPage = ({ history }) => {
+const DashBoardPage = () => {
 
   return (
     <div>
-      <Header history={history} />
-      <Sidebar />
       <Button variant="contained" color="primary">asd</Button>
     </div>
   )
