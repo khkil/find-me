@@ -1,17 +1,17 @@
 import * as authApi from '../api/authApi';
 
-const LOGIN_LOADING = 'auth/LOGIN';
-const LOGIN_SUCCESS  = 'auth/LOGIN_SUCCESS ';
-const LOGIN_ERROR = 'auth/LOGIN_ERROR';
+const AUTH_INFOLOADING = 'auth/LOGIN';
+const AUTH_INFOSUCCESS  = 'auth/AUTH_INFOSUCCESS ';
+const AUTH_INFOERROR = 'auth/AUTH_INFOERROR';
 
-export const login = (params) => async dispatch => {
-  dispatch({ type: LOGIN_LOADING });
+export const getAuthInfo = (params) => async dispatch => {
+  dispatch({ type: AUTH_INFOLOADING });
   try {
-    const result = await authApi.login(params);
-    dispatch({ type: LOGIN_SUCCESS, data: result });  
+    const result = await authApi.getAuthInfo(params);
+    dispatch({ type: AUTH_INFOSUCCESS, data: result });  
 
   }catch(e) {
-    dispatch( {type: LOGIN_ERROR, error: e} )
+    dispatch( {type: AUTH_INFOERROR, error: e} )
   }
 }
 
@@ -24,21 +24,21 @@ const initialState = {
 export default function auth(state = initialState, action) {
 
   switch (action.type) {
-    case LOGIN_LOADING: {
+    case AUTH_INFOLOADING: {
       return {
         ...state,
         loading: true,
         error:''
       };
     }
-    case LOGIN_SUCCESS: {
+    case AUTH_INFOSUCCESS: {
       return {
         ...state,
         data: action.data,
         loading: false
       }
     }
-    case LOGIN_ERROR: {
+    case AUTH_INFOERROR: {
       return {
         ...state,
         loading: false,

@@ -31,13 +31,13 @@ const LoginPage = ({ cookies, setCookie, setShowSideTags }) => {
     }
     try {
       const response = await authApi.login(inputs);
-      const { code, msg, signature } = response;
-
+      const { code, msg, token } = response;
+      console.log(response);
       if(code === defaultCode.FAIL_CODE){
         alert(msg);
 
-      }else if(signature){
-        setCookie('user', signature);
+      }else if(token){
+        setCookie('user', token);
         setShowSideTags(true);
       }
 

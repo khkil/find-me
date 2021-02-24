@@ -9,9 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension'; 
 import { CookiesProvider } from 'react-cookie';
 
-
-
-
 const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(reduxThunk))

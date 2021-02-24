@@ -10,26 +10,18 @@ import Sidebar from './components/common/SideBar';
 function App() {
   
   const [ cookies, setCookie, removeCookie ] = useCookies(['user']);
-  const [ hasCookie, setHasCookie ] = useState(false);
   const [ showSideTags, setShowSideTags ] = useState(true);
   
-  useEffect(() => {
-    if(cookies.user && cookies.user !== 'undefined') {
-      setHasCookie(true);
-    }
-  },[ cookies ])
-  
+
   return (
     <>
       <Router>
-        {!hasCookie ? <Redirect to='/login'/> : <Redirect to='/'/>}
+        {!cookies.user ? <Redirect to='/login'/> : <Redirect to='/'/>}
         <header>
           <Header 
             showSideTags={showSideTags} 
             cookies={cookies} 
             removeCookie={removeCookie}
-            hasCookie={hasCookie} 
-            setHasCookie={setHasCookie} 
           />
         </header>
         <main>
@@ -44,7 +36,7 @@ function App() {
                 setShowSideTags={setShowSideTags}
               />
             } 
-          exact />
+          exact/>
           <Route path="/" component={DashBoardPage} exact />
         </Switch>
         </main>
