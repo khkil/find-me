@@ -2,24 +2,24 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.backend.mapper.QuestionMapper">
+<mapper namespace="com.example.backend.test.question.QuestionMapper">
 
     <select id="getQuestionList" resultMap="ResultMap">
         SELECT * FROM question WHERE inspection_idx = #{idx}
         ORDER BY inspection_idx, question_page, question_number;
     </select>
 
-    <resultMap type="com.example.backend.model.Question" id="ResultMap">
+    <resultMap type="com.example.backend.test.question.Question" id="ResultMap">
         <result property="question_idx" column="question_idx"/>
         <result property="inspection_idx" column="inspection_idx"/>
         <result property="result_idx" column="result_idx"/>
         <result property="question_page" column="question_page"/>
         <collection property="answers" column="question_idx" ofType="Post" select="getAnswerList"/>
     </resultMap>
-    <select id="getAnswerList" resultType="com.example.backend.model.Answer" >
+    <select id="getAnswerList" resultType="com.example.backend.test.answer.Answer" >
 		SELECT * FROM answer WHERE question_idx = #{question_idx};
 	</select>
-    <select id="getQuestionListToPages" resultMap="ResultMap">
+    <select id="getPageInfo" resultMap="ResultMap">
         SELECT * from question WHERE question_page = #{page} AND inspection_idx = #{inspection_idx};
     </select>
 

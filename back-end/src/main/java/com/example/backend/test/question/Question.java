@@ -1,5 +1,6 @@
-package com.example.backend.model;
+package com.example.backend.test.question;
 
+import com.example.backend.test.answer.Answer;
 import lombok.Data;
 
 import java.util.List;

@@ -5,10 +5,10 @@ const GET_USER_SUCCESS  = 'GET_USER_SUCCESS ';
 const GET_USER_ERROR = 'GET_USER_ERROR';
 
 
-export const getUserCount = (inspectionIdx) => async dispatch => {
+export const getUsers = (inspectionIdx) => async dispatch => {
   dispatch({ type: GET_USER_LOADING });
   try {
-    const userCount = await userAPI.getUserCount(inspectionIdx);
+    const userCount = await userAPI.getUsers(inspectionIdx);
     dispatch({ type: GET_USER_SUCCESS, data: userCount });  
   }catch(e) {
     dispatch({ type: GET_USER_ERROR, error: e })

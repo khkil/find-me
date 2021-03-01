@@ -1,8 +1,5 @@
-package com.example.backend.mapper;
+package com.example.backend.test.inspection;
 
-import com.example.backend.model.Inspection;
-import com.example.backend.model.Question;
-import org.json.JSONArray;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

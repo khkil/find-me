@@ -1,4 +1,4 @@
-package com.example.backend.config.secutiry;
+package com.example.backend.auth;
 
 
 import io.jsonwebtoken.*;

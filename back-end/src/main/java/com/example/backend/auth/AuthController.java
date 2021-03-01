@@ -1,9 +1,8 @@
-package com.example.backend.controller;
+package com.example.backend.auth;
 
-import com.example.backend.config.secutiry.JwtTokenProvider;
-import com.example.backend.model.common.CommonResponse;
-import com.example.backend.model.User;
-import com.example.backend.service.UserServcice;
+import com.example.backend.common.CommonResponse;
+import com.example.backend.test.user.User;
+import com.example.backend.test.user.UserServcice;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

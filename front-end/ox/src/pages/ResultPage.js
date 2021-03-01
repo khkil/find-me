@@ -87,6 +87,7 @@ const ResultPage = ({ history }) => {
       inspection_idx: inspection_idx,
       result_idx: result
     }
+    console.log(params);
     setShareUrl(getShareUrl(result));
     dispatch(getUserResult(params));
 

@@ -2,13 +2,13 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.backend.mapper.ResultMapper">
+<mapper namespace="com.example.backend.test.result.ResultMapper">
 
-    <select id="getUserResult" resultMap="ResultMap">
+    <select id="getResults" resultMap="ResultMap">
         SELECT * FROM result
         WHERE inspection_idx = #{inspection_idx}
         <choose>
-            <when test="results != null">
+            <when test="results != null and results.size > 0">
                 AND result_idx IN
                 <foreach collection="results" item="result" index="i" open="(" close=")" separator=",">
                     #{result}
@@ -23,27 +23,16 @@
         </choose>
     </select>
 
-    <insert id="insertUserInfoResult" parameterType="com.example.backend.model.UserResult" useGeneratedKeys="true">
-        INSERT INTO user(inspection_idx, user_name, user_age, user_gender,cdate) VALUES (#{inspection_idx}, #{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender}, now());
-        <selectKey keyProperty="user_idx" resultType="int" order="AFTER">
-            select LAST_INSERT_ID();
-        </selectKey>
-    </insert>
-    <insert id="insertUserAnswerResult" parameterType="int">
-            INSERT INTO user_answer(user_idx, question_idx, answer_idx) VALUES (#{user_idx}, #{question_idx}, #{answer_idx} )
-
-    </insert>
-
-    <select id="getResult" resultType="com.example.backend.model.Result" >
+    <select id="getResult" resultType="com.example.backend.test.result.Result" >
 		SELECT result_idx, result_name, result_title, main_sentence, sub_sentence, good_result_idx, bad_result_idx, good_keyword, bad_keyword FROM result WHERE result_idx = #{result_idx};
 	</select>
-
-    <resultMap type="com.example.backend.model.Result" id="ResultMap">
+    <resultMap type="com.example.backend.test.result.Result" id="ResultMap">
         <result property="good_result_idx" column="good_result_idx"/>
         <result property="bad_result_idx" column="bad_result_idx"/>
 
         <collection property="good_result" column="good_result_idx" ofType="Post" select="getResult"/>
         <collection property="bad_result" column="bad_result_idx" ofType="Post" select="getResult"/>
     </resultMap>
+
 
 </mapper>

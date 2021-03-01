@@ -11,7 +11,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = "com.example.backend.mapper")
+@MapperScan(basePackages = "com.example.backend")
 
 public class MybatisConfig {
 

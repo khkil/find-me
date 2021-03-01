@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.test.inspection;
 
 import lombok.Data;
 

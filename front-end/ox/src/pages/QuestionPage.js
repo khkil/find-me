@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { getQuestions } from '../modules/question';
-import * as resultAPI from '../api/resultAPI';
+import * as userApi from '../api/userAPI';
 import Question from '../components/inspection/Question';
 import { useLocation } from "react-router";
 import { Form } from 'react-bootstrap'
@@ -24,7 +24,7 @@ const QuestionPage = ({ match, history }) => {
   const insertUserResult = (params, userState) => {
     setProceeding(true);
     setTimeout(() => {
-      resultAPI.insertUserResult(params).then(({ data }) => {
+      userApi.insertUserAnswer(params).then(({ data }) => {
         const { success } = data;
         if (success) {
           history.replace({

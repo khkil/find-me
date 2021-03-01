@@ -1,4 +1,4 @@
-package com.example.backend.model.common;
+package com.example.backend.common;
 
 import lombok.Data;
 

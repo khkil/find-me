@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getUserCount } from '../modules/user';
+import { getUsers } from '../modules/user';
 import FooterPage from './common/FooterPage';
 import HeaderPage from './common/HeaderPage';
 import '../css/index.css'
@@ -17,7 +17,7 @@ const StartPage = () => {
 
   useEffect(() => {
     const inspectionIdx = inspection.data.inspection_idx;
-    dispatch(getUserCount(inspectionIdx));
+    dispatch(getUsers(inspectionIdx));
   },[])
 
   if (loading || !data) return null;
@@ -53,7 +53,7 @@ const StartPage = () => {
             <button className="findme__main__start__button">
               시작하기<br/>
               <span className="findme__main__start__button__count">
-                현재 총 {data}명이 참여했어요.
+                현재 총 {data.length}명이 참여했어요.
               </span>
             </button>
           </Link>

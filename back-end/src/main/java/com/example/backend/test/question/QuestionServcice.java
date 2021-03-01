@@ -1,9 +1,7 @@
-package com.example.backend.service;
+package com.example.backend.test.question;
 
-import com.example.backend.mapper.InspectionMapper;
-import com.example.backend.mapper.QuestionMapper;
-import com.example.backend.model.Inspection;
-import com.example.backend.model.Question;
+import com.example.backend.test.question.QuestionMapper;
+import com.example.backend.test.question.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +18,7 @@ public class QuestionServcice {
     public List<Question> getQuestionList(int idx){
         return questionMapper.getQuestionList(idx);
     }
-    public List<String> getQuestionListToPages(int inspection_idx, int page){
-        return questionMapper.getQuestionListToPages(inspection_idx, page);
+    public List<String> getPageInfo(int inspection_idx, int page){
+        return questionMapper.getPageInfo(inspection_idx, page);
     }
 }
