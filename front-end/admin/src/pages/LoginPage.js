@@ -4,7 +4,7 @@ import * as authApi from '../api/authApi';
 import * as defaultCode from '../util/defaultCode';
 import { Redirect } from 'react-router-dom';
 
-const LoginPage = ({ cookies, setCookie, setShowSideTags }) => {
+const LoginPage = ({ cookies, setCookie }) => {
   const [inputs, setInputs] = useState({
     user_id: '',
     user_pwd: '',
@@ -32,13 +32,11 @@ const LoginPage = ({ cookies, setCookie, setShowSideTags }) => {
     try {
       const response = await authApi.login(inputs);
       const { code, msg, token } = response;
-      console.log(response);
       if(code === defaultCode.FAIL_CODE){
         alert(msg);
 
       }else if(token){
         setCookie('user', token);
-        setShowSideTags(true);
       }
 
     }catch(e) {
@@ -49,9 +47,7 @@ const LoginPage = ({ cookies, setCookie, setShowSideTags }) => {
   };
 
   useEffect(() => {
-    if(!cookies.user){
-      setShowSideTags(false);
-    }
+   
   }, [])
 
  
@@ -64,7 +60,6 @@ const LoginPage = ({ cookies, setCookie, setShowSideTags }) => {
           <input type='text' value={user_pwd} name='user_pwd' onChange={onChange} placeholder='비밀번호'/>
           <button type='submit'>로그인</button>
         </form>
-        <h2>{JSON.stringify(inputs)}</h2>
       </Container>
     </>
   )

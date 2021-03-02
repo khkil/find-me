@@ -10,8 +10,7 @@ import Sidebar from './components/common/SideBar';
 function App() {
   
   const [ cookies, setCookie, removeCookie ] = useCookies(['user']);
-  const [ showSideTags, setShowSideTags ] = useState(true);
-  
+  console.log(cookies);
 
   return (
     <>
@@ -19,24 +18,14 @@ function App() {
         {!cookies.user ? <Redirect to='/login'/> : <Redirect to='/'/>}
         <header>
           <Header 
-            showSideTags={showSideTags} 
             cookies={cookies} 
             removeCookie={removeCookie}
           />
         </header>
         <main>
-        <Sidebar showSideTags={showSideTags} />
+        <Sidebar cookies={cookies}  />
         <Switch>
-          <Route 
-            path="/login" 
-            component={() =>
-              <LoginPage 
-                cookies={cookies} 
-                setCookie={setCookie} 
-                setShowSideTags={setShowSideTags}
-              />
-            } 
-          exact/>
+          <Route path="/login" component={() => <LoginPage cookies={cookies} setCookie={setCookie}/>} exact/>
           <Route path="/" component={DashBoardPage} exact />
         </Switch>
         </main>
