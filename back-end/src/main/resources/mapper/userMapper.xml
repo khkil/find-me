@@ -7,9 +7,6 @@
     <select id="getUsers" parameterType="int" resultType="com.example.backend.test.user.User">
         SELECT * FROM user WHERE inspection_idx = #{inspection_idx};
     </select>
-    <select id="loadUserByUserName" parameterType="map" resultType="com.example.backend.test.user.User">
-        SELECT * FROM user WHERE user_id = #{user_id};
-    </select>
 
     <insert id="insertUserInfo" parameterType="com.example.backend.test.result.UserResult" useGeneratedKeys="true">
         INSERT INTO user(inspection_idx, user_name, user_age, user_gender,cdate) VALUES (#{inspection_idx}, #{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender}, now());

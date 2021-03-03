@@ -31,15 +31,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{user_idx}}")
-    public ResponseEntity getUserInfo(@PathVariable String user_idx){
-        User user = userServcice.loadUserByUserName(user_idx);
-        if(user == null)
-            return new ResponseEntity<>(CommonResponse.failResult("user is null"), HttpStatus.OK);
-
-        return ResponseEntity.ok(user);
-    }
-
     @GetMapping("/answers/inspection/{inspection_idx}")
     public int getUserAnswers(@PathVariable int inspection_idx){
         return -1;

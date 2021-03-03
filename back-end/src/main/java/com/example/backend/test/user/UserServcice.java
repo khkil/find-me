@@ -20,10 +20,6 @@ public class UserServcice {
        return userMapper.getUsers(inspection_idx);
     }
 
-    public User loadUserByUserName(String user_id){
-        return userMapper.loadUserByUserName(user_id);
-    }
-
     public void insertUserAnswers(int user_idx, int question_idx, int answer_idx){
         userMapper.insertUserAnswers(user_idx, question_idx, answer_idx);
     }

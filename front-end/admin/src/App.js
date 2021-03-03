@@ -5,34 +5,29 @@ import DashBoardPage from './pages/DashBoardPage';
 import LoginPage from './pages/LoginPage';
 import Header from './components/common/Header';
 import Sidebar from './components/common/SideBar';
+import StatisticsPage from './pages/result/StatisticsPage';
 
 
 function App() {
   
   const [ cookies, setCookie, removeCookie ] = useCookies(['user']);
-  console.log(cookies);
 
   return (
     <>
-      <Router>
-        {!cookies.user ? <Redirect to='/login'/> : <Redirect to='/'/>}
-        <header>
+        {!cookies.user && <Redirect to='/login'/> }
           <Header 
             cookies={cookies} 
             removeCookie={removeCookie}
           />
-        </header>
-        <main>
+        
         <Sidebar cookies={cookies}  />
         <Switch>
           <Route path="/login" component={() => <LoginPage cookies={cookies} setCookie={setCookie}/>} exact/>
+          <Route path="/statistics" component={StatisticsPage} exact />
           <Route path="/" component={DashBoardPage} exact />
-        </Switch>
-        </main>
-        <footer>
 
-        </footer>
-      </Router>
+        </Switch>
+       
     </>
   );
 }

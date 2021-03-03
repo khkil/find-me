@@ -4,13 +4,12 @@ import * as authApi from '../api/authApi';
 import * as defaultCode from '../util/defaultCode';
 import { Redirect } from 'react-router-dom';
 
-const LoginPage = ({ cookies, setCookie }) => {
+const LoginPage = ({ cookies, setCookie, history }) => {
   const [inputs, setInputs] = useState({
-    user_id: '',
-    user_pwd: '',
+    member_id: '',
+    member_pwd: '',
   });
-
-  const { user_id, user_pwd } = inputs;
+  const { member_id, member_pwd } = inputs;
   const onChange = (e) => {
     const { name, value } = e.target;
     setInputs({
@@ -22,10 +21,10 @@ const LoginPage = ({ cookies, setCookie }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if(!user_id){
+    if(!member_id){
       alert('아이디를 입력해주세요');
       return;
-    }else if(!user_pwd){
+    }else if(!member_pwd){
       alert('비밀번호를 입력해주세요');
       return;
     }
@@ -36,6 +35,7 @@ const LoginPage = ({ cookies, setCookie }) => {
         alert(msg);
 
       }else if(token){
+        
         setCookie('user', token);
       }
 
@@ -56,8 +56,8 @@ const LoginPage = ({ cookies, setCookie }) => {
       <Container>
         <h2>login</h2>
         <form onSubmit={handleSubmit}>
-          <input type='text' value={user_id} name='user_id' onChange={onChange} placeholder='아이디'/>
-          <input type='text' value={user_pwd} name='user_pwd' onChange={onChange} placeholder='비밀번호'/>
+          <input type='text' value={member_id} name='member_id' onChange={onChange} placeholder='아이디'/>
+          <input type='text' value={member_pwd} name='member_pwd' onChange={onChange} placeholder='비밀번호'/>
           <button type='submit'>로그인</button>
         </form>
       </Container>

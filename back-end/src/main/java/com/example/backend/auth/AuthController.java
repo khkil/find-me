@@ -1,5 +1,6 @@
 package com.example.backend.auth;
 
+import com.example.backend.auth.model.Member;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.test.user.User;
 import com.example.backend.test.user.UserServcice;
@@ -21,25 +22,25 @@ import java.util.Map;
 public class AuthController {
 
     @Autowired
-    UserServcice userServcice;
+    MemberService memberService;
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
 
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody User params){
+    public ResponseEntity login(@RequestBody Member params){
         Map<String, Object> ret = new HashMap<>();
-        User user = userServcice.loadUserByUserName(params.getUser_id());
+        Member user = memberService.loadUserByUserName(params.getMember_id());
         if(user == null) {
             return new ResponseEntity<>(CommonResponse.failResult("존재하지 않는 유저입니다."), HttpStatus.OK);
         }
         List<String> roles = new ArrayList<>();
-        String token =  jwtTokenProvider.createToken(user.getUser_id(), roles);
+        String token =  jwtTokenProvider.createToken(user.getMember_id(), roles);
         String userPk = jwtTokenProvider.getUserPk(token);
 
-        User member = userServcice.loadUserByUserName(userPk);
-        if(!params.getUser_pwd().equals(member.getUser_pwd())){
+        Member member = memberService.loadUserByUserName(userPk);
+        if(!params.getMember_pwd().equals(member.getMember_pwd())){
             return ResponseEntity.ok(CommonResponse.failResult("비밀번호가 틀렸습니다."));
         }
         Jws<Claims> claims = jwtTokenProvider.getClaims(token);
@@ -58,9 +59,9 @@ public class AuthController {
         }
 
         String userPk = jwtTokenProvider.getUserPk(params.get("token"));
-        User user = userServcice.loadUserByUserName(userPk);
+        Member member = memberService.loadUserByUserName(userPk);
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(member);
 
     }
 

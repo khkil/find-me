@@ -8,20 +8,19 @@ const Header = ({ cookies, removeCookie }) => {
   useEffect(() => {
     if(cookies.user){
       const { user } = cookies;
-      console.log(user);
       dispatch(getAuthInfo({ 'token' : user }));
     }
-  }, [ cookies ])
+  }, [])
   const logout = () => {
     removeCookie('user', {path:'/'});
   }
   const { data } = useSelector(state => state.auth);
   if(!data || !cookies.user) return null;
-  const { user_name } = data;
+  const { member_name } = data;
   return (
     <>
       <div id="header_content">
-        {user_name}님 환영합니다.
+        {member_name} 님 환영합니다.
 
         <button onClick={logout}>로그아웃</button>
         <h2>
