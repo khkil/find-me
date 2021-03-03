@@ -35,7 +35,6 @@ const LoginPage = ({ cookies, setCookie, history }) => {
         alert(msg);
 
       }else if(token){
-        
         setCookie('user', token);
       }
 
@@ -46,13 +45,11 @@ const LoginPage = ({ cookies, setCookie, history }) => {
     
   };
 
-  useEffect(() => {
-   
-  }, [])
-
  
   return (
     <>
+      {cookies.user ? <Redirect to='/'/> 
+        : 
       <Container>
         <h2>login</h2>
         <form onSubmit={handleSubmit}>
@@ -61,6 +58,9 @@ const LoginPage = ({ cookies, setCookie, history }) => {
           <button type='submit'>로그인</button>
         </form>
       </Container>
+      
+    }
+      
     </>
   )
 }

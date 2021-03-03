@@ -8,7 +8,7 @@ const DashBoardPage = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary">asd</Button>
+      dashboard
     </div>
   )
 }

@@ -11,23 +11,24 @@ import StatisticsPage from './pages/result/StatisticsPage';
 function App() {
   
   const [ cookies, setCookie, removeCookie ] = useCookies(['user']);
-
   return (
     <>
+      <Router>
         {!cookies.user && <Redirect to='/login'/> }
           <Header 
             cookies={cookies} 
             removeCookie={removeCookie}
           />
-        
         <Sidebar cookies={cookies}  />
-        <Switch>
-          <Route path="/login" component={() => <LoginPage cookies={cookies} setCookie={setCookie}/>} exact/>
-          <Route path="/statistics" component={StatisticsPage} exact />
-          <Route path="/" component={DashBoardPage} exact />
+        
+          <Switch>
+            <Route path="/login" component={() => <LoginPage cookies={cookies} setCookie={setCookie}/>}/>
+            <Route path="/statistics" component={StatisticsPage} />
+            <Route path="/" component={DashBoardPage} exact />
 
-        </Switch>
-       
+          </Switch>
+        </Router> 
+      
     </>
   );
 }
