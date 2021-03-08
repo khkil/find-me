@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components/macro";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { signIn } from "../../redux/actions/authActions";
+import { login, signIn } from "../../services/authService";
 
 import {
   Avatar,
@@ -39,13 +39,33 @@ const BigAvatar = styled(Avatar)`
 `;
 
 function SignIn() {
+
+  const handleSubmit = async (e) => {
+    const { id, password } = e;
+    const userInfo = { member_id : id, member_pwd : password };
+    try {
+      const response = await login(userInfo);
+      const { code, msg, token } = response;
+      console.log(response);
+      if(code === -1){
+        alert(msg);
+
+      }else if(token){
+        setCookie('user', token);
+        
+      }
+
+    }catch(e) {
+      console.error(e);
+      alert('로그인에 실패하였습니다');
+    }
+  };
+  
   const dispatch = useDispatch();
   const history = useHistory();
-
   return (
     <Wrapper>
       <Helmet title="Sign In" />
-      <BigAvatar alt="Lucy" src="/static/img/avatars/avatar-1.jpg" />
 
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         Welcome back, Lucy!
@@ -56,31 +76,15 @@ function SignIn() {
 
       <Formik
         initialValues={{
-          email: "demo@bootlab.io",
-          password: "unsafepassword",
+          id: "",
+          password: "",
           submit: false,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
+          id: Yup.string().required("아이디를 입력하세요"),
+          password: Yup.string().max(255).required("비밀번호를 입력하세요"),
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            await dispatch(
-              signIn({ email: values.email, password: values.password })
-            );
-            history.push("/private");
-          } catch (error) {
-            const message = error.message || "Something went wrong";
-
-            setStatus({ success: false });
-            setErrors({ submit: message });
-            setSubmitting(false);
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {({
           errors,
@@ -92,23 +96,19 @@ function SignIn() {
           values,
         }) => (
           <form noValidate onSubmit={handleSubmit}>
-            <Alert mt={3} mb={1} severity="info">
-              Use <strong>demo@bootlab.io</strong> and{" "}
-              <strong>unsafepassword</strong> to sign in
-            </Alert>
             {errors.submit && (
               <Alert mt={2} mb={1} severity="warning">
                 {errors.submit}
               </Alert>
             )}
             <TextField
-              type="email"
-              name="email"
-              label="Email Address"
-              value={values.email}
-              error={Boolean(touched.email && errors.email)}
+              type="id"
+              name="id"
+              label="ID"
+              value={values.id}
+              error={Boolean(touched.id && errors.id)}
               fullWidth
-              helperText={touched.email && errors.email}
+              helperText={touched.id && errors.id}
               onBlur={handleBlur}
               onChange={handleChange}
               my={2}
@@ -127,25 +127,24 @@ function SignIn() {
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label="계정정보 저장"
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
-              disabled={isSubmitting}
             >
-              Sign in
+              로그인
             </Button>
-            <Button
+            {/* <Button
               component={Link}
               to="/auth/reset-password"
               fullWidth
               color="primary"
             >
               Forgot password
-            </Button>
+            </Button> */}
           </form>
         )}
       </Formik>

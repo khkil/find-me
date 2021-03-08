@@ -35,7 +35,7 @@ function UserDropdown() {
 
   const handleSignOut = async () => {
     await dispatch(signOut());
-    history.push("/auth/sign-in");
+    history.push("/auth/login");
   };
 
   return (

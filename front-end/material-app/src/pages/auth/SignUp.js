@@ -80,7 +80,7 @@ function SignUp() {
                 password: values.password,
               })
             );
-            history.push("/auth/sign-in");
+            history.push("/auth/login");
           } catch (error) {
             const message = error.message || "Something went wrong";
 

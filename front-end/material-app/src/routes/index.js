@@ -230,7 +230,7 @@ const authRoutes = {
   icon: <Users />,
   children: [
     {
-      path: "/auth/sign-in",
+      path: "/auth/login",
       name: "Sign In",
       component: SignIn,
     },

@@ -7,7 +7,7 @@ function AuthGuard({ children }) {
   const auth = useSelector((state) => state.authReducer);
 
   if (!auth.user) {
-    return <Redirect to="/auth/sign-in" />;
+    return <Redirect to="/auth/login" />;
   }
 
   return children;
