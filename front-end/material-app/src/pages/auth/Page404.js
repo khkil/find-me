@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 `;
 
 function Page404() {
+  console.log(1);
   return (
     <Wrapper>
       <Helmet title="404 Error" />

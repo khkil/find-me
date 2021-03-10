@@ -1,24 +1,21 @@
 import axios from "../utils/axios";
 
-export function signIn(credentials) {
+export function login(credentials) {
   return new Promise((resolve, reject) => {
     axios
-      .post("/api/auth/login", credentials)
+      .post('/api/auth/login', credentials)
       .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
+        if(response.status === 20){
+          const { data } = response;
+          resolve(data);
+        }else{
+          reject(data);
         }
-        reject(response.data);
       })
       .catch((error) => {
         reject(error);
       });
   });
-}
-
-export const login = async params => {
-  const { data } = await axios.post(`/api/auth/login`, params);
-  return data;
 }
 
 export function signUp(credentials) {

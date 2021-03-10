@@ -2,9 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import DateFnsUtils from "@date-io/date-fns";
-
 import { ThemeProvider } from "styled-components/macro";
 import { create } from "jss";
+import { withCookies, useCookies } from 'react-cookie';
 
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import {
@@ -22,6 +22,8 @@ const jss = create({
 });
 
 function App() {
+
+  const [ cookies, setCookie, removeCookie ] = useCookies(['user']);
   const theme = useSelector((state) => state.themeReducer);
 
   return (
@@ -34,7 +36,7 @@ function App() {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <MuiThemeProvider theme={createTheme(theme.currentTheme)}>
             <ThemeProvider theme={createTheme(theme.currentTheme)}>
-              <Routes />
+              <Routes setCookie={setCookie}/>
             </ThemeProvider>
           </MuiThemeProvider>
         </MuiPickersUtilsProvider>

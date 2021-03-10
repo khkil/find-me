@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { login, signIn } from "../../services/authService";
+import { login } from "../../services/authService";
 
 import {
   Avatar,
@@ -43,8 +43,10 @@ function SignIn() {
   const handleSubmit = async (e) => {
     const { id, password } = e;
     const userInfo = { member_id : id, member_pwd : password };
-    try {
-      const response = await login(userInfo);
+    const response = await login(userInfo);
+    console.log(response);
+    /* try {
+      const response = await signIn(userInfo);
       const { code, msg, token } = response;
       console.log(response);
       if(code === -1){
@@ -58,7 +60,7 @@ function SignIn() {
     }catch(e) {
       console.error(e);
       alert('로그인에 실패하였습니다');
-    }
+    } */
   };
   
   const dispatch = useDispatch();

@@ -1,21 +1,41 @@
 import * as types from "../../constants";
 
-export default function reducer(state = {}, actions) {
+
+const initialState = {
+  data: null,
+  loading: false,
+  error: ''
+};
+
+export default function reducer(state = initialState, actions) {
   switch (actions.type) {
+    case types.AUTH_SIGN_IN_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error:''
+      };
+
+
     case types.AUTH_SIGN_IN_SUCCESS:
       return {
         ...state,
-        user: {
-          id: actions.id,
-          email: actions.email,
-          name: actions.name,
-        },
+        data: action.data,
+        loading: false
+      };
+  
+    case types.AUTH_SIGN_IN_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.error
       };
 
     case types.AUTH_SIGN_OUT:
       return {
         ...state,
-        user: undefined,
+        loading: false,
+        error: action.error
       };
 
     default:

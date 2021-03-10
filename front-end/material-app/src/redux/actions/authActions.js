@@ -1,12 +1,20 @@
 import * as types from "../../constants";
 import {
-  signIn as authSignIn,
+  login as authSignIn,
   signUp as authSignUp,
   resetPassword as authResetPassword,
 } from "../../services/authService";
 
-export function signIn(credentials) {
-  return async (dispatch) => {
+export const signIn = (credentials) => async dispatch => {
+  dispatch({ type: types.AUTH_SIGN_IN_REQUEST });
+  try{
+    const data = await authSignIn(credentials);
+    dispatch({ type: types.AUTH_SIGN_IN_SUCCESS, data: data });
+  }catch(e) {
+    dispatch( {type: types.AUTH_SIGN_IN_FAILURE, error: e} )
+  }
+
+  /* return async (dispatch) => {
     dispatch({ type: types.AUTH_SIGN_IN_REQUEST });
 
     return authSignIn(credentials)
@@ -22,8 +30,9 @@ export function signIn(credentials) {
         dispatch({ type: types.AUTH_SIGN_IN_FAILURE });
         throw error;
       });
-  };
+  }; */
 }
+
 
 export function signUp(credentials) {
   return async (dispatch) => {
