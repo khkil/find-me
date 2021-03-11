@@ -1,4 +1,7 @@
 // Theme
+export const SUCCESS_CODE = 0;
+export const FAIL_CODE = -1;
+
 export const THEME_SET = "THEME_SET";
 export const THEMES = {
   DEFAULT: "DEFAULT",

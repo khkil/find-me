@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components/macro";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { login } from "../../services/authService";
 
 import {
   Avatar,
@@ -19,6 +18,7 @@ import {
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
+import { signIn } from "../../redux/actions/authActions";
 
 const Alert = styled(MuiAlert)(spacing);
 
@@ -38,33 +38,22 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${(props) => props.theme.spacing(5)}px;
 `;
 
-function SignIn() {
+function SignIn({ history }) {
 
+  const dispatch = useDispatch();
   const handleSubmit = async (e) => {
     const { id, password } = e;
     const userInfo = { member_id : id, member_pwd : password };
-    const response = await login(userInfo);
-    console.log(response);
-    /* try {
-      const response = await signIn(userInfo);
-      const { code, msg, token } = response;
-      console.log(response);
-      if(code === -1){
-        alert(msg);
+    dispatch(signIn(userInfo))
+      .then(() => {
+        history.push('/');
+      })
+      .catch(() => {
 
-      }else if(token){
-        setCookie('user', token);
-        
-      }
+      });
 
-    }catch(e) {
-      console.error(e);
-      alert('로그인에 실패하였습니다');
-    } */
   };
   
-  const dispatch = useDispatch();
-  const history = useHistory();
   return (
     <Wrapper>
       <Helmet title="Sign In" />

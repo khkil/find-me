@@ -10,27 +10,10 @@ export const signIn = (credentials) => async dispatch => {
   try{
     const data = await authSignIn(credentials);
     dispatch({ type: types.AUTH_SIGN_IN_SUCCESS, data: data });
+    
   }catch(e) {
     dispatch( {type: types.AUTH_SIGN_IN_FAILURE, error: e} )
-  }
-
-  /* return async (dispatch) => {
-    dispatch({ type: types.AUTH_SIGN_IN_REQUEST });
-
-    return authSignIn(credentials)
-      .then((response) => {
-        dispatch({
-          type: types.AUTH_SIGN_IN_SUCCESS,
-          id: response.id,
-          email: response.email,
-          name: response.name,
-        });
-      })
-      .catch((error) => {
-        dispatch({ type: types.AUTH_SIGN_IN_FAILURE });
-        throw error;
-      });
-  }; */
+  } 
 }
 
 

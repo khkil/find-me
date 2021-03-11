@@ -7,8 +7,8 @@ const initialState = {
   error: ''
 };
 
-export default function reducer(state = initialState, actions) {
-  switch (actions.type) {
+export default function reducer(state = initialState, action) {
+  switch (action.type) {
     case types.AUTH_SIGN_IN_REQUEST:
       return {
         ...state,

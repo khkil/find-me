@@ -5,12 +5,10 @@ export function login(credentials) {
     axios
       .post('/api/auth/login', credentials)
       .then((response) => {
-        if(response.status === 20){
-          const { data } = response;
-          resolve(data);
-        }else{
-          reject(data);
+        if(response.status === 200){
+          resolve(response.data);
         }
+        reject(response.data);
       })
       .catch((error) => {
         reject(error);
