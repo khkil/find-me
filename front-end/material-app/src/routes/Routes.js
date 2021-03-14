@@ -4,7 +4,7 @@ import {
   dashboardLayoutRoutes,
   authLayoutRoutes,
   presentationLayoutRoutes,
-  protectedRoutes,
+  protectedRoutes
 } from "./index";
 
 import DashboardLayout from "../layouts/Dashboard";

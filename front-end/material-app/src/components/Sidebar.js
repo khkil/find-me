@@ -22,13 +22,14 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { ExpandLess, ExpandMore, Message } from "@material-ui/icons";
 
 import { green } from "@material-ui/core/colors";
 
 import { sidebarRoutes as routes } from "../routes/index";
 
 import { ReactComponent as Logo } from "../vendor/logo.svg";
+import { useSelector } from "react-redux";
 
 const Box = styled(MuiBox)(spacing);
 
@@ -287,8 +288,9 @@ const SidebarLink = ({ name, to, badge, icon }) => {
 
 const Sidebar = ({ classes, staticContext, location, ...rest }) => {
   useEffect(() => {
-    console.log('sidebar');
+
   }, [location])
+  const { data } = useSelector(state => state.authReducer);
   const initOpenRoutes = () => {
     /* Open collapse element that matches current url */
     const pathName = location.pathname;
@@ -325,15 +327,14 @@ const Sidebar = ({ classes, staticContext, location, ...rest }) => {
       Object.assign({}, openRoutes, { [index]: !openRoutes[index] })
     );
   };
-
+  if (!data) return null;
+  const { member_name } = data;
   return (
     <Drawer variant="permanent" {...rest}>
-      <Brand component={NavLink} to="/" button>
-        <BrandIcon />{" "}
-        <Box ml={1}>
-          Material App <BrandChip label="PRO" />
-        </Box>
-      </Brand>
+      <NavLink to="/">
+        <img src="/static/img/logos/logo_sidebar.jpg" />
+      </NavLink>
+
       <Scrollbar>
         <List disablePadding>
           <Items>
@@ -399,16 +400,14 @@ const Sidebar = ({ classes, staticContext, location, ...rest }) => {
               }}
               variant="dot"
             >
-              <Avatar
-                alt="Lucy Lavender"
-                src="/static/img/avatars/avatar-1.jpg"
-              />
             </SidebarFooterBadge>
           </Grid>
           <Grid item>
-            <SidebarFooterText variant="body2">Lucy Lavender</SidebarFooterText>
+            <SidebarFooterText variant="body2">
+              <strong>{member_name}</strong> 님 환영합니다.
+            </SidebarFooterText>
             <SidebarFooterSubText variant="caption">
-              UX Designer
+
             </SidebarFooterSubText>
           </Grid>
         </Grid>

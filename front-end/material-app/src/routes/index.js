@@ -111,10 +111,11 @@ const Landing = async(() => import("../pages/presentation/Landing"));
 // Protected routes
 const ProtectedPage = async(() => import("../pages/protected/ProtectedPage"));
 
-const dashboardsRoutes = {
+
+const resultRoutes = {
   id: "Dashboard",
-  path: "/dashboard",
-  header: "Pages",
+  path: "/",
+  header: "결과",
   icon: <Sliders />,
   containsHome: true,
   children: [
@@ -126,6 +127,58 @@ const dashboardsRoutes = {
     {
       path: "/dashboard/analytics",
       name: "Analytics",
+      component: Analytics,
+    },
+    {
+      path: "/dashboard/saas",
+      name: "SaaS",
+      component: SaaS,
+    },
+  ],
+  component: null,
+};
+
+const dashboardsRoutes1 = {
+  id: "통계",
+  path: "/dashboard",
+  header: "결과",
+  icon: <PieChart />,
+  containsHome: true,
+  children: [
+    {
+      path: "/dashboard/default",
+      name: "운영 통계",
+      component: Default,
+    },
+    {
+      path: "/dashboard/analytics",
+      name: "검사결과 통계",
+      component: Analytics,
+    },
+    {
+      path: "/dashboard/saas",
+      name: "SaaS",
+      component: SaaS,
+    },
+  ],
+  component: null,
+};
+
+const dashboardsRoutes = {
+  id: "통계",
+  path: "/dashboard",
+  header: "결과",
+  icon: <PieChart />,
+  containsHome: true,
+  children: [
+    {
+      path: "/dashboard/default",
+      name: "운영 통계",
+      component: Default,
+    },
+    {
+      path: "/dashboard/analytics",
+      name: "검사결과 통계",
       component: Analytics,
     },
     {

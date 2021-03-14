@@ -110,7 +110,6 @@ function SignIn({ history }) {
               type="id"
               name="id"
               label="ID"
-              key="member_id"
               value={values.id}
               error={Boolean(touched.id && errors.id)}
               fullWidth
@@ -123,7 +122,6 @@ function SignIn({ history }) {
               type="password"
               name="password"
               label="Password"
-              key="member_pwd"
               value={values.password}
               error={Boolean(touched.password && errors.password)}
               fullWidth
