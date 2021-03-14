@@ -1,27 +1,33 @@
 import * as types from "../../constants";
-import {
-  login as authSignIn,
-  signUp as authSignUp,
-  resetPassword as authResetPassword,
-} from "../../services/authService";
+import * as authService from "../../services/authService";
 
-export const signIn = (credentials) => async dispatch => {
-  dispatch({ type: types.AUTH_SIGN_IN_REQUEST });
-  try{
-    const data = await authSignIn(credentials);
-    dispatch({ type: types.AUTH_SIGN_IN_SUCCESS, data: data });
-    
-  }catch(e) {
-    dispatch( {type: types.AUTH_SIGN_IN_FAILURE, error: e} )
-  } 
+export const getAuthInfo = () => async dispatch => {
+  try {
+    const data = await authService.getAuthInfo();
+    dispatch({ type: types.AUTH_GET_INFO_SUCCESS, data: data });
+
+  } catch (e) {
+    console.error(e);
+    dispatch({
+      type: types.AUTH_GET_INFO_FAILURE,
+      error: e
+    })
+  }
 }
+
+export const logout = () => (dispatch) => {
+  authService.logout();
+  dispatch({
+    type: types.AUTH_LOGOUT,
+  });
+};
 
 
 export function signUp(credentials) {
   return async (dispatch) => {
     dispatch({ type: types.AUTH_SIGN_UP_REQUEST });
 
-    return authSignUp(credentials)
+    return authService.signUp(credentials)
       .then((response) => {
         dispatch({
           type: types.AUTH_SIGN_UP_SUCCESS,
@@ -49,7 +55,7 @@ export function resetPassword(credentials) {
   return async (dispatch) => {
     dispatch({ type: types.AUTH_RESET_PASSWORD_REQUEST });
 
-    return authResetPassword(credentials)
+    return authService.resetPassword(credentials)
       .then((response) => {
         dispatch({
           type: types.AUTH_RESET_PASSWORD_SUCCESS,

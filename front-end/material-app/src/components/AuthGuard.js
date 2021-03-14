@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { getAuthInfo } from "../redux/actions/authActions";
 
 // For routes that can only be accessed by authenticated users
-function AuthGuard({ children }) {
-  const auth = useSelector((state) => state.authReducer);
-  console.log(auth);
+const AuthGuard = ({ children }) => {
+  const dispatch = useDispatch();
 
-  console.log(1);
   useEffect(() => {
-    console.log(2);
-  })
-  if (!auth.user) {
-    //return <Redirect to="/auth/login" />;
-  }
+    console.log('auth guard');
+    dispatch(getAuthInfo());
+  }, [children])
 
+  const { isLoggedIn } = useSelector(state => state.authReducer);
+  if (!isLoggedIn) return <Redirect to='/auth/login' />;
   return children;
+
 }
 
 export default AuthGuard;

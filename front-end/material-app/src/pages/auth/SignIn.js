@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import styled from "styled-components/macro";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -18,7 +18,8 @@ import {
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
-import { signIn } from "../../redux/actions/authActions";
+import { getAuthInfo, signIn } from "../../redux/actions/authActions";
+import { login } from "../../services/authService";
 
 const Alert = styled(MuiAlert)(spacing);
 
@@ -41,30 +42,43 @@ const BigAvatar = styled(Avatar)`
 function SignIn({ history }) {
 
   const dispatch = useDispatch();
+  const [errorMsg, setErrorMsg] = useState('');
+
   const handleSubmit = async (e) => {
     const { id, password } = e;
-    const userInfo = { member_id : id, member_pwd : password };
-    dispatch(signIn(userInfo))
-      .then(() => {
-        history.push('/');
+    const credentials = { member_id: id, member_pwd: password };
+    await login(credentials)
+      .then(response => {
+        if (response.msg) {
+          setErrorMsg(response.msg);
+          return;
+        } else if (response.token) {
+          const { token } = response;
+          localStorage.setItem('token', token);
+          history.push('/');
+        }
       })
-      .catch(() => {
-
+      .catch(error => {
+        console.error(error);
       });
-
   };
-  
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(getAuthInfo());
+    }
+  }, [])
+  const { isLoggedIn } = useSelector(state => state.authReducer);
+  if (isLoggedIn) return <Redirect to='/' />;
+
   return (
     <Wrapper>
       <Helmet title="Sign In" />
 
       <Typography component="h1" variant="h4" align="center" gutterBottom>
-        Welcome back, Lucy!
+        옥타그노시스 관리자 페이지
       </Typography>
-      <Typography component="h2" variant="body1" align="center">
-        Sign in to your account to continue
-      </Typography>
-
       <Formik
         initialValues={{
           id: "",
@@ -96,6 +110,7 @@ function SignIn({ history }) {
               type="id"
               name="id"
               label="ID"
+              key="member_id"
               value={values.id}
               error={Boolean(touched.id && errors.id)}
               fullWidth
@@ -108,6 +123,7 @@ function SignIn({ history }) {
               type="password"
               name="password"
               label="Password"
+              key="member_pwd"
               value={values.password}
               error={Boolean(touched.password && errors.password)}
               fullWidth
@@ -116,6 +132,7 @@ function SignIn({ history }) {
               onChange={handleChange}
               my={2}
             />
+            <p style={{ color: '#f44336' }}>{errorMsg}</p>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="계정정보 저장"

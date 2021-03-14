@@ -457,7 +457,7 @@ const landingRoutes = {
   path: "/",
   header: "Docs",
   icon: <Monitor />,
-  component: Landing,
+  component: Default,
   children: null,
 };
 

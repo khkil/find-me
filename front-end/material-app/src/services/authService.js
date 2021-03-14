@@ -1,11 +1,37 @@
 import axios from "../utils/axios";
 
-export function login(credentials) {
+export const login = (credentials) => {
   return new Promise((resolve, reject) => {
     axios
       .post('/api/auth/login', credentials)
       .then((response) => {
-        if(response.status === 200){
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+        reject(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+export const logout = () => {
+  localStorage.removeItem('token');
+}
+
+export const getAuthInfo = () => {
+  const token = localStorage.getItem('token');
+  return new Promise((resolve, reject) => {
+    axios
+      .get('/api/auth/info', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response);
           resolve(response.data);
         }
         reject(response.data);

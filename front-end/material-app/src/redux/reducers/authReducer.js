@@ -1,21 +1,42 @@
 import * as types from "../../constants";
 
 
-const initialState = {
-  data: null,
-  loading: false,
-  error: ''
-};
+const token = localStorage.getItem("token");
+
+const initialState = { isLoggedIn: token !== null, data: null, error: '' };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+
+    case types.AUTH_GET_INFO_SUCCESS:
+      return {
+        ...state,
+        isLoggedIn: true,
+        data: action.data,
+      };
+
+    case types.AUTH_GET_INFO_FAILURE:
+      return {
+        ...state,
+        isLoggedIn: false,
+        data: null,
+        error: action.error
+      };
+
+    case types.AUTH_LOGOUT:
+      return {
+        ...state,
+        isLoggedIn: false,
+        data: null,
+      };
+
+
     case types.AUTH_SIGN_IN_REQUEST:
       return {
         ...state,
         loading: true,
-        error:''
+        error: ''
       };
-
 
     case types.AUTH_SIGN_IN_SUCCESS:
       return {
@@ -23,7 +44,7 @@ export default function reducer(state = initialState, action) {
         data: action.data,
         loading: false
       };
-  
+
     case types.AUTH_SIGN_IN_FAILURE:
       return {
         ...state,

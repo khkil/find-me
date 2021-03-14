@@ -13,15 +13,15 @@ import PresentationLayout from "../layouts/Presentation";
 import Page404 from "../pages/auth/Page404";
 import AuthGuard from "../components/AuthGuard";
 
-const childRoutes = (Layout, routes) => { 
+const childRoutes = (Layout, routes) => {
   return (
     routes.map(({ component: Component, guard, children, path }, index) => {
       const Guard = guard || React.Fragment;
-  
+
       return children ? (
         children.map((element, index) => {
           const Guard = element.guard || React.Fragment;
-  
+
           return (
             <Route
               key={index}
@@ -54,27 +54,27 @@ const childRoutes = (Layout, routes) => {
     })
   )
 }
-  
+
 
 const Routes = () => (
   <Router>
-    
+
     <Switch>
-    {childRoutes(AuthLayout, authLayoutRoutes)}
-    <AuthGuard>
-      {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
-      {childRoutes(DashboardLayout, protectedRoutes)}
-      {childRoutes(PresentationLayout, presentationLayoutRoutes)}
-    <Route
-      render={() => (
-        <AuthLayout>
-          <Page404 />
-        </AuthLayout>
-      )}
-    />
-    </AuthGuard>
+      {childRoutes(AuthLayout, authLayoutRoutes)}
+      <AuthGuard>
+        {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
+        {childRoutes(DashboardLayout, protectedRoutes)}
+        {childRoutes(DashboardLayout, presentationLayoutRoutes)}
+        <Route
+          render={() => (
+            <AuthLayout>
+              <Page404 />
+            </AuthLayout>
+          )}
+        />
+      </AuthGuard>
     </Switch>
-    
+
   </Router>
 );
 

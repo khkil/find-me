@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,7 @@ public class AuthController {
         Map<String, Object> ret = new HashMap<>();
         Member user = memberService.loadUserByUserName(params.getMember_id());
         if(user == null) {
-            return new ResponseEntity<>(CommonResponse.failResult("존재하지 않는 유저입니다."), HttpStatus.OK);
+            return ResponseEntity.ok(CommonResponse.failResult("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다"));
         }
         List<String> roles = new ArrayList<>();
         String token =  jwtTokenProvider.createToken(user.getMember_id(), roles);
@@ -41,7 +42,7 @@ public class AuthController {
 
         Member member = memberService.loadUserByUserName(userPk);
         if(!params.getMember_pwd().equals(member.getMember_pwd())){
-            return ResponseEntity.ok(CommonResponse.failResult("비밀번호가 틀렸습니다."));
+            return ResponseEntity.ok(CommonResponse.failResult("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다"));
         }
         Jws<Claims> claims = jwtTokenProvider.getClaims(token);
         ret.put("body", claims.getBody());
@@ -49,21 +50,10 @@ public class AuthController {
         return ResponseEntity.ok(ret);
     }
 
-    @PostMapping("/info")
-    public ResponseEntity getUserInfo(@RequestBody Map<String, String> params){
-        String token = params.get("token");
-        System.out.println(token);
-        boolean isVaidateToken = jwtTokenProvider.validateToken(token);
-        if(!isVaidateToken){
-            return ResponseEntity.ok(CommonResponse.failResult("유효하지 않은 토큰입니다."));
-        }
-
-        String userPk = jwtTokenProvider.getUserPk(params.get("token"));
+    @GetMapping("/info")
+    public ResponseEntity getUserInfo(HttpServletRequest request){
+        String userPk = (String) request.getAttribute("userPk");
         Member member = memberService.loadUserByUserName(userPk);
-
-        return ResponseEntity.ok(member);
-
+        return ResponseEntity.ok().body(member);
     }
-
-
 }
