@@ -112,58 +112,6 @@ const Landing = async(() => import("../pages/presentation/Landing"));
 const ProtectedPage = async(() => import("../pages/protected/ProtectedPage"));
 
 
-const resultRoutes = {
-  id: "Dashboard",
-  path: "/",
-  header: "결과",
-  icon: <Sliders />,
-  containsHome: true,
-  children: [
-    {
-      path: "/dashboard/default",
-      name: "Default",
-      component: Default,
-    },
-    {
-      path: "/dashboard/analytics",
-      name: "Analytics",
-      component: Analytics,
-    },
-    {
-      path: "/dashboard/saas",
-      name: "SaaS",
-      component: SaaS,
-    },
-  ],
-  component: null,
-};
-
-const dashboardsRoutes1 = {
-  id: "통계",
-  path: "/dashboard",
-  header: "결과",
-  icon: <PieChart />,
-  containsHome: true,
-  children: [
-    {
-      path: "/dashboard/default",
-      name: "운영 통계",
-      component: Default,
-    },
-    {
-      path: "/dashboard/analytics",
-      name: "검사결과 통계",
-      component: Analytics,
-    },
-    {
-      path: "/dashboard/saas",
-      name: "SaaS",
-      component: SaaS,
-    },
-  ],
-  component: null,
-};
-
 const dashboardsRoutes = {
   id: "통계",
   path: "/dashboard",
@@ -514,6 +462,15 @@ const landingRoutes = {
   children: null,
 };
 
+const profileRoutes = {
+  id: "Landing Page",
+  path: "/profile",
+  header: "Docs",
+  icon: <Monitor />,
+  component: Settings,
+  children: null,
+};
+
 const documentationRoutes = {
   id: "Documentation",
   path: "/documentation",
@@ -613,7 +570,7 @@ export const authLayoutRoutes = [authRoutes];
 export const presentationLayoutRoutes = [landingRoutes];
 
 // Routes that are protected
-export const protectedRoutes = [protectedPageRoutes];
+export const protectedRoutes = [protectedPageRoutes, profileRoutes];
 
 // Routes visible in the sidebar
 export const sidebarRoutes = [

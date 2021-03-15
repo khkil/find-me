@@ -289,6 +289,7 @@ const SidebarLink = ({ name, to, badge, icon }) => {
 const Sidebar = ({ classes, staticContext, location, ...rest }) => {
   useEffect(() => {
 
+    
   }, [location])
   const { data } = useSelector(state => state.authReducer);
   const initOpenRoutes = () => {
@@ -332,7 +333,7 @@ const Sidebar = ({ classes, staticContext, location, ...rest }) => {
   return (
     <Drawer variant="permanent" {...rest}>
       <NavLink to="/">
-        <img src="/static/img/logos/logo_sidebar.jpg" />
+        {/* <img src="/static/img/logos/logo_sidebar.jpg" /> */}
       </NavLink>
 
       <Scrollbar>

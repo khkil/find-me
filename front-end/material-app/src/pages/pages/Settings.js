@@ -213,7 +213,7 @@ function Settings() {
       <Helmet title="Settings" />
 
       <Typography variant="h3" gutterBottom display="inline">
-        Settings
+        사용자 정보
       </Typography>
 
       <Breadcrumbs aria-label="Breadcrumb" mt={2}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled, { withTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { Search as SearchIcon } from "react-feather";
@@ -18,6 +18,7 @@ import NotificationsDropdown from "./NotificationsDropdown";
 import MessagesDropdown from "./MessagesDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
 import UserDropdown from "./UserDropdown";
+import { sidebarRoutes as routes } from "../routes/index";
 
 const AppBar = styled(MuiAppBar)`
   background: ${(props) => props.theme.header.background};
@@ -72,41 +73,78 @@ const Input = styled(InputBase)`
   }
 `;
 
-const AppBarComponent = ({ onDrawerToggle }) => (
-  <React.Fragment>
-    <AppBar position="sticky" elevation={0}>
-      <Toolbar>
-        <Grid container alignItems="center">
-          <Hidden mdUp>
+
+const AppBarComponent = ({ onDrawerToggle }) => {
+
+  const [inputs, setInputs] = useState('');
+  const onChange  = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setInputs({
+      ...inputs,
+      [name]: value
+    }) 
+    
+  }
+  const findMenu = (serachText) => {
+    const menus = routes.filter(route => route.children !== null);
+    const { search_text } = inputs;
+    var results = [];
+    
+    if(search_text){
+      let results = [];
+      menus.forEach((menu) => {
+        const { children } = menu;
+        let result = children.filter(child => child.name.indexOf(search_text) > -1 );
+        if(result.length > 0){
+          console.log(JSON.stringify(result));
+          //results.push(...result);
+        }
+      })
+      console.log('r', results);
+
+    }
+    
+  }
+  useEffect(() => {
+    findMenu(inputs);
+  }, [inputs])
+  return (
+    <React.Fragment>
+      <AppBar position="sticky" elevation={0}>
+        <Toolbar>
+          <Grid container alignItems="center">
+            <Hidden mdUp>
+              <Grid item>
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={onDrawerToggle}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Grid>
+            </Hidden>
             <Grid item>
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={onDrawerToggle}
-              >
-                <MenuIcon />
-              </IconButton>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <Input placeholder="메뉴 찾기" name="search_text" onChange={onChange} />
+              </Search>
             </Grid>
-          </Hidden>
-          <Grid item>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <Input placeholder="Search topics" />
-            </Search>
+            <Grid item xs />
+            <Grid item>
+              <MessagesDropdown />
+              <NotificationsDropdown />
+              <LanguagesDropdown />
+              <UserDropdown />
+            </Grid>
           </Grid>
-          <Grid item xs />
-          <Grid item>
-            <MessagesDropdown />
-            <NotificationsDropdown />
-            <LanguagesDropdown />
-            <UserDropdown />
-          </Grid>
-        </Grid>
-      </Toolbar>
-    </AppBar>
-  </React.Fragment>
-);
+        </Toolbar>
+      </AppBar>
+    </React.Fragment>
+  );
+} 
 
 export default withTheme(AppBarComponent);
