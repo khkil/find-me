@@ -10,6 +10,7 @@ import {
   AppBar as MuiAppBar,
   IconButton as MuiIconButton,
   Toolbar,
+  TextField,
 } from "@material-ui/core";
 
 import { Menu as MenuIcon } from "@material-ui/icons";
@@ -19,6 +20,7 @@ import MessagesDropdown from "./MessagesDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
 import UserDropdown from "./UserDropdown";
 import { sidebarRoutes as routes } from "../routes/index";
+import { Autocomplete } from "@material-ui/lab";
 
 const AppBar = styled(MuiAppBar)`
   background: ${(props) => props.theme.header.background};
@@ -76,39 +78,29 @@ const Input = styled(InputBase)`
 
 const AppBarComponent = ({ onDrawerToggle }) => {
 
+  const [menus, setMenus] = useState([]);
   const [inputs, setInputs] = useState('');
-  const onChange  = (e) => {
-    const { name, value } = e.target;
-    console.log(name, value);
-    setInputs({
-      ...inputs,
-      [name]: value
-    }) 
-    
-  }
-  const findMenu = (serachText) => {
-    const menus = routes.filter(route => route.children !== null);
-    const { search_text } = inputs;
-    var results = [];
-    
-    if(search_text){
-      let results = [];
-      menus.forEach((menu) => {
-        const { children } = menu;
-        let result = children.filter(child => child.name.indexOf(search_text) > -1 );
-        if(result.length > 0){
-          console.log(JSON.stringify(result));
-          //results.push(...result);
-        }
-      })
-      console.log('r', results);
-
+  const moveMenu = (menu) => {
+    if(menu && menu != null){
+      const { path } = menu;
+      if(path){
+        location.href = path;
+      }
     }
-    
+     
   }
+
   useEffect(() => {
-    findMenu(inputs);
-  }, [inputs])
+    let results = [];
+    routes.forEach(route => {
+      const children = route.children;
+      if(children){
+        results = [...results, ...children];
+      }
+    });
+    setMenus([...results]);
+  }, [])
+
   return (
     <React.Fragment>
       <AppBar position="sticky" elevation={0}>
@@ -125,13 +117,14 @@ const AppBarComponent = ({ onDrawerToggle }) => {
                 </IconButton>
               </Grid>
             </Hidden>
-            <Grid item>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <Input placeholder="메뉴 찾기" name="search_text" onChange={onChange} />
-              </Search>
+            <Grid item xs>
+                
+            <Autocomplete
+              options={menus}
+              getOptionLabel={(menu) => menu.name}
+              onChange={(event, value) => moveMenu(value)}
+              renderInput={(params) => <TextField {...params} label="메뉴 검색" variant="outlined" />}
+           />
             </Grid>
             <Grid item xs />
             <Grid item>
