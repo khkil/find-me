@@ -23,9 +23,7 @@ const jss = create({
 
 function App() {
 
-  const [ cookies, setCookie, removeCookie ] = useCookies(['user']);
   const theme = useSelector((state) => state.themeReducer);
-
   return (
     <React.Fragment>
       <Helmet
@@ -36,7 +34,7 @@ function App() {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <MuiThemeProvider theme={createTheme(theme.currentTheme)}>
             <ThemeProvider theme={createTheme(theme.currentTheme)}>
-              <Routes setCookie={setCookie}/>
+              <Routes/>
             </ThemeProvider>
           </MuiThemeProvider>
         </MuiPickersUtilsProvider>

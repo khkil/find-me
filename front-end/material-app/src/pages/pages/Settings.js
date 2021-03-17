@@ -213,18 +213,9 @@ function Settings() {
       <Helmet title="Settings" />
 
       <Typography variant="h3" gutterBottom display="inline">
-        사용자 정보
+        내 정보
       </Typography>
 
-      <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-        <Link component={NavLink} exact to="/">
-          Dashboard
-        </Link>
-        <Link component={NavLink} exact to="/">
-          Pages
-        </Link>
-        <Typography>Settings</Typography>
-      </Breadcrumbs>
 
       <Divider my={6} />
 

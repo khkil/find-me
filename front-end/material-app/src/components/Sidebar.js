@@ -288,9 +288,9 @@ const SidebarLink = ({ name, to, badge, icon }) => {
 
 const Sidebar = ({ classes, staticContext, location, ...rest }) => {
   useEffect(() => {
-
+    console.log('sidebar');
     
-  }, [location])
+  }, [])
   const { data } = useSelector(state => state.authReducer);
   const initOpenRoutes = () => {
     /* Open collapse element that matches current url */

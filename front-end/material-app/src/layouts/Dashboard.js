@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { createGlobalStyle } from "styled-components/macro";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/AppBar";
@@ -14,6 +14,8 @@ import {
 } from "@material-ui/core";
 
 import { isWidthUp } from "@material-ui/core/withWidth";
+import { getAuthInfo } from "../redux/actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const drawerWidth = 258;
 
@@ -69,6 +71,16 @@ const MainContent = styled(Paper)`
 `;
 
 const Dashboard = ({ children, routes, width }) => {
+
+  /* const dispatch = useDispatch();
+  useEffect(() => {
+    console.log('auth guard');
+    dispatch(getAuthInfo());
+  }, [])
+
+  const { isLoggedIn } = useSelector(state => state.authReducer);
+  if (!isLoggedIn) return <Redirect to='/auth/login' />; */
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {

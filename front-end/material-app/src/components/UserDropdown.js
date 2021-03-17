@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/macro";
 import { Power } from "react-feather";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import {
@@ -56,8 +56,10 @@ function UserDropdown() {
         open={Boolean(anchorMenu)}
         onClose={closeMenu}
       >
-        <MenuItem onClick={closeMenu}>Profile</MenuItem>
-        <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+        <MenuItem>
+          <Link to="/profile">내 정보</Link>
+        </MenuItem>
+        <MenuItem onClick={handleSignOut}>로그아웃</MenuItem>
       </Menu>
     </React.Fragment>
   );

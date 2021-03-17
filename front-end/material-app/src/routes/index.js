@@ -462,6 +462,9 @@ const landingRoutes = {
   children: null,
 };
 
+
+
+
 const profileRoutes = {
   id: "Landing Page",
   path: "/profile",
@@ -469,6 +472,7 @@ const profileRoutes = {
   icon: <Monitor />,
   component: Settings,
   children: null,
+  
 };
 
 const documentationRoutes = {
@@ -541,8 +545,8 @@ const protectedPageRoutes = {
   path: "/private",
   component: ProtectedPage,
   children: null,
-  guard: AuthGuard,
 };
+
 
 // Routes using the Dashboard layout
 export const dashboardLayoutRoutes = [
@@ -575,7 +579,7 @@ export const protectedRoutes = [protectedPageRoutes, profileRoutes];
 // Routes visible in the sidebar
 export const sidebarRoutes = [
   dashboardsRoutes,
-  pagesRoutes,
+  /* pagesRoutes,
   projectsRoutes,
   orderRoutes,
   invoiceRoutes,
@@ -589,5 +593,5 @@ export const sidebarRoutes = [
   iconsRoutes,
   mapsRoutes,
   documentationRoutes,
-  changelogRoutes,
+  changelogRoutes, */
 ];

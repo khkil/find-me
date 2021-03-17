@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { withTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { Search as SearchIcon } from "react-feather";
+import { withRouter } from 'react-router';
 
 import {
   Grid,
@@ -76,20 +77,21 @@ const Input = styled(InputBase)`
 `;
 
 
-const AppBarComponent = ({ onDrawerToggle }) => {
+const AppBarComponent = ({ onDrawerToggle, history }) => {
 
   const [menus, setMenus] = useState([]);
   const [inputs, setInputs] = useState('');
   const moveMenu = (menu) => {
     if(menu && menu != null){
-      const { path } = menu;
+      const { path, name } = menu;
       if(path){
-        location.href = path;
+        history.push({ 
+          pathname: path
+        });
       }
     }
      
   }
-
   useEffect(() => {
     let results = [];
     routes.forEach(route => {
@@ -140,4 +142,4 @@ const AppBarComponent = ({ onDrawerToggle }) => {
   );
 } 
 
-export default withTheme(AppBarComponent);
+export default withRouter(withTheme(AppBarComponent));

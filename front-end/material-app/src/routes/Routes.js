@@ -15,24 +15,28 @@ import AuthGuard from "../components/AuthGuard";
 
 const childRoutes = (Layout, routes) => {
   return (
-    routes.map(({ component: Component, guard, children, path }, index) => {
-      const Guard = guard || React.Fragment;
-
+    routes.map(({ component: Component, children, path }, index) => {
+      const isAuth = (path.indexOf('auth') === -1);
       return children ? (
         children.map((element, index) => {
-          const Guard = element.guard || React.Fragment;
-
+          
           return (
             <Route
               key={index}
               path={element.path}
               exact
               render={(props) => (
-                <Guard>
+                isAuth ? (
+                  <AuthGuard>
+                    <Layout>
+                      <element.component {...props} />
+                    </Layout> 
+                  </AuthGuard> 
+                ) : (
                   <Layout>
                     <element.component {...props} />
                   </Layout>
-                </Guard>
+                )
               )}
             />
           );
@@ -43,11 +47,17 @@ const childRoutes = (Layout, routes) => {
           path={path}
           exact
           render={(props) => (
-            <Guard>
+            isAuth ? (
+              <AuthGuard>
+                <Layout>
+                  <Component {...props} />
+                </Layout>
+              </AuthGuard>
+            ) : (
               <Layout>
                 <Component {...props} />
               </Layout>
-            </Guard>
+            )
           )}
         />
       ) : null;
@@ -61,18 +71,16 @@ const Routes = () => (
 
     <Switch>
       {childRoutes(AuthLayout, authLayoutRoutes)}
-      <AuthGuard>
-        {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
-        {childRoutes(DashboardLayout, protectedRoutes)}
-        {childRoutes(DashboardLayout, presentationLayoutRoutes)}
-        <Route
-          render={() => (
-            <AuthLayout>
-              <Page404 />
-            </AuthLayout>
-          )}
+      {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
+      {childRoutes(DashboardLayout, protectedRoutes)}
+      {childRoutes(DashboardLayout, presentationLayoutRoutes)}
+      <Route
+        render={() => (
+          <AuthLayout>
+            <Page404 />
+          </AuthLayout>
+        )}
         />
-      </AuthGuard>
     </Switch>
 
   </Router>

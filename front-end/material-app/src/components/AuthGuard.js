@@ -10,7 +10,7 @@ const AuthGuard = ({ children }) => {
   useEffect(() => {
     console.log('auth guard');
     dispatch(getAuthInfo());
-  }, [children])
+  }, [])
 
   const { isLoggedIn } = useSelector(state => state.authReducer);
   if (!isLoggedIn) return <Redirect to='/auth/login' />;
