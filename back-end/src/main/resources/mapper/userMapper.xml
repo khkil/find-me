@@ -2,13 +2,13 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.backend.test.user.UserMapper">
+<mapper namespace="com.example.backend.api.user.UserMapper">
 
-    <select id="getUsers" parameterType="int" resultType="com.example.backend.test.user.User">
+    <select id="getUsers" parameterType="int" resultType="com.example.backend.api.user.User">
         SELECT * FROM user WHERE inspection_idx = #{inspection_idx};
     </select>
 
-    <insert id="insertUserInfo" parameterType="com.example.backend.test.result.UserResult" useGeneratedKeys="true">
+    <insert id="insertUserInfo" parameterType="com.example.backend.api.result.UserResult" useGeneratedKeys="true">
         INSERT INTO user(inspection_idx, user_name, user_age, user_gender,cdate) VALUES (#{inspection_idx}, #{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender}, now());
         <selectKey keyProperty="user_idx" resultType="int" order="AFTER">
             select LAST_INSERT_ID();

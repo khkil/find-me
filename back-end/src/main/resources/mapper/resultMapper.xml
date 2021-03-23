@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.backend.test.result.ResultMapper">
+<mapper namespace="com.example.backend.api.result.ResultMapper">
 
     <select id="getResults" resultMap="ResultMap">
         SELECT * FROM result
@@ -23,10 +23,10 @@
         </choose>
     </select>
 
-    <select id="getResult" resultType="com.example.backend.test.result.Result" >
+    <select id="getResult" resultType="com.example.backend.api.result.Result" >
 		SELECT result_idx, result_name, result_title, main_sentence, sub_sentence, good_result_idx, bad_result_idx, good_keyword, bad_keyword FROM result WHERE result_idx = #{result_idx};
 	</select>
-    <resultMap type="com.example.backend.test.result.Result" id="ResultMap">
+    <resultMap type="com.example.backend.api.result.Result" id="ResultMap">
         <result property="good_result_idx" column="good_result_idx"/>
         <result property="bad_result_idx" column="bad_result_idx"/>
 
