@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
@@ -24,6 +25,7 @@ public class JwtTokenProvider {
 
     private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
     private static final String SECRET_KEY = "test";
+    public static final String AUTHORIZATION = "Authorization";
     private static Clock clock = DefaultClock.INSTANCE;
 
     private final UserDetailsService userDetailsService;
@@ -48,6 +50,9 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token){
         UserDetails userDetails = userDetailsService.loadUserByUsername(getUserPk(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+    public String resolveToken(HttpServletRequest request) {
+        return request.getHeader(AUTHORIZATION);
     }
 
     public Jws<Claims> getClaims(String token){
