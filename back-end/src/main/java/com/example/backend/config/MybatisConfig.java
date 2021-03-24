@@ -28,8 +28,8 @@ public class MybatisConfig {
         sqlSessionFactoryBean.setDataSource(dataSource);
         sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         sqlSessionFactoryBean.setTypeHandlers(new TypeHandler[] {
-                }
-        );
+            new Role.TypeHandler()
+        });
         return sqlSessionFactoryBean.getObject();
     }
 }

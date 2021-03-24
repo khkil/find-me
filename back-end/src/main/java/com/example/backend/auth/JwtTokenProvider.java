@@ -1,6 +1,7 @@
 package com.example.backend.auth;
 
 
+import com.example.backend.auth.model.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
 
-    public String createToken(String userPk, List<String> roles) {
+    public String createToken(String userPk, List<Role> roles) {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + tokenValidMilisecond);

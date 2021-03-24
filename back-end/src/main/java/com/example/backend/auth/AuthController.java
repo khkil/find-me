@@ -1,6 +1,7 @@
 package com.example.backend.auth;
 
 import com.example.backend.auth.model.Member;
+import com.example.backend.auth.model.Role;
 import com.example.backend.common.CommonResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -30,7 +31,7 @@ public class AuthController {
         if(user == null) {
             return ResponseEntity.ok(CommonResponse.failResult("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다"));
         }
-        List<String> roles = Arrays.asList(user.getMember_id());
+        List<Role> roles = Arrays.asList(user.getMember_role());
 
         String token =  jwtTokenProvider.createToken(user.getMember_id(), roles);
         String userPk = jwtTokenProvider.getUserPk(token);
@@ -44,6 +45,7 @@ public class AuthController {
         ret.put("body", claims.getBody());
         ret.put("token", token);
         return ResponseEntity.ok(ret);
+
     }
 
     @GetMapping("/info")
