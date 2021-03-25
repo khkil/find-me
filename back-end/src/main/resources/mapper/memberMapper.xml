@@ -6,6 +6,6 @@
 
     <select id="loadUserByUserName" parameterType="com.example.backend.auth.model.Member" resultType="com.example.backend.auth.model.Member">
         SELECT * FROM member
-        WHERE member_id = #{member_id}
+        WHERE id = #{id}
     </select>
 </mapper>

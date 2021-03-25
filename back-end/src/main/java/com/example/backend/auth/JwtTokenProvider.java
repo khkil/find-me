@@ -5,6 +5,7 @@ import com.example.backend.auth.model.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,9 +29,10 @@ public class JwtTokenProvider {
     public static final String AUTHORIZATION = "Authorization";
     private static Clock clock = DefaultClock.INSTANCE;
 
-    private final UserDetailsService userDetailsService;
+    @Autowired
+    MemberService memberService;
 
-    public String createToken(String userPk, List<Role> roles) {
+    public String createToken(String userPk, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + tokenValidMilisecond);
@@ -48,7 +50,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token){
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUserPk(token));
+        UserDetails userDetails = memberService.loadUserByUsername(getUserPk(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
     public String resolveToken(HttpServletRequest request) {
