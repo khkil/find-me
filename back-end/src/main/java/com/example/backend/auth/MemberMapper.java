@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface MemberMapper {
-    Member loadUserByUserName(String member_id);
+    Member loadUserByUserName(String id);
 }

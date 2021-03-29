@@ -30,7 +30,7 @@ public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
 
-    public String createToken(String userPk, List<Role> roles) {
+    public String createToken(String userPk, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + tokenValidMilisecond);

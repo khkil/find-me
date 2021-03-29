@@ -17,8 +17,12 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
