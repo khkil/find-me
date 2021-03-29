@@ -1,10 +1,9 @@
-package com.example.backend.auth.model;
+package com.example.backend.api.auth;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -15,7 +14,6 @@ public class Member implements UserDetails{
     private String id;
     private String password;
     private String role;
-    private int failCnt;
     private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
@@ -27,6 +25,7 @@ public class Member implements UserDetails{
     public List<GrantedAuthority> getAuthorities() {
         return this.authorities;
     }
+
     @Override
     public String getPassword() {
         return this.password;

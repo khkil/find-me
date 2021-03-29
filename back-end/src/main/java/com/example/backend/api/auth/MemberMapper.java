@@ -1,6 +1,5 @@
-package com.example.backend.auth;
+package com.example.backend.api.auth;
 
-import com.example.backend.auth.model.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

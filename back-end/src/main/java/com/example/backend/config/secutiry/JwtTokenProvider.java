@@ -1,4 +1,4 @@
-package com.example.backend.auth;
+package com.example.backend.config.secutiry;
 
 
 import com.example.backend.auth.model.Role;

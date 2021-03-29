@@ -1,9 +1,5 @@
 package com.example.backend.config.secutiry;
 
-import com.example.backend.auth.JwtTokenProvider;
-import com.example.backend.common.interceptor.BearerAuthInterceptor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -32,6 +28,5 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(request, response);
-
     }
 }

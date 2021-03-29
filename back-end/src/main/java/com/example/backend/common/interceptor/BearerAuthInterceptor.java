@@ -1,10 +1,8 @@
 package com.example.backend.common.interceptor;
 
-import com.example.backend.auth.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
+import com.example.backend.config.secutiry.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

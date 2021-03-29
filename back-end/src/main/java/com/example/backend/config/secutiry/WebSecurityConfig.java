@@ -1,7 +1,5 @@
 package com.example.backend.config.secutiry;
 
-import com.example.backend.auth.JwtTokenProvider;
-import com.example.backend.auth.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;

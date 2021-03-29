@@ -1,6 +1,6 @@
 package com.example.backend.api.user;
 
-import com.example.backend.auth.JwtTokenProvider;
+import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.api.result.UserResult;
 import lombok.RequiredArgsConstructor;
