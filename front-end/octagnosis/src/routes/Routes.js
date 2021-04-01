@@ -16,7 +16,7 @@ import AuthGuard from "../components/AuthGuard";
 const childRoutes = (Layout, routes) => {
   return (
     routes.map(({ component: Component, children, path }, index) => {
-      const isAuth = (path.indexOf('auth') === -1);
+      const isAuth = (path.indexOf('admin') > -1);
       return children ? (
         children.map((element, index) => {
           
@@ -27,7 +27,7 @@ const childRoutes = (Layout, routes) => {
               exact
               render={(props) => (
                 isAuth ? (
-                  <AuthGuard>
+                  <AuthGuard path={path}>
                     <Layout>
                       <element.component {...props} />
                     </Layout> 

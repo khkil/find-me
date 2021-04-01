@@ -8,12 +8,14 @@ const AuthGuard = ({ children }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('auth guard.', location);
+    const token = localStorage.getItem('token');
+    if(token)
     dispatch(getAuthInfo());
   }, [])
 
-  const { isLoggedIn } = useSelector(state => state.authReducer);
-  if (!isLoggedIn) return <Redirect to='/auth/login' />;
+  const { data, isLoggedIn } = useSelector(state => state.authReducer);
+  if (!isLoggedIn) return <Redirect to='/admin/login' />;
+  if (!data) return null;
   return children;
 
 }

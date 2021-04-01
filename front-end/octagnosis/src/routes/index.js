@@ -231,7 +231,7 @@ const authRoutes = {
   icon: <Users />,
   children: [
     {
-      path: "/auth/login",
+      path: "/admin/login",
       name: "Sign In",
       component: SignIn,
     },
@@ -455,7 +455,7 @@ const mapsRoutes = {
 
 const landingRoutes = {
   id: "Landing Page",
-  path: "/",
+  path: "/admin",
   header: "Docs",
   icon: <Monitor />,
   component: Default,

@@ -46,7 +46,7 @@ function SignIn({ history }) {
 
   const handleSubmit = async (e) => {
     const { id, password } = e;
-    const credentials = { member_id: id, member_pwd: password };
+    const credentials = { id: id, password: password };
     await login(credentials)
       .then(response => {
         if (response.msg) {
@@ -55,7 +55,7 @@ function SignIn({ history }) {
         } else if (response.token) {
           const { token } = response;
           localStorage.setItem('token', token);
-          history.push('/');
+          history.push('/admin');
         }
       })
       .catch(error => {
@@ -70,11 +70,10 @@ function SignIn({ history }) {
     }
   }, [])
   const { isLoggedIn } = useSelector(state => state.authReducer);
-
+  if(isLoggedIn) return <Redirect to='/admin' />;
   return (
     <Wrapper>
       <Helmet title="로그인" />
-
       <Typography component="h1" variant="h4" align="center" gutterBottom>
         옥타그노시스 관리자 페이지
       </Typography>

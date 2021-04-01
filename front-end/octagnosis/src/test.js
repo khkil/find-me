@@ -55,21 +55,21 @@ function SignIn({ history }) {
     }
     const handleSubmit = async (e) => {
         const { id, password } = e;
-        const credentials = { member_id: id, member_pwd: password };
+        const credentials = { id: id, password: password };
         await login(credentials)
-            .then(response => {
-                if (response.msg) {
-                    setErrorMsg(response.msg);
-                    return;
-                } else if (response.token) {
-                    const { token } = response;
-                    localStorage.setItem('token', token);
-                    history.push('/');
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        .then(response => {
+            if (response.msg) {
+                setErrorMsg(response.msg);
+                return;
+            } else if (response.token) {
+                const { token } = response;
+                localStorage.setItem('token', token);
+                history.push('/');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
     };
 
 
@@ -92,13 +92,13 @@ function SignIn({ history }) {
       </Typography>
             <Formik
                 initialValues={{
-                    member_id: "",
-                    member_pwd: "",
+                    id: "",
+                    password: "",
                     submit: false,
                 }}
                 validationSchema={Yup.object().shape({
-                    member_id: Yup.string().required("아이디를 입력하세요"),
-                    member_pwd: Yup.string().max(255).required("비밀번호를 입력하세요"),
+                    id: Yup.string().required("아이디를 입력하세요"),
+                    password: Yup.string().max(255).required("비밀번호를 입력하세요"),
                 })}
                 onSubmit={handleSubmit}
             >
@@ -119,24 +119,24 @@ function SignIn({ history }) {
                         )}
                         <TextField
                             type="id"
-                            name="member_id"
+                            name="id"
                             label="ID"
-                            value={values.member_id}
-                            error={Boolean(touched.member_id && errors.member_id)}
+                            value={values.id}
+                            error={Boolean(touched.id && errors.id)}
                             fullWidth
-                            helperText={touched.member_id && errors.member_id}
+                            helperText={touched.id && errors.id}
                             onBlur={handleBlur}
                             onChange={onChange}
                             my={2}
                         />
                         <TextField
                             type="password"
-                            name="member_pwd"
+                            name="password"
                             label="Password"
                             value={values.password}
-                            error={Boolean(touched.member_pwd && errors.member_pwd)}
+                            error={Boolean(touched.password && errors.password)}
                             fullWidth
-                            helperText={touched.member_pwd && errors.member_pwd}
+                            helperText={touched.password && errors.password}
                             onBlur={handleBlur}
                             onChange={onChange}
                             my={2}

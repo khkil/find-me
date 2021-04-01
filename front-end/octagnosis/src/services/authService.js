@@ -22,11 +22,12 @@ export const logout = () => {
 
 export const getAuthInfo = () => {
   const token = localStorage.getItem('token');
+  console.log(`${token}`);
   return new Promise((resolve, reject) => {
     axios
       .get('/api/auth/info', {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `${token}`
         }
       })
       .then((response) => {
