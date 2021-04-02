@@ -18,8 +18,8 @@ import {
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
-import { getAuthInfo, signIn } from "../../redux/actions/authActions";
-import { login } from "../../services/authService";
+import { getAuthInfo, login } from "../../redux/actions/authActions";
+
 
 const Alert = styled(MuiAlert)(spacing);
 
@@ -39,28 +39,18 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${(props) => props.theme.spacing(5)}px;
 `;
 
-function SignIn({ history }) {
+function Login({ history }) {
 
   const dispatch = useDispatch();
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async (e) => {
     const { id, password } = e;
-    const credentials = { id: id, password: password, role: "ROLE_ADMIN" };
-    await login(credentials)
-      .then(response => {
-        if (response.msg) {
-          setErrorMsg(response.msg);
-          return;
-        } else if (response.token) {
-          const { token } = response;
-          localStorage.setItem('token', token);
-          history.push('/admin');
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    const credentials = { id: id, password: password, role: 'ROLE_MEMBER' };
+    const { success, msg, code } = await login(credentials, history);
+    if(msg){
+      setErrorMsg(msg);
+    }
   };
 
   useEffect(() => {
@@ -75,7 +65,7 @@ function SignIn({ history }) {
     <Wrapper>
       <Helmet title="로그인" />
       <Typography component="h1" variant="h4" align="center" gutterBottom>
-        옥타그노시스 관리자 페이지
+        로그인
       </Typography>
       <Formik
         initialValues={{
@@ -141,14 +131,14 @@ function SignIn({ history }) {
             >
               로그인
             </Button>
-            {/* <Button
+             <Button
               component={Link}
               to="/auth/reset-password"
               fullWidth
               color="primary"
             >
-              Forgot password
-            </Button> */}
+              비밀번호 찾기
+            </Button>
           </form>
         )}
       </Formik>
@@ -156,4 +146,4 @@ function SignIn({ history }) {
   );
 }
 
-export default SignIn;
+export default Login;

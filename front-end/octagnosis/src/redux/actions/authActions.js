@@ -1,6 +1,21 @@
 import * as types from "../../constants";
 import * as authService from "../../services/authService";
 
+
+export const login = async (credentials, history) => {
+  try{
+    const data = await authService.login(credentials);
+    if (data.token) {
+      const { token } = data;
+      localStorage.setItem('token', token);
+      history.push('/admin');
+    }
+      return data;
+  }catch(e){
+    console.error(e);
+  }
+} 
+
 export const getAuthInfo = () => async dispatch => {
   try {
     const data = await authService.getAuthInfo();

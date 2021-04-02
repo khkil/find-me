@@ -111,6 +111,22 @@ const Landing = async(() => import("../pages/presentation/Landing"));
 // Protected routes
 const ProtectedPage = async(() => import("../pages/protected/ProtectedPage"));
 
+const InspectionSelectPage = async(() => import("../pages/inspection/InspectionSelectPage"));
+const LoginPage = async(() => import("../pages/inspection/Login"));
+
+const inspectionRoute = {
+  path: "/",
+  name: "선택 페이지",
+  header: "결과",
+  component: InspectionSelectPage
+  
+}
+
+const loginRoute = {
+  path: "/login",
+  component: LoginPage
+  
+}
 
 const dashboardsRoutes = {
   id: "통계",
@@ -548,7 +564,10 @@ const protectedPageRoutes = {
 };
 
 
-// Routes using the Dashboard layout
+export const inspectionRoutes = [
+  inspectionRoute
+]
+
 export const dashboardLayoutRoutes = [
   dashboardsRoutes,
   pagesRoutes,
@@ -568,7 +587,7 @@ export const dashboardLayoutRoutes = [
 ];
 
 // Routes using the Auth layout
-export const authLayoutRoutes = [authRoutes];
+export const authLayoutRoutes = [authRoutes, loginRoute];
 
 // Routes using the Presentation layout
 export const presentationLayoutRoutes = [landingRoutes];

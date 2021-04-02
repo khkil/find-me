@@ -31,21 +31,21 @@ export default function reducer(state = initialState, action) {
       };
 
 
-    case types.AUTH_SIGN_IN_REQUEST:
+    case types.AUTH_LOGIN_REQUEST:
       return {
         ...state,
         loading: true,
         error: ''
       };
 
-    case types.AUTH_SIGN_IN_SUCCESS:
+    case types.AUTH_LOGIN_SUCCESS:
       return {
         ...state,
         data: action.data,
         loading: false
       };
 
-    case types.AUTH_SIGN_IN_FAILURE:
+    case types.AUTH_LOGIN_FAILURE:
       return {
         ...state,
         loading: false,

@@ -57,7 +57,6 @@ function DialogDropzone() {
 
   const handleSave = (files) => {
     //Saving files to state for further use and closing Modal.
-    console.log("files:", files);
 
     setOpen(false);
   };

@@ -4,7 +4,8 @@ import {
   dashboardLayoutRoutes,
   authLayoutRoutes,
   presentationLayoutRoutes,
-  protectedRoutes
+  protectedRoutes,
+  inspectionRoutes
 } from "./index";
 
 import DashboardLayout from "../layouts/Dashboard";
@@ -12,6 +13,7 @@ import AuthLayout from "../layouts/Auth";
 import PresentationLayout from "../layouts/Presentation";
 import Page404 from "../pages/auth/Page404";
 import AuthGuard from "../components/AuthGuard";
+import InspectionLayout from "../layouts/Inspection";
 
 const childRoutes = (Layout, routes) => {
   return (
@@ -48,7 +50,7 @@ const childRoutes = (Layout, routes) => {
           exact
           render={(props) => (
             isAuth ? (
-              <AuthGuard>
+              <AuthGuard path={path}>
                 <Layout>
                   <Component {...props} />
                 </Layout>
@@ -70,6 +72,7 @@ const Routes = () => (
   <Router>
 
     <Switch>
+      {childRoutes(InspectionLayout, inspectionRoutes)}
       {childRoutes(AuthLayout, authLayoutRoutes)}
       {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
       {childRoutes(DashboardLayout, protectedRoutes)}

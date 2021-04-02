@@ -20,15 +20,11 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         Member member = memberMapper.loadUserByUserName(id);
-        Member securityMember = new Member();
+
         if(member != null){
             List<GrantedAuthority> roles = Arrays.asList(new SimpleGrantedAuthority(member.getRole()));
-            securityMember.setIdx(member.getIdx());
-            securityMember.setId(member.getId());
-            securityMember.setPassword(member.getPassword());
-            securityMember.setRole(member.getRole());
-            securityMember.setAuthorities(roles);
+            member.setAuthorities(roles);
         }
-        return securityMember;
+        return member;
     }
 }

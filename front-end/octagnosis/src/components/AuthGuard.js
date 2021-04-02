@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { getAuthInfo } from "../redux/actions/authActions";
 
 // For routes that can only be accessed by authenticated users
-const AuthGuard = ({ children }) => {
+const AuthGuard = ({ children, path }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {

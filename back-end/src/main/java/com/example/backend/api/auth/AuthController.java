@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private final String LOGIN_ERROR_MESSAGE = "가입하지 않은 아이디이거나, 잘못된 비밀번호입니다";
 
     @Autowired
     MemberService memberService;
@@ -27,10 +28,13 @@ public class AuthController {
     public ResponseEntity login(@RequestBody Member params){
         Map<String, Object> ret = new HashMap<>();
         Member user = (Member) memberService.loadUserByUsername(params.getUsername());
-        List<String> roles = Arrays.asList(user.getRole());
 
         if(user == null) {
-            return ResponseEntity.ok(CommonResponse.failResult("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다"));
+            return ResponseEntity.ok(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
+        }
+        List<String> roles = Arrays.asList(user.getRole());
+        if(!roles.contains(params.getRole())){
+            return ResponseEntity.ok(CommonResponse.failResult("권한 에러"));
         }
 
         String token =  jwtTokenProvider.createToken(user.getId(), roles);
@@ -38,7 +42,7 @@ public class AuthController {
 
         Member member = (Member) memberService.loadUserByUsername(userPk);
         if(!params.getPassword().equals(member.getPassword())){
-            return ResponseEntity.ok(CommonResponse.failResult("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다"));
+            return ResponseEntity.ok(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
 
         Jws<Claims> claims = jwtTokenProvider.getClaims(token);
