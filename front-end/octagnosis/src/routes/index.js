@@ -122,6 +122,20 @@ const inspectionRoute = {
   
 }
 
+const memberRoutes = {
+  path: "/member",
+  name: "선택 페이지",
+  header: "결과",
+  children: [
+    {
+      path: "/member/profile",
+      name: "Profile",
+      component: Settings,
+    },
+  ]
+  
+}
+
 const loginRoute = {
   path: "/login",
   component: LoginPage
@@ -565,7 +579,8 @@ const protectedPageRoutes = {
 
 
 export const inspectionRoutes = [
-  inspectionRoute
+  inspectionRoute,
+  memberRoutes
 ]
 
 export const dashboardLayoutRoutes = [

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled, { withTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { Search as SearchIcon } from "react-feather";
@@ -26,13 +27,23 @@ import LanguagesDropdown from "./LanguagesDropdown";
 import UserDropdown from "./UserDropdown";
 import { sidebarRoutes as routes } from "../routes/index";
 import { Autocomplete } from "@material-ui/lab";
+import MemberDropdown from "./MemberDropdown";
+import { getAuthInfo } from "../redux/actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
 
 
 
 
 const Header = () => {
 
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getAuthInfo());
+  }, [])
+
+  const { isLoggedIn } = useSelector(state => state.authReducer);
+  
   return (
     <React.Fragment>
 
@@ -57,7 +68,8 @@ const Header = () => {
             </Grid>
             <Grid item xs />
             <Grid item>
-              <Button color="inherit">Login</Button>
+
+              <MemberDropdown isLoggedIn={isLoggedIn}/>
             </Grid>
           </Grid>
         </Toolbar>

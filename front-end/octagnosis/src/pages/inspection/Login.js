@@ -60,7 +60,7 @@ function Login({ history }) {
     }
   }, [])
   const { isLoggedIn } = useSelector(state => state.authReducer);
-  if(isLoggedIn) return <Redirect to='/admin' />;
+  if(isLoggedIn) return <Redirect to='/' />;
   return (
     <Wrapper>
       <Helmet title="로그인" />

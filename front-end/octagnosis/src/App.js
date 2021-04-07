@@ -24,11 +24,16 @@ const jss = create({
 function App() {
 
   const theme = useSelector((state) => state.themeReducer);
+  let titleTemplate = "%s | 옥타그노시스";
+  let defaultTitle = "옥타그노시스 관리자 페이지";
+  titleTemplate = "%s | 관리자";
+  defaultTitle = "관리자 페이지"
+
   return (
     <React.Fragment>
       <Helmet
-        titleTemplate="%s | 옥타그노시스"
-        defaultTitle="옥타그노시스 관리자 페이지"
+        titleTemplate={titleTemplate}
+        defaultTitle={defaultTitle}
       />
       <StylesProvider jss={jss}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>

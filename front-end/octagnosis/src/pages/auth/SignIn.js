@@ -18,8 +18,7 @@ import {
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
-import { getAuthInfo, signIn } from "../../redux/actions/authActions";
-import { login } from "../../services/authService";
+import { getAuthInfo, login } from "../../redux/actions/authActions";
 
 const Alert = styled(MuiAlert)(spacing);
 
@@ -46,23 +45,12 @@ function SignIn({ history }) {
 
   const handleSubmit = async (e) => {
     const { id, password } = e;
-    const credentials = { id: id, password: password, role: "ROLE_ADMIN" };
-    await login(credentials)
-      .then(response => {
-        if (response.msg) {
-          setErrorMsg(response.msg);
-          return;
-        } else if (response.token) {
-          const { token } = response;
-          localStorage.setItem('token', token);
-          history.push('/admin');
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    const credentials = { id: id, password: password, role: 'ROLE_ADMIN' };
+    const { success, msg, code } = await login(credentials, history);
+    if(msg){
+      setErrorMsg(msg);
+    }
   };
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {

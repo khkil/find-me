@@ -3,12 +3,16 @@ import * as authService from "../../services/authService";
 
 
 export const login = async (credentials, history) => {
+  const { location } = history;
+  const { pathname } = location;
+  const redirectPath = pathname.indexOf('admin') > -1 ? '/admin' : '/';
+
   try{
     const data = await authService.login(credentials);
     if (data.token) {
       const { token } = data;
       localStorage.setItem('token', token);
-      history.push('/admin');
+      history.push(redirectPath);
     }
       return data;
   }catch(e){
