@@ -34,7 +34,7 @@ public class AuthController {
         }
         List<String> roles = Arrays.asList(user.getRole());
         if(!roles.contains(params.getRole())){
-            return ResponseEntity.ok(CommonResponse.failResult("권한 에러"));
+            return ResponseEntity.badRequest().body(CommonResponse.failResult("권한 에러"));
         }
 
         String token =  jwtTokenProvider.createToken(user.getId(), roles);
@@ -42,7 +42,7 @@ public class AuthController {
 
         Member member = (Member) memberService.loadUserByUsername(userPk);
         if(!params.getPassword().equals(member.getPassword())){
-            return ResponseEntity.ok(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
+            return ResponseEntity.badRequest().body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
 
         Jws<Claims> claims = jwtTokenProvider.getClaims(token);
