@@ -52,6 +52,19 @@ public class AuthController {
 
     }
 
+    @PostMapping("/sign-up")
+    public ResponseEntity signUp(@RequestBody Member member){
+
+        memberService.insertMember(member);
+        Map<String, Object> ret = new HashMap<>();
+        List<String> roles = Arrays.asList(member.getRole());
+        String token =  jwtTokenProvider.createToken(member.getId(), roles);
+        Jws<Claims> claims = jwtTokenProvider.getClaims(token);
+        ret.put("body", claims.getBody());
+        ret.put("token", token);
+        return ResponseEntity.ok(ret);
+    }
+
     @PostMapping("/check-id")
     public ResponseEntity validateDuplicateMember(@RequestBody Member member){
         memberService.validateDulplicateMember(member);

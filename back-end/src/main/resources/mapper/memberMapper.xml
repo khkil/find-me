@@ -8,4 +8,9 @@
         SELECT * FROM member
         WHERE id = #{id}
     </select>
+
+    <insert id="insertMember" parameterType="com.example.backend.api.auth.Member" useGeneratedKeys="true" keyProperty="idx">
+        INSERT INTO member(id, password, role, email) VALUES(#{id}, #{password}, #{role}, #{email});
+
+    </insert>
 </mapper>

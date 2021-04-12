@@ -39,36 +39,37 @@ function SignUp() {
   const passwordInputRef = useRef();
 
   const checkId = async (id, errors) => {
-    if(!id || id.length < 5){
+    if(!id){
+      alert('아이디를 입력하세요');
+      setTimeout(() => {
+        idInputRef.current.focus();
+      }, 100)
+      return;
+
+    }else if(id.length < 5 || id.length > 20){
       return;
     }
+    setCheckedId(true);
     const { success, code } = await authService.checkId(id);
-
     if(success && code === types.SUCCESS_CODE){
-      alert('사용 가능한 아이디 입니다.')
-      setCheckedId(true);
-      passwordInputRef.current.focus();
-      console.log(passwordInputRef);
-      errors.id = null;
-
+      setTimeout(() => {
+        passwordInputRef.current.focus();
+      }, 100)
+      alert('사용가능한 아이디 입니다');
     }else{
-      alert('사용중인 아이디 입니다.')
       setCheckedId(false);
-      idInputRef.current.focus();
+      setTimeout(() => {
+        idInputRef.current.focus();
+      }, 100)
+      alert('이미 사용중인 아이디 입니다.');
+      
     }
     
   }
 
   return (
     <Wrapper>
-      <Helmet title="Sign Up" />
-
-      <Typography component="h1" variant="h4" align="center" gutterBottom>
-        Get started
-      </Typography>
-      <Typography component="h2" variant="body1" align="center">
-        Start creating the best possible user experience for you customers
-      </Typography>
+      <Helmet title="회원가입" />
 
       <Formik
         initialValues={{
@@ -82,7 +83,7 @@ function SignUp() {
         validationSchema={Yup.object().shape({
           id: Yup.string()
             .min(5, "5자이상 입력해주세요")
-            .max(20)
+            .max(20, "20자까지 입력 가능합니다")
             .required("ID를 입력해주세요")
             .test('check_id', '아이디 중복체크를 해주세요', () => checkedId),
           name: Yup.string()
@@ -150,20 +151,14 @@ function SignUp() {
               value={values.id}
               error={Boolean(touched.id && errors.id && !checkedId)}
               fullWidth
-              helperText={!checkedId && errors.id }
+              helperText={(touched.id && !checkedId)&& errors.id }
               onBlur={handleBlur}
               onChange={e => {
                 setCheckedId(false);
                 handleChange(e)
               }}
               my={3}
-              ref={idInputRef}
-            />
-            <input
-              name="name"
-              placeholder="이름"
-              value=""
-              ref={passwordInputRef}
+              inputRef={idInputRef}
             />
             <Button 
               variant="outlined" 
@@ -184,6 +179,7 @@ function SignUp() {
               onBlur={handleBlur}
               onChange={handleChange}
               my={3}
+              inputRef={passwordInputRef}
             />
             <TextField
               type="password"
@@ -200,7 +196,7 @@ function SignUp() {
             <TextField
               type="text"
               name="name"
-              label="Name"
+              label="이름"
               value={values.name}
               error={Boolean(touched.name && errors.name)}
               fullWidth
@@ -212,7 +208,7 @@ function SignUp() {
             <TextField
               type="email"
               name="email"
-              label="Email Address"
+              label="Email"
               value={values.email}
               error={Boolean(touched.email && errors.email)}
               fullWidth

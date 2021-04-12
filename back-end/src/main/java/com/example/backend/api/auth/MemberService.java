@@ -28,6 +28,10 @@ public class MemberService implements UserDetailsService {
         return member;
     }
 
+    public void insertMember(Member member){
+        memberMapper.insertMember(member);
+    }
+
     public void validateDulplicateMember(Member member){
         Member findMember = memberMapper.loadUserByUserName(member.getId());
         if(findMember != null){

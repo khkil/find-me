@@ -14,6 +14,7 @@ public class Member implements UserDetails{
     private String id;
     private String password;
     private String role;
+    private String email;
     private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
