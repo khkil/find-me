@@ -39,7 +39,11 @@ const Header = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAuthInfo());
+    const token = localStorage.getItem('token');
+    if(token){
+      dispatch(getAuthInfo());  
+    }
+    
   }, [])
 
   const { isLoggedIn } = useSelector(state => state.authReducer);

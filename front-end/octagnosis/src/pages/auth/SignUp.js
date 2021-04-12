@@ -31,7 +31,7 @@ const Wrapper = styled(Paper)`
 
 
 
-function SignUp() {
+const SignUp = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [checkedId, setCheckedId] = useState(false);
@@ -40,28 +40,27 @@ function SignUp() {
 
   const checkId = async (id, errors) => {
     if(!id){
-      alert('아이디를 입력하세요');
+      
       setTimeout(() => {
         idInputRef.current.focus();
-      }, 100)
+      }, 300)
       return;
 
     }else if(id.length < 5 || id.length > 20){
       return;
     }
-    setCheckedId(true);
+    
     const { success, code } = await authService.checkId(id);
     if(success && code === types.SUCCESS_CODE){
+      setCheckedId(true);
       setTimeout(() => {
         passwordInputRef.current.focus();
-      }, 100)
-      alert('사용가능한 아이디 입니다');
+      }, 200)
     }else{
       setCheckedId(false);
       setTimeout(() => {
         idInputRef.current.focus();
-      }, 100)
-      alert('이미 사용중인 아이디 입니다.');
+      }, 200)
       
     }
     
@@ -111,12 +110,7 @@ function SignUp() {
           console.log(values);
           try {
              dispatch(
-              signUp({
-                name: "test",
-                id: "test",
-                email: values.email,
-                password: values.password,
-              })
+              signUp({...values, role: 'ROLE_MEMBER'}, history)
             );
             //history.push("/auth/login");
           } catch (error) {

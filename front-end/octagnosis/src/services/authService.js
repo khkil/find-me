@@ -11,8 +11,8 @@ export const login = (credentials) => {
   return new Promise((resolve, reject) => {
     axios
       .post('/api/auth/login', credentials)
-      .then((response) => {
-        resolve(response.data);
+      .then(({ status, data}) => {
+        resolve(data);
       })
       .catch((error) => {
         reject(error);
@@ -48,7 +48,11 @@ export const getAuthInfo = () => {
         }
       })
       .then((response) => {
-        resolve(response.data);
+        if(response.status == 200){
+          resolve(response.data);
+        }
+        reject(response.data);
+        
       })
       .catch((error) => {
         reject(error);
@@ -60,11 +64,11 @@ export function signUp(credentials) {
   return new Promise((resolve, reject) => {
     axios
       .post("/api/auth/sign-up", credentials)
-      .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
+      .then(({ status, data }) => {
+        if (status === 200) {
+          resolve(data);
         }
-        reject(response.data);
+        reject(data);
       })
       .catch((error) => {
         reject(error);

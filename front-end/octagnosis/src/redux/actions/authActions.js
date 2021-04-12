@@ -42,24 +42,28 @@ export const logout = () => (dispatch) => {
 };
 
 
-export function signUp(credentials) {
-  return async (dispatch) => {
-    dispatch({ type: types.AUTH_SIGN_UP_REQUEST });
+export const signUp = (credentials, history) => async dispatch => {
 
-    return authService.signUp(credentials)
-      .then((response) => {
-        dispatch({
-          type: types.AUTH_SIGN_UP_SUCCESS,
-          id: response.id,
-          email: response.email,
-          name: response.name,
-        });
-      })
-      .catch((error) => {
-        dispatch({ type: types.AUTH_SIGN_UP_FAILURE });
-        throw error;
-      });
-  };
+  const { location } = history;
+  const { pathname } = location;
+  const redirectPath = pathname.indexOf('admin') > -1 ? '/admin' : '/';
+
+  dispatch({ type: types.AUTH_SIGN_UP_REQUEST, data: credentials });
+  try {
+    const data = await authService.signUp(credentials);
+    dispatch({ type: types.AUTH_SIGN_UP_SUCCESS, data: data });
+    if (data.token) {
+      const { token } = data;
+      localStorage.setItem('token', token);
+      history.push(redirectPath);
+    }
+
+  } catch (e) {
+    dispatch({
+      type: types.AUTH_GET_INFO_FAILURE,
+      error: e
+    })
+  }
 }
 
 export function signOut() {
