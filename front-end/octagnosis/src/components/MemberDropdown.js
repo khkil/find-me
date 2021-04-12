@@ -35,7 +35,7 @@ const MemberDropdown = ({ isLoggedIn }) => {
 
   const handleSignOut = async () => {
     dispatch(logout());
-    history.push("/");
+    history.push("/auth/login");
   };
 
   return (

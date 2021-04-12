@@ -136,11 +136,6 @@ const memberRoutes = {
   
 }
 
-const loginRoute = {
-  path: "/login",
-  component: LoginPage
-  
-}
 
 const dashboardsRoutes = {
   id: "통계",
@@ -260,6 +255,10 @@ const authRoutes = {
   path: "/auth",
   icon: <Users />,
   children: [
+    {
+      path: "/auth/login",
+      component: LoginPage
+    },
     {
       path: "/admin/login",
       name: "Sign In",
@@ -602,7 +601,7 @@ export const dashboardLayoutRoutes = [
 ];
 
 // Routes using the Auth layout
-export const authLayoutRoutes = [authRoutes, loginRoute];
+export const authLayoutRoutes = [authRoutes];
 
 // Routes using the Presentation layout
 export const presentationLayoutRoutes = [landingRoutes];

@@ -15,6 +15,7 @@ import {
   Paper,
   TextField as MuiTextField,
   Typography,
+  Grid,
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
@@ -131,14 +132,25 @@ function Login({ history }) {
             >
               로그인
             </Button>
-             <Button
-              component={Link}
-              to="/auth/reset-password"
-              fullWidth
-              color="primary"
-            >
-              비밀번호 찾기
-            </Button>
+            <Grid container style={{marginTop: '20px'}}>
+              <Grid item xs>
+                <Link to="/auth/sign-up" variant="body2">
+                  회원가입
+                </Link>
+              </Grid>
+
+              <Grid item xs>
+                <Link to="#" variant="body2">
+                  아이디 찾기
+                </Link>
+              </Grid>
+              
+              <Grid item>
+                <Link to="#" variant="body2">
+                  비밀번호 찾기
+                </Link>
+              </Grid>
+            </Grid>
           </form>
         )}
       </Formik>

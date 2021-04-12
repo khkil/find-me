@@ -1,14 +1,17 @@
 import axios from "../utils/axios";
 
+axios.interceptors.request.use((config) => {
+  console.log(config);
+
+  return config;
+});
+
 export const login = (credentials) => {
   return new Promise((resolve, reject) => {
     axios
       .post('/api/auth/login', credentials)
       .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-        reject(response.data);
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error);
@@ -18,6 +21,20 @@ export const login = (credentials) => {
 
 export const logout = () => {
   localStorage.removeItem('token');
+}
+
+export const checkId = (id) => {
+  const params = { id: id } ;
+  return new Promise((resolve, reject) => {
+    axios
+      .post('/api/auth/check-id', params)
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
 
 export const getAuthInfo = () => {
@@ -30,11 +47,7 @@ export const getAuthInfo = () => {
         }
       })
       .then((response) => {
-        if (response.status === 200) {
-          console.log(response);
-          resolve(response.data);
-        }
-        reject(response.data);
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error);

@@ -30,7 +30,7 @@ public class AuthController {
         Member user = (Member) memberService.loadUserByUsername(params.getUsername());
 
         if(user == null) {
-            return ResponseEntity.ok(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
+            return ResponseEntity.badRequest().body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
         List<String> roles = Arrays.asList(user.getRole());
         if(!roles.contains(params.getRole())){
@@ -50,6 +50,12 @@ public class AuthController {
         ret.put("token", token);
         return ResponseEntity.ok(ret);
 
+    }
+
+    @PostMapping("/check-id")
+    public ResponseEntity validateDuplicateMember(@RequestBody Member member){
+        memberService.validateDulplicateMember(member);
+        return ResponseEntity.ok(CommonResponse.successResult());
     }
 
     @GetMapping("/info")
