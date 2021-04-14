@@ -117,6 +117,7 @@ const LoginPage = async(() => import("../pages/inspection/Login"));
 const inspectionRoute = {
   path: "/",
   name: "선택 페이지",
+  auth: false,
   header: "결과",
   component: InspectionSelectPage
   
@@ -126,6 +127,7 @@ const memberRoutes = {
   path: "/member",
   name: "선택 페이지",
   header: "결과",
+  auth: true,
   children: [
     {
       path: "/member/profile",

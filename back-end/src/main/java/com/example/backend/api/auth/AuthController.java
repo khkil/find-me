@@ -26,13 +26,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody Member params){
-        Map<String, Object> ret = new HashMap<>();
-        Member user = (Member) memberService.loadUserByUsername(params.getUsername());
+        String userName = params.getUsername();
+        Member user = (Member) memberService.loadUserByUsername(userName);
 
         if(user == null) {
             return ResponseEntity.badRequest().body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
         List<String> roles = Arrays.asList(user.getRole());
+
         if(!roles.contains(params.getRole())){
             return ResponseEntity.badRequest().body(CommonResponse.failResult("권한 에러"));
         }
@@ -41,14 +42,11 @@ public class AuthController {
         String userPk = jwtTokenProvider.getUserPk(token);
 
         Member member = (Member) memberService.loadUserByUsername(userPk);
-        if(!params.getPassword().equals(member.getPassword())){
+        if(!user.getPassword().equals(member.getPassword())){
             return ResponseEntity.badRequest().body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
 
-        Jws<Claims> claims = jwtTokenProvider.getClaims(token);
-        ret.put("body", claims.getBody());
-        ret.put("token", token);
-        return ResponseEntity.ok(ret);
+        return ResponseEntity.ok(new Auth(token));
 
     }
 
@@ -56,13 +54,11 @@ public class AuthController {
     public ResponseEntity signUp(@RequestBody Member member){
 
         memberService.insertMember(member);
-        Map<String, Object> ret = new HashMap<>();
         List<String> roles = Arrays.asList(member.getRole());
         String token =  jwtTokenProvider.createToken(member.getId(), roles);
         Jws<Claims> claims = jwtTokenProvider.getClaims(token);
-        ret.put("body", claims.getBody());
-        ret.put("token", token);
-        return ResponseEntity.ok(ret);
+
+        return ResponseEntity.ok(new Auth(token));
     }
 
     @PostMapping("/check-id")

@@ -3,7 +3,7 @@ import axios from "../utils/axios";
 axios.interceptors.request.use((config) => {
 
   console.log(config);
-
+  //
   return config;
 });
 
@@ -11,8 +11,8 @@ export const login = (credentials) => {
   return new Promise((resolve, reject) => {
     axios
       .post('/api/auth/login', credentials)
-      .then(({ status, data}) => {
-        resolve(data);
+      .then((response) => {
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error);
@@ -48,11 +48,7 @@ export const getAuthInfo = () => {
         }
       })
       .then((response) => {
-        if(response.status == 200){
-          resolve(response.data);
-        }
-        reject(response.data);
-        
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error);
@@ -64,11 +60,11 @@ export function signUp(credentials) {
   return new Promise((resolve, reject) => {
     axios
       .post("/api/auth/sign-up", credentials)
-      .then(({ status, data }) => {
-        if (status === 200) {
-          resolve(data);
+      .then((response) => {
+        if (response.status === 200) {
+          resolve(response.data);
         }
-        reject(data);
+        reject(response.data);
       })
       .catch((error) => {
         reject(error);

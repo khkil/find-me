@@ -17,8 +17,8 @@ import InspectionLayout from "../layouts/Inspection";
 
 const childRoutes = (Layout, routes) => {
   return (
-    routes.map(({ component: Component, children, path }, index) => {
-      const isAuth = (path.indexOf('admin') > -1);
+    routes.map(({ component: Component, children, path, auth }, index) => {
+      console.log(auth);
       return children ? (
         children.map((element, index) => {
           
@@ -28,7 +28,7 @@ const childRoutes = (Layout, routes) => {
               path={element.path}
               exact
               render={(props) => (
-                isAuth ? (
+                auth ? (
                   <AuthGuard path={path}>
                     <Layout>
                       <element.component {...props} />
@@ -49,7 +49,7 @@ const childRoutes = (Layout, routes) => {
           path={path}
           exact
           render={(props) => (
-            isAuth ? (
+            auth ? (
               <AuthGuard path={path}>
                 <Layout>
                   <Component {...props} />

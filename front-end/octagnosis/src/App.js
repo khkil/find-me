@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import DateFnsUtils from "@date-io/date-fns";
 import { ThemeProvider } from "styled-components/macro";
 import { create } from "jss";
-import { withCookies, useCookies } from 'react-cookie';
 
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import {
