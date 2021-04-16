@@ -5,10 +5,13 @@ import com.example.backend.common.CommonResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -30,20 +33,20 @@ public class AuthController {
         Member user = (Member) memberService.loadUserByUsername(userName);
 
         if(user == null) {
-            return ResponseEntity.badRequest().body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
         List<String> roles = Arrays.asList(user.getRole());
 
         if(!roles.contains(params.getRole())){
-            return ResponseEntity.badRequest().body(CommonResponse.failResult("권한 에러"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
 
         String token =  jwtTokenProvider.createToken(user.getId(), roles);
         String userPk = jwtTokenProvider.getUserPk(token);
 
         Member member = (Member) memberService.loadUserByUsername(userPk);
-        if(!user.getPassword().equals(member.getPassword())){
-            return ResponseEntity.badRequest().body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
+        if(!params.getPassword().equals(member.getPassword())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
 
         return ResponseEntity.ok(new Auth(token));
@@ -68,9 +71,7 @@ public class AuthController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity getUserInfo(HttpServletRequest request){
-        String userPk = (String) request.getAttribute("userPk");
-        Member member = (Member) memberService.loadUserByUsername(userPk);
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity getUserInfo(Authentication authentication){
+        return ResponseEntity.ok().body(authentication);
     }
 }
