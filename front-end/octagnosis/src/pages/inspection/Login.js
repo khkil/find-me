@@ -166,6 +166,7 @@ function Login({ history }) {
               defaultValue="individual"
               onChange={(e) => { 
                 values.member_type = e.target.value;
+                values.code = '';
                 handleChange;
                 setErrorMsg('');
                 setUseCode('group' === e.target.value ? true : false);
