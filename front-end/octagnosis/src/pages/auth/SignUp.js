@@ -35,18 +35,19 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [checkedId, setCheckedId] = useState(false);
+  const [checkedIdMsg, setCheckedIdMsg] = useState("아이디를 입력해주세요.");
   const idInputRef = useRef();
   const passwordInputRef = useRef();
 
   const checkId = async (id, errors) => {
     if(!id){
-      
-      setTimeout(() => {
-        idInputRef.current.focus();
-      }, 300)
+      idInputRef.current.focus();
+      setCheckedIdMsg('아이디를 입력해주세요.');
       return;
 
     }else if(id.length < 5 || id.length > 20){
+      idInputRef.current.focus();
+      setCheckedIdMsg('아이디는 5자 이상 20자 이하만 가능합니다.');
       return;
     }
     
@@ -57,6 +58,7 @@ const SignUp = () => {
         passwordInputRef.current.focus();
       }, 200)
     }else{
+      setCheckedIdMsg("이미 사용중인 아이디 입니다.");
       setCheckedId(false);
       setTimeout(() => {
         idInputRef.current.focus();
@@ -84,7 +86,7 @@ const SignUp = () => {
             .min(5, "5자이상 입력해주세요")
             .max(20, "20자까지 입력 가능합니다")
             .required("ID를 입력해주세요")
-            .test('check_id', '아이디 중복체크를 해주세요', () => checkedId),
+            .test('check_id', checkedIdMsg, () => checkedId),
           name: Yup.string()
             .max(255)
             .required("Name is required"),
@@ -145,9 +147,10 @@ const SignUp = () => {
               value={values.id}
               error={Boolean(touched.id && errors.id && !checkedId)}
               fullWidth
-              helperText={(touched.id && !checkedId)&& errors.id }
+              helperText={(touched.id && !checkedId) && checkedIdMsg }
               onBlur={handleBlur}
               onChange={e => {
+                setCheckedIdMsg("아이디 중복 체크를 해주세요");
                 setCheckedId(false);
                 handleChange(e)
               }}

@@ -48,9 +48,7 @@ public class AuthController {
         if(!params.getPassword().equals(member.getPassword())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
-
         return ResponseEntity.ok(new Auth(token));
-
     }
 
     @PostMapping("/sign-up")
