@@ -288,7 +288,6 @@ const SidebarLink = ({ name, to, badge, icon }) => {
 
 const Sidebar = ({ classes, staticContext, location, ...rest }) => {
   useEffect(() => {
-    console.log('sidebar');
     
   }, [])
   const { data } = useSelector(state => state.authReducer);
@@ -328,8 +327,8 @@ const Sidebar = ({ classes, staticContext, location, ...rest }) => {
       Object.assign({}, openRoutes, { [index]: !openRoutes[index] })
     );
   };
-  if (!data) return null;
-  const { member_name } = data;
+ // if (!data) return null;
+ // const { member_name } = data;
   return (
     <Drawer variant="permanent" {...rest}>
       <NavLink to="/">
@@ -405,7 +404,7 @@ const Sidebar = ({ classes, staticContext, location, ...rest }) => {
           </Grid>
           <Grid item>
             <SidebarFooterText variant="body2">
-              <strong>{member_name}</strong> 님 환영합니다.
+              {/* <strong>{member_name}</strong> 님 환영합니다. */}
             </SidebarFooterText>
             <SidebarFooterSubText variant="caption">
 

@@ -52,7 +52,6 @@ function Login({ history }) {
 
   const handleSubmit = async (e) => {
     const { id, password } = e;
-    console.log(e);
     const credentials = { id: id, password: password, role: 'ROLE_MEMBER' };
     const { success, msg, code } = await login(credentials, history);
     if(msg){
@@ -86,7 +85,6 @@ function Login({ history }) {
         로그인
       </Typography>
       <Formik
-        onChangeForm={(e) => {console.log(e)}}
         initialValues={{
           id: "",
           password: "",
@@ -195,16 +193,9 @@ function Login({ history }) {
                   회원가입
                 </Link>
               </Grid>
-
-              <Grid item xs>
-                <Link to="#" variant="body2">
-                  아이디 찾기
-                </Link>
-              </Grid>
-              
               <Grid item>
-                <Link to="#" variant="body2">
-                  비밀번호 찾기
+                <Link to="/auth/find-info" variant="body2">
+                  회원정보 찾기
                 </Link>
               </Grid>
             </Grid>

@@ -109,7 +109,6 @@ const SignUp = () => {
             }),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          console.log(values);
           try {
              dispatch(
               signUp({...values, role: 'ROLE_MEMBER'}, history)

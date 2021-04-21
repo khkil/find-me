@@ -70,6 +70,7 @@ public class AuthController {
 
     @GetMapping("/info")
     public ResponseEntity getUserInfo(Authentication authentication){
+
         return ResponseEntity.ok().body(authentication);
     }
 }

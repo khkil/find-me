@@ -18,7 +18,6 @@ import InspectionLayout from "../layouts/Inspection";
 const childRoutes = (Layout, routes) => {
   return (
     routes.map(({ component: Component, children, path, auth }, index) => {
-      console.log(auth);
       return children ? (
         children.map((element, index) => {
           

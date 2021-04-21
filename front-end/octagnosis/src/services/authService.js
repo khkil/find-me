@@ -2,7 +2,7 @@ import axios from "../utils/axios";
 
 axios.interceptors.request.use((config) => {
 
-  console.log(config);
+  console.log('axios interceptor: ', config);
   //
   return config;
 });

@@ -26,6 +26,7 @@ const AuthGuard = async(() => import("../components/AuthGuard"));
 // Auth components
 const SignIn = async(() => import("../pages/auth/SignIn"));
 const SignUp = async(() => import("../pages/auth/SignUp"));
+const FindInfo = async(() => import("../pages/auth/FindInfo"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const Page404 = async(() => import("../pages/auth/Page404"));
 const Page500 = async(() => import("../pages/auth/Page500"));
@@ -265,6 +266,16 @@ const authRoutes = {
       path: "/admin/login",
       name: "Sign In",
       component: SignIn,
+    },
+    {
+      path: "/auth/sign-up",
+      name: "Sign Up",
+      component: SignUp,
+    },
+    {
+      path: "/auth/find-info",
+      name: "Sign Up",
+      component: FindInfo,
     },
     {
       path: "/auth/sign-up",

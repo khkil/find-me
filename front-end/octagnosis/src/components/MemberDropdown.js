@@ -38,7 +38,6 @@ const MemberDropdown = ({ isLoggedIn }) => {
     history.push("/auth/login");
   };
 
-  console.log(isLoggedIn);
   return (
     
     <React.Fragment>
