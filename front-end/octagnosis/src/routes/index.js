@@ -27,6 +27,8 @@ const AuthGuard = async(() => import("../components/AuthGuard"));
 const SignIn = async(() => import("../pages/auth/SignIn"));
 const SignUp = async(() => import("../pages/auth/SignUp"));
 const FindInfo = async(() => import("../pages/auth/FindInfo"));
+const FindId = async(() => import("../pages/auth/FindId"));
+const FindPw = async(() => import("../pages/auth/FindPw"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const Page404 = async(() => import("../pages/auth/Page404"));
 const Page500 = async(() => import("../pages/auth/Page500"));
@@ -274,8 +276,18 @@ const authRoutes = {
     },
     {
       path: "/auth/find-info",
-      name: "Sign Up",
+      name: "내 정보 찾기",
       component: FindInfo,
+    },
+    {
+      path: "/auth/find-info/id",
+      name: "아이디 찾기",
+      component: FindId,
+    },
+    {
+      path: "/auth/find-info/pw",
+      name: "비밀번호 찾기",
+      component: FindPw,
     },
     {
       path: "/auth/sign-up",

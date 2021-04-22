@@ -1,8 +1,10 @@
-import { Button, Paper, styled, Tab, Tabs, Typography } from '@material-ui/core';
-import { padding } from 'polished';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Grid, Paper, styled, Tab, Tabs, Typography } from '@material-ui/core';
+import { MobileScreenShare, Person } from '@material-ui/icons';
+import Box from '@material-ui/core/Box';
 
-const FindInfo = () => {
+const FindInfo = ({ match }) => {
 
   const Wrapper = styled(Paper)`
     padding: 10px;
@@ -12,45 +14,80 @@ const FindInfo = () => {
     padding: '30px',
   };
 
-  const infoDef = {
+  const valueMap = {
     0: '아이디',
     1: '비밀번호'
   }
 
   const [value, setValue] = useState(0);
 
+  useEffect(() => {
+    console.log(match);
+  })
 
   return (
-    <Wrapper style={style}>
-      <Typography component="h1" variant="h4" align="center" gutterBottom>
-        회원정보 찾기
-      </Typography>
-      <Paper square>
-        <Tabs
-          value={value}
-          onChange={(e, newValue) => {setValue(newValue)}}
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="disabled tabs example"
-        >
-          {Object.keys(infoDef).map((key, index) => 
-            <Tab key={index} label={infoDef[key]} />
-          )}
-        </Tabs>
-      </Paper>
-     
-      <div>
-
-      </div>
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="primary"
-      >
-        로그인
-      </Button>
-    </Wrapper>
+    <>
+      <Wrapper style={style}>
+        <Typography component="h1" variant="h3" align="center" gutterBottom>
+          회원정보 찾기
+        </Typography>
+        <Grid container spacing={9}>
+          <Grid item xs={12}>
+            <Paper square>
+              <Tabs
+                variant="fullWidth"
+                value={value}
+                onChange={(e, newValue) => {setValue(newValue)}}
+                indicatorColor="primary"
+                textColor="primary"
+                aria-label="disabled tabs example"
+              >
+                {Object.keys(valueMap).map((key, index) => 
+                  <Tab key={index} label={valueMap[key]} />
+                )}
+              </Tabs>
+            </Paper>
+          </Grid>
+          
+          {value === 0 ? 
+            <>
+              <Grid item xs={12}>
+                <Typography component="h1" variant="h6" align="center" gutterBottom>
+                  ID 찾기를 위한 본인확인 방법을 선택해주세요.
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Link to="/auth/find-info/id?type=phone">
+                  <Button type="button" fullWidth variant="contained" color="primary" size="large">
+                    <MobileScreenShare/> 
+                    <Box p={3}>휴대폰으로 찾기</Box>
+                  </Button>
+                </Link>
+              </Grid>
+              <Grid item xs={12}>
+                <Link to="/auth/find-info/pw?type=info">
+                  <Button type="submit" fullWidth variant="contained" color="primary" size="large">
+                    <Person/>
+                    <Box p={3}>아이디, 이메일로 찾기</Box>
+                  </Button>
+                </Link>
+              </Grid>
+            </> :
+            <>
+            <Grid item xs={12}>
+              <Typography component="h1" variant="h6" align="center" gutterBottom>
+                ID를 입력해주세요
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              1
+            </Grid>
+            </>
+          }
+          
+        </Grid>
+      </Wrapper>
+    </>
   )
 }
 

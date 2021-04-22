@@ -187,21 +187,21 @@ function Login({ history }) {
               로그인
               
             </Button>
-            <Grid container style={{marginTop: '20px'}}>
-              <Grid item xs>
-                <Link to="/auth/sign-up" variant="body2">
-                  회원가입
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link to="/auth/find-info" variant="body2">
-                  회원정보 찾기
-                </Link>
-              </Grid>
-            </Grid>
           </form>
         )}
       </Formik>
+      <Grid container style={{marginTop: '20px'}}>
+        <Grid item xs>
+          <Link to="/auth/sign-up" variant="body2">
+            회원가입
+          </Link>
+        </Grid>
+        <Grid item>
+          <Link to="/auth/find-info" variant="body2">
+            회원정보 찾기
+          </Link>
+        </Grid>
+      </Grid>
     </Wrapper>
   );
 }
