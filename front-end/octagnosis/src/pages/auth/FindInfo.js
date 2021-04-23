@@ -65,10 +65,10 @@ const FindInfo = ({ match }) => {
                 </Link>
               </Grid>
               <Grid item xs={12}>
-                <Link to="/auth/find-info/pw?type=info">
+                <Link to="/auth/find-info/id?type=info">
                   <Button type="submit" fullWidth variant="contained" color="primary" size="large">
                     <Person/>
-                    <Box p={3}>아이디, 이메일로 찾기</Box>
+                    <Box p={3}>이름, 이메일로 찾기</Box>
                   </Button>
                 </Link>
               </Grid>

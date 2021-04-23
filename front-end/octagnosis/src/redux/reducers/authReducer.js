@@ -78,6 +78,25 @@ export default function reducer(state = initialState, action) {
         error: action.error
       };
 
+    case types.AUTH_FIND_ID_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case types.AUTH_FIND_ID_SUCCESS:
+      return {
+        ...state,
+        isLoggedIn: true,
+        data: action.data
+      };
+    case types.AUTH_FIND_ID_FAILURE:
+      return {
+        ...state,
+        isLoggedIn: false,
+        error: action.error
+      };
+
     default:
       return state;
   }

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import queryString from "query-string";
 import { Redirect } from 'react-router';
 import { Paper, styled, Typography, FormControl, Button, Box, Grid } from '@material-ui/core';
 import {TextValidator, ValidatorForm} from 'react-material-ui-form-validator';
+import InfoType from '../../components/auth/InfoType';
 
 const FindId = ({ location }) => {
   const query = queryString.parse(location.search);
@@ -49,7 +50,7 @@ const FindId = ({ location }) => {
             </ValidatorForm>
           </Wrapper>
         : type === "info" ? 
-          <div>내 정보로 찾기</div>  
+          <InfoType type={type}/>
         : <Redirect to="/"/>
       }
     </>

@@ -34,6 +34,19 @@ export const getAuthInfo = () => async dispatch => {
   }
 }
 
+export const findId = (credentials, type) => async dispatch => {
+  dispatch({ type: types.AUTH_FIND_ID_REQUEST });
+  try {
+    const data = await authService.findId(credentials, type);
+    dispatch({ type: types.AUTH_FIND_ID_SUCCESS, data: data });
+
+
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: types.AUTH_FIND_ID_FAILURE, error: e });
+  }
+}
+
 export const logout = () => (dispatch) => {
   authService.logout();
   dispatch({

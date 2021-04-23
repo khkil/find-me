@@ -2,6 +2,7 @@ package com.example.backend.api.auth;
 
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
+import com.example.backend.util.enumerator.SearchTypes;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import java.util.*;
 public class AuthController {
 
     private final String LOGIN_ERROR_MESSAGE = "가입하지 않은 아이디이거나, 잘못된 비밀번호입니다";
-
     @Autowired
     MemberService memberService;
     @Autowired
@@ -72,5 +72,12 @@ public class AuthController {
     public ResponseEntity getUserInfo(Authentication authentication){
 
         return ResponseEntity.ok().body(authentication);
+    }
+    @GetMapping("/find-id/{searchType}")
+    public ResponseEntity getUserId(@RequestParam Map<String, String> param, @PathVariable String searchType){
+        SearchTypes test = SearchTypes.INFO;
+
+
+        return ResponseEntity.ok().body(searchType);
     }
 }
