@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface MemberMapper {
     Member loadUserByUserName(String id);
+    Member findIdByInfo(String id, String email);
+    Member findIdByPhone(String phone);
     void insertMember(Member member);
 
 }

@@ -9,6 +9,14 @@
         WHERE id = #{id}
     </select>
 
+    <select id="findIdByInfo" resultType="com.example.backend.api.auth.Member" parameterType="map">
+        SELECT id FROM member WHERE id = #{id} AND email = #{email};
+    </select>
+
+    <select id="findIdByPhone" resultType="com.example.backend.api.auth.Member" parameterType="map">
+        SELECT id FROM member WHERE id = #{id} AND email = #{email};
+    </select>
+
     <insert id="insertMember" parameterType="com.example.backend.api.auth.Member" useGeneratedKeys="true" keyProperty="idx">
         INSERT INTO member(id, password, role, email) VALUES(#{id}, #{password}, #{role}, #{email});
 

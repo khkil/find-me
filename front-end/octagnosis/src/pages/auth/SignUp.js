@@ -16,6 +16,8 @@ import {
 import { spacing } from "@material-ui/system";
 import * as types from "../../constants";
 import { Alert as MuiAlert } from "@material-ui/lab";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const Alert = styled(MuiAlert)(spacing);
 
@@ -29,6 +31,7 @@ const Wrapper = styled(Paper)`
   }
 `;
 
+const phoneRegExp = /^\d{3}-\d{3,4}-\d{4}$/;
 
 
 const SignUp = () => {
@@ -79,6 +82,7 @@ const SignUp = () => {
           email: "",
           password: "",
           confirmPassword: "",
+          phone: "",
           submit: false,
         }}
         validationSchema={Yup.object().shape({
@@ -89,7 +93,7 @@ const SignUp = () => {
             .test('check_id', checkedIdMsg, () => checkedId),
           name: Yup.string()
             .max(255)
-            .required("Name is required"),
+            .required("이름을 입력해주세요"),
           email: Yup.string()
             .email("이메일 형식에 맞게 입력해주세요")
             .max(255)
@@ -107,6 +111,9 @@ const SignUp = () => {
                 "비밀번호가 일치하지 않습니다"
               ),
             }),
+          phone: Yup.string()
+          .required("휴대폰 번호를 입력해주세요")
+          .matches(phoneRegExp, "형식에 맞지 않습니다"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -207,10 +214,23 @@ const SignUp = () => {
               label="Email"
               value={values.email}
               error={Boolean(touched.email && errors.email)}
-              fullWidth
               helperText={touched.email && errors.email}
               onBlur={handleBlur}
               onChange={handleChange}
+              fullWidth
+              my={3}
+            />
+            <TextField
+              type="phone"
+              name="phone"
+              label="휴대폰 번호"
+              value={values.phone}
+              error={Boolean(touched.phone && errors.phone)}
+              helperText={touched.phone && errors.phone}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              placeholder="-을 포함해 정확한 형식으로 입력해주세요"
+              fullWidth
               my={3}
             />
             

@@ -1,5 +1,7 @@
 package com.example.backend.api.auth;
 
+import com.example.backend.api.coolsms.Coolsms;
+import com.example.backend.api.coolsms.CoolsmsService;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.util.enumerator.SearchTypes;
@@ -12,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @RestController
@@ -22,6 +24,8 @@ public class AuthController {
     private final String LOGIN_ERROR_MESSAGE = "가입하지 않은 아이디이거나, 잘못된 비밀번호입니다";
     @Autowired
     MemberService memberService;
+    @Autowired
+    CoolsmsService coolsmsService;
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
@@ -73,11 +77,35 @@ public class AuthController {
 
         return ResponseEntity.ok().body(authentication);
     }
+
+    @PostMapping("/send-sms")
+    public ResponseEntity sendSms(@RequestBody Coolsms coolSms, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.removeAttribute("authNo");
+
+        int authNo = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
+        session.setAttribute("authNo", authNo);
+
+        coolSms.setText("인증번호는 " + authNo + " 입니다");
+
+        return ResponseEntity.ok(coolSms);
+        //coolsmsService.sendSms(coolSms);
+        //return ResponseEntity.ok(CommonResponse.successResult());
+    }
     @GetMapping("/find-id/{searchType}")
     public ResponseEntity getUserId(@RequestParam Map<String, String> param, @PathVariable String searchType){
-        SearchTypes test = SearchTypes.INFO;
+        Member member = new Member();
+        if(searchType.equals(SearchTypes.INFO.getSearchType())){
+            member = memberService.findIdByInfo(param.get("id"), param.get("email"));
+        }else if(searchType.equals(SearchTypes.PHONE.getSearchType())){
 
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.failResult("invalid search type"));
+        }
 
-        return ResponseEntity.ok().body(searchType);
+        if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CommonResponse.failResult("no member"));
+
+        return ResponseEntity.ok().body(member);
     }
+
 }

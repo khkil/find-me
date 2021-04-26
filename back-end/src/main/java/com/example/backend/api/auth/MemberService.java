@@ -28,6 +28,14 @@ public class MemberService implements UserDetailsService {
         return member;
     }
 
+    public Member findIdByInfo(String id, String email){
+        return memberMapper.findIdByInfo(id, email);
+    }
+
+    public Member findIdByPhone(String phone){
+        return memberMapper.findIdByPhone(phone);
+    }
+
     public void insertMember(Member member){
         memberMapper.insertMember(member);
     }
