@@ -72,6 +72,38 @@ export function signUp(credentials) {
   });
 }
 
+export function sendAuthSms(params) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post("/api/auth/send-sms", params)
+      .then((response) => {
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+        reject(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+export function validateAuthSms(params) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post("/api/auth/check-sms", params)
+      .then((response) => {
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+        reject(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
 export function findId(credentials, type){
   console.log(credentials);
   return new Promise((resolve, reject) => {

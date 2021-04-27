@@ -66,11 +66,7 @@ public class AuthController {
         return ResponseEntity.ok(new Auth(token));
     }
 
-    @PostMapping("/check-id")
-    public ResponseEntity validateDuplicateMember(@RequestBody Member member){
-        memberService.validateDulplicateMember(member);
-        return ResponseEntity.ok(CommonResponse.successResult());
-    }
+
 
     @GetMapping("/info")
     public ResponseEntity getUserInfo(Authentication authentication){
@@ -80,18 +76,36 @@ public class AuthController {
 
     @PostMapping("/send-sms")
     public ResponseEntity sendSms(@RequestBody Coolsms coolSms, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        session.removeAttribute("authNo");
+        //int sessionValidateSecond = 60 * 2;
+        //int sessionValidateSecond = 60 * 60;
+        HttpSession session = request.getSession(true);
+        //session.setMaxInactiveInterval(sessionValidateSecond);
+        //session.removeAttribute("authNo");
 
         int authNo = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
         session.setAttribute("authNo", authNo);
-
-        coolSms.setText("인증번호는 " + authNo + " 입니다");
-
-        return ResponseEntity.ok(coolSms);
+        coolSms.setText("[humannx] 인증번호는 " + authNo + " 입니다");
+        System.out.println(session.getAttribute("authNo").toString());
         //coolsmsService.sendSms(coolSms);
-        //return ResponseEntity.ok(CommonResponse.successResult());
+        return ResponseEntity.ok(CommonResponse.successResult());
     }
+
+    @PostMapping("/check-sms")
+    public ResponseEntity checkPhone(@RequestBody Map<String, String> param, HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        //if(session.getAttribute("authNo") == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult("세션이 유효하지 않습니다"));
+
+        String number = param.get("number");
+        String authNo = session.getAttribute("authNo").toString();
+
+        if(number.equals(authNo)){
+            return ResponseEntity.ok(CommonResponse.successResult());
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult("인증번호가 다릅니다."));
+        }
+
+    }
+
     @GetMapping("/find-id/{searchType}")
     public ResponseEntity getUserId(@RequestParam Map<String, String> param, @PathVariable String searchType){
         Member member = new Member();

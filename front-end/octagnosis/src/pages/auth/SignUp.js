@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components/macro";
@@ -8,6 +8,8 @@ import { Formik } from "formik";
 import { signUp } from "../../redux/actions/authActions";
 import * as authService from "../../services/authService";
 import {
+  Badge,
+  Box,
   Button,
   Paper,
   TextField as MuiTextField,
@@ -37,8 +39,18 @@ const phoneRegExp = /^\d{3}-\d{3,4}-\d{4}$/;
 const SignUp = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
   const [checkedId, setCheckedId] = useState(false);
   const [checkedIdMsg, setCheckedIdMsg] = useState("아이디를 입력해주세요.");
+  const [auth, setAuth] = useState({
+    time: 180,
+    start: false,
+    error: false,
+    completed: false
+  })
+  /* const [authTime, setAuthTime] = useState(180);
+  const [authStart, setAuthStart] = useState(false);
+  const [authCompleted, setAuthCompleted] = useState(false); */
   const idInputRef = useRef();
   const passwordInputRef = useRef();
 
@@ -71,9 +83,69 @@ const SignUp = () => {
     
   }
 
+  const sendAuthSms = async (to) => {
+    const param = {
+      to: to
+    };
+    const { success, code, error } = await authService.sendAuthSms(param);
+    if(success && code === types.SUCCESS_CODE){
+      alert('인증번호가 발송되었습니다');
+      setAuth({
+        ...auth,
+        start: true
+      })
+    }else{
+      alert('통신오류가 발생하였습니다.');
+      console.error(error);
+    
+    }
+  }
+
+  const validateSms = async (number) => {
+    const param = {
+      number: number
+    };
+    const { success, code, error } = await authService.validateAuthSms(param);
+    if(success && code === types.SUCCESS_CODE){
+      alert('인증에 성공하였습니다.');
+      setAuth({
+        ...auth,
+        completed: true
+      })
+    }else{
+      alert('인증번호가 다릅니다.')
+      console.error(error);
+    
+    }
+  }
+
+  const timeFormat = (time) => {
+    const m = Math.floor(time / 60).toString()
+    let s = (time % 60).toString()
+    if (s.length === 1) s = `0${s}`
+    return `${m}:${s}`
+  }
+ 
+ 
+  useEffect(() => {
+    if(auth.time > 0 && auth.start){
+      const timer = setInterval(() => {
+        setAuth({
+          ...auth,
+          time: auth.time -1
+        })     
+     }, 1000);
+     
+     return () => clearInterval(timer);
+    }
+  }, [auth]);
+
   return (
     <Wrapper>
       <Helmet title="회원가입" />
+      <Typography component="h1" variant="h4" align="center" gutterBottom>
+        회원가입
+      </Typography>
 
       <Formik
         initialValues={{
@@ -83,6 +155,7 @@ const SignUp = () => {
           password: "",
           confirmPassword: "",
           phone: "",
+          authNumber: "",
           submit: false,
         }}
         validationSchema={Yup.object().shape({
@@ -113,7 +186,11 @@ const SignUp = () => {
             }),
           phone: Yup.string()
           .required("휴대폰 번호를 입력해주세요")
-          .matches(phoneRegExp, "형식에 맞지 않습니다"),
+          .matches(phoneRegExp, "-을 포함해 정확한 형식으로 입력해주세요"),
+          authNumber: Yup.string()
+          .required("인증번호를 입력해주세요")
+          .matches(/^[0-9]/g, "숫자만 입력 가능합니다.")
+          .test("authNumber", "인증을 진행해주세요",() => auth.completed)
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -167,10 +244,10 @@ const SignUp = () => {
               variant="outlined" 
               color="secondary" 
               onClick={() => {checkId(values.id, errors);}}
+              disabled={!values.id || '' === values.id}
             >
               중복체크
             </Button>
-           
             <TextField
               type="password"
               name="password"
@@ -233,16 +310,59 @@ const SignUp = () => {
               fullWidth
               my={3}
             />
-            
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              disabled={isSubmitting}
+            <Button 
+              variant="outlined" 
+              color="secondary" 
+              onClick={() => {sendAuthSms(values.phone)}}
+              disabled={Boolean(!touched.phone || (touched.phone && errors.phone))}
             >
-              Sign up
+              인증번호 받기
             </Button>
+            <Box>
+              <TextField
+                type="authNumber"
+                name="authNumber"
+                label="인증번호"
+                value={values.authNumber}
+                error={Boolean(touched.authNumber && errors.authNumber)}
+                helperText={touched.authNumber && errors.authNumber}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                disabled={!auth.start}
+                fullWidth
+                my={3}
+              />
+              {auth.start &&
+                <Box mb={4}>
+                  <Typography component="h2" variant="body1" >
+                    휴대폰 번호로 전송된 인증번호를 시간내로 입력해주세요 
+                      <Badge badgeContent={timeFormat(auth.time)} color="error" variant="standard" style={{marginLeft: "2rem"}}/>
+                  </Typography>
+                  
+                </Box>
+              }
+              
+              <Button
+                variant="outlined" 
+                color="secondary" 
+                disabled={!auth.start}
+                onClick={() => {validateSms(values.authNumber)}}
+              >
+                인증
+              </Button>
+            </Box>
+            
+              <Box mt={4}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                >
+                  Sign up
+              </Button>
+            </Box>
           </form>
         )}
       </Formik>
