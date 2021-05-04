@@ -48,11 +48,10 @@ const SignUp = () => {
     error: false,
     completed: false
   })
-  /* const [authTime, setAuthTime] = useState(180);
-  const [authStart, setAuthStart] = useState(false);
-  const [authCompleted, setAuthCompleted] = useState(false); */
+ 
   const idInputRef = useRef();
   const passwordInputRef = useRef();
+  const submitButtonRef = useRef();
 
   const checkId = async (id, errors) => {
     if(!id){
@@ -358,6 +357,7 @@ const SignUp = () => {
                   fullWidth
                   variant="contained"
                   color="primary"
+                  inputRef={submitButtonRef}
                   disabled={isSubmitting}
                 >
                   Sign up

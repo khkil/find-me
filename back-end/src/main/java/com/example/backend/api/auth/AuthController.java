@@ -93,7 +93,7 @@ public class AuthController {
     @PostMapping("/check-sms")
     public ResponseEntity checkPhone(@RequestBody Map<String, String> param, HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        //if(session.getAttribute("authNo") == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult("세션이 유효하지 않습니다"));
+        if(session.getAttribute("authNo") == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult("세션이 유효하지 않습니다"));
 
         String number = param.get("number");
         String authNo = session.getAttribute("authNo").toString();
