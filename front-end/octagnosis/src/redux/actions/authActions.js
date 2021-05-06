@@ -34,6 +34,19 @@ export const getAuthInfo = () => async dispatch => {
   }
 }
 
+export const sendAuthSms = (params) => async dispatch => {
+
+  dispatch({ type: types.AUTH_SEND_SMS_REQUEST });
+  try {
+    const data = await authService.sendAuthSms(params);
+    dispatch({ type: types.AUTH_SEND_SMS_SUCCESS, data: data});
+  }catch (e) {
+    console.error(e);
+    dispatch({ type: types.AUTH_SEND_SMS_FAILURE, error: e });
+  }
+
+}
+
 export const findId = (credentials, type) => async dispatch => {
   dispatch({ type: types.AUTH_FIND_ID_REQUEST });
   try {

@@ -97,6 +97,26 @@ export default function reducer(state = initialState, action) {
         error: action.error
       };
 
+    case types.AUTH_SEND_SMS_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case types.AUTH_SEND_SMS_SUCCESS:
+      return {
+        ...state,
+        data: 'test',
+        loading: false
+      };
+    case types.AUTH_SEND_SMS_FAILURE:
+      return {
+        ...state,
+        error: action.error,
+        loading: false
+      };
+  
+
     default:
       return state;
   }

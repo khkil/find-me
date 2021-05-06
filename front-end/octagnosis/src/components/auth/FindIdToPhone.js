@@ -33,6 +33,7 @@ const FindIdToPhone = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const onSubmit = (e) => {
+    alert('submit');
     console.log(e)
   }
 
@@ -89,7 +90,7 @@ const FindIdToPhone = () => {
             />
             <Button
               disabled={Boolean(!touched.phone || errors.phone)}
-              type="submit"
+              type="button"
               fullWidth
               variant="contained"
               color="primary"
@@ -98,6 +99,7 @@ const FindIdToPhone = () => {
             </Button>
           </form>
         )}
+        
       </Formik>
     </Wrapper>
   );

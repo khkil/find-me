@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components/macro";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { signUp } from "../../redux/actions/authActions";
+import * as authActions from "../../redux/actions/authActions";
 import * as authService from "../../services/authService";
 import {
   Badge,
@@ -39,6 +39,8 @@ const phoneRegExp = /^\d{3}-\d{3,4}-\d{4}$/;
 const SignUp = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const data = useSelector(state => state.authReducer);
 
   const [checkedId, setCheckedId] = useState(false);
   const [checkedIdMsg, setCheckedIdMsg] = useState("아이디를 입력해주세요.");
@@ -83,10 +85,16 @@ const SignUp = () => {
   }
 
   const sendAuthSms = async (to) => {
-    const param = {
+    const params = {
       to: to
     };
-    const { success, code, error } = await authService.sendAuthSms(param);
+    dispatch(authActions.sendAuthSms(params));
+    
+
+    console.log(data);
+
+    
+    /* const { success, code, error } = await authService.sendAuthSms(param);
     if(success && code === types.SUCCESS_CODE){
       alert('인증번호가 발송되었습니다');
       setAuth({
@@ -94,10 +102,11 @@ const SignUp = () => {
         start: true
       })
     }else{
+      
       alert('통신오류가 발생하였습니다.');
       console.error(error);
     
-    }
+    } */
   }
 
   const validateSms = async (number) => {
@@ -185,7 +194,7 @@ const SignUp = () => {
             }),
           phone: Yup.string()
           .required("휴대폰 번호를 입력해주세요")
-          .matches(phoneRegExp, "-을 포함해 정확한 형식으로 입력해주세요"),
+          .matches(phoneRegExp, "- 을 포함해 정확한 형식으로 입력해주세요"),
           authNumber: Yup.string()
           .required("인증번호를 입력해주세요")
           .matches(/^[0-9]/g, "숫자만 입력 가능합니다.")
@@ -194,7 +203,7 @@ const SignUp = () => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
              dispatch(
-              signUp({...values, role: 'ROLE_MEMBER'}, history)
+              authActions.signUp({...values, role: 'ROLE_MEMBER'}, history)
             );
             //history.push("/auth/login");
           } catch (error) {
@@ -357,7 +366,6 @@ const SignUp = () => {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  inputRef={submitButtonRef}
                   disabled={isSubmitting}
                 >
                   Sign up
