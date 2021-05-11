@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/macro";
-import { NavLink } from "react-router-dom";
+import { NavLink, Redirect } from "react-router-dom";
 
 import Helmet from "react-helmet";
 
@@ -50,7 +50,8 @@ const BigAvatar = styled(Avatar)`
 
 function Private() {
   const { data } = useSelector(state => state.authReducer);
-  const { member_name } = data;
+  const { id, idx, username } = data.principal;
+  
   return (
     <Card mb={6}>
       <CardContent>
@@ -64,7 +65,7 @@ function Private() {
               id="first-name"
               label="First name"
               variant="outlined"
-              defaultValue={member_name}
+              defaultValue={username}
               fullWidth
               my={2}
             />

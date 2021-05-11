@@ -12,9 +12,17 @@ export const login = (credentials) => {
     axios
       .post('/api/auth/login', credentials)
       .then((response) => {
-        resolve(response.data);
+        if (response.status === 200) {
+          resolve(response.data);
+          console.log(1);
+        }
+        reject(response.data);
+        console.log(2);
+        
+        
       })
       .catch((error) => {
+        console.log(3);
         reject(error);
       });
   });
@@ -48,7 +56,10 @@ export const getAuthInfo = () => {
         }
       })
       .then((response) => {
-        resolve(response.data);
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+        reject(response.data);
       })
       .catch((error) => {
         reject(error);

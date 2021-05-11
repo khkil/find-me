@@ -36,18 +36,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if(token){
-      dispatch(getAuthInfo());  
-    }
-    
-  }, [])
-
-  const { isLoggedIn } = useSelector(state => state.authReducer);
-  
   return (
     <React.Fragment>
 
@@ -73,7 +61,7 @@ const Header = () => {
             <Grid item xs />
             <Grid item>
 
-              <MemberDropdown isLoggedIn={isLoggedIn}/>
+              <MemberDropdown />
             </Grid>
           </Grid>
         </Toolbar>

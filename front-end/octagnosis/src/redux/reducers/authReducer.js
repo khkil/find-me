@@ -8,10 +8,17 @@ const initialState = { isLoggedIn: token !== null, loading: false, data: null, e
 export default function reducer(state = initialState, action) {
   
   switch (action.type) {
+    case types.AUTH_GET_INFO_REQUEST:
+      return {
+        ...state,
+        isLoggedIn: false,
+        loading: true
+      };
     case types.AUTH_GET_INFO_SUCCESS:
       return {
         ...state,
         isLoggedIn: true,
+        loading: false,
         data: action.data,
       };
 
@@ -32,23 +39,28 @@ export default function reducer(state = initialState, action) {
 
 
     case types.AUTH_LOGIN_REQUEST:
+      console.log('request', action);
       return {
         ...state,
+        isLoggedIn: false,
         loading: true,
-        error: ''
       };
 
     case types.AUTH_LOGIN_SUCCESS:
+      
       return {
         ...state,
         data: action.data,
+        isLoggedIn: true,
         loading: false
       };
 
     case types.AUTH_LOGIN_FAILURE:
+      console.log('fail', action);
       return {
         ...state,
         loading: false,
+        isLoggedIn: false,
         error: action.error
       };
 

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components/macro";
 import { Power } from "react-feather";
 import { useHistory, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   Tooltip,
@@ -20,7 +20,10 @@ const IconButton = styled(MuiIconButton)`
   }
 `;
 
-const MemberDropdown = ({ isLoggedIn }) => {
+const MemberDropdown = () => {
+
+  console.log(useSelector(state => state.authReducer));
+  const { isLoggedIn } = useSelector(state => state.authReducer);
   const [anchorMenu, setAnchorMenu] = React.useState(null);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -37,6 +40,10 @@ const MemberDropdown = ({ isLoggedIn }) => {
     dispatch(logout());
     history.push("/auth/login");
   };
+
+  useEffect(() => {
+
+  }, [history])
 
   return (
     

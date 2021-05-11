@@ -20,7 +20,6 @@ const InfoType = ({ type }) => {
     error_text: {
       color: '#f44336' 
     }
-   
   });
   const classes = useStyles();
 

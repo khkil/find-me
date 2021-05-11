@@ -1,26 +1,25 @@
 import * as types from "../../constants";
 import * as authService from "../../services/authService";
+import { timeout } from "../../utils/util";
 
 
-export const login = async (credentials, history) => {
+export const login = (credentials, history) => async dispatch  => {
   const { location } = history;
   const { pathname } = location;
   const redirectPath = pathname.indexOf('admin') > -1 ? '/admin' : '/';
-
+  dispatch({ type: types.AUTH_LOGIN_REQUEST });
   try{
     const data = await authService.login(credentials);
-    if (data.token) {
-      const { token } = data;
-      localStorage.setItem('token', token);
-      history.push(redirectPath);
-    }
-      return data;
+    dispatch({ type: types.AUTH_LOGIN_SUCCESS, data: data });
+    localStorage.setItem('token', data.token);
+    history.push(redirectPath);
   }catch(e){
-    console.error(e);
+    dispatch({ type: types.AUTH_LOGIN_FAILURE, error: e });
   }
 } 
 
 export const getAuthInfo = () => async dispatch => {
+  dispatch({ type: types.AUTH_GET_INFO_REQUEST });
   try {
     const data = await authService.getAuthInfo();
     dispatch({ type: types.AUTH_GET_INFO_SUCCESS, data: data });

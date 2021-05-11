@@ -18,6 +18,8 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  CircularProgress,
+  makeStyles,
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
@@ -43,20 +45,48 @@ const BigAvatar = styled(Avatar)`
   margin: 0 auto ${(props) => props.theme.spacing(5)}px;
 `;
 
+const loadigBar = styled(CircularProgress)`
+  margin: 0 auto;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  display: block;
+`;
+
+
+
 function Login({ history }) {
 
+  const useStyles = makeStyles({
+    loading: {
+      margin: "0 auto",
+      position: "relative",
+      display: "block",
+      padding: "10px"
+    }
+  });
+  const classes = useStyles();
+
   const dispatch = useDispatch();
-  const [errorMsg, setErrorMsg] = useState('');
+  const [showErrorMsg, setShowErrorMsg] = useState(false);
   const [useCode, setUseCode] = useState(false);
   
 
   const handleSubmit = async (e) => {
-    const { id, password } = e;
-    const credentials = { id: id, password: password, role: 'ROLE_MEMBER' };
+
+    dispatch(login(e, history));
+    const { submit } = e;
+    
+    if(!submit){
+      setShowErrorMsg(true);
+    }
+    
+    /* 
+    const credentials = { id: id, password: password, role: "ROLE_MEMBER" };
     const { success, msg, code } = await login(credentials, history);
     if(msg){
       setErrorMsg(msg);
-    }
+    } */
   };
 
   
@@ -69,15 +99,11 @@ function Login({ history }) {
   }else{
     delete validationSchema.code;
   }
-  
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      dispatch(getAuthInfo());
-    }
-  }, [])
-  const { isLoggedIn } = useSelector(state => state.authReducer);
-  if(isLoggedIn) return <Redirect to='/' />;
+
+/*   const { isLoggedIn } = useSelector(state => state.authReducer);
+  if(isLoggedIn) return <Redirect to="/" />;
+  const { data, error, loading } = useSelector(state => state.authReducer); */
+
   return (
     <Wrapper>
       <Helmet title="로그인" />
@@ -89,8 +115,9 @@ function Login({ history }) {
           id: "",
           password: "",
           code: "",
-          member_type: "",
+          member_type: "individual",
           submit: false,
+          role: "ROLE_MEMBER"
         }}
         validationSchema={Yup.object().shape(validationSchema)}
         onSubmit={handleSubmit}
@@ -121,7 +148,7 @@ function Login({ history }) {
               onBlur={handleBlur}
               onChange={(e) => {
                 handleChange(e);
-                setErrorMsg('');
+                setShowErrorMsg(false);
               }}
               my={2}
             />
@@ -136,7 +163,7 @@ function Login({ history }) {
               onBlur={handleBlur}
               onChange={(e) => {
                 handleChange(e);
-                setErrorMsg('');
+                setShowErrorMsg(false);
               }}
               my={2}
             />
@@ -152,7 +179,7 @@ function Login({ history }) {
                 onBlur={handleBlur}
                 onChange={(e) => {
                   handleChange(e);
-                  setErrorMsg('');
+                  setShowErrorMsg(false);
                 }}
                 my={2}
                 />
@@ -164,16 +191,23 @@ function Login({ history }) {
               defaultValue="individual"
               onChange={(e) => { 
                 values.member_type = e.target.value;
-                values.code = '';
+                values.code = "";
                 handleChange;
-                setErrorMsg('');
-                setUseCode('group' === e.target.value ? true : false);
+                setErrorMsg("");
+                setUseCode("group" === e.target.value ? true : false);
 
               }}>
               <FormControlLabel control={<Radio color="primary" value="individual"/>} label="개인회원" />
               <FormControlLabel control={<Radio color="primary" value="group"/>} label="단체회원" />
             </RadioGroup>
-            <p style={{ color: '#f44336' }}>{errorMsg}</p>
+            {/* {
+            error.msg && showErrorMsg ? 
+              <p style={{ color: "#f44336" }}>{error.msg}</p>    
+            : loading ?
+              <CircularProgress className={classes.loading} /> : null
+            } */}
+            
+            
             {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="계정정보 저장"
@@ -190,7 +224,7 @@ function Login({ history }) {
           </form>
         )}
       </Formik>
-      <Grid container style={{marginTop: '20px'}}>
+      <Grid container style={{marginTop: "20px"}}>
         <Grid item xs>
           <Link to="/auth/sign-up" variant="body2">
             회원가입
