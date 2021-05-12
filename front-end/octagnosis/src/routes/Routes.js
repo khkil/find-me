@@ -13,6 +13,7 @@ import AuthLayout from "../layouts/Auth";
 import PresentationLayout from "../layouts/Presentation";
 import Page404 from "../pages/auth/Page404";
 import AuthGuard from "../components/AuthGuard";
+import GuestGuard from "../components/GuestGuard";
 import InspectionLayout from "../layouts/Inspection";
 
 const childRoutes = (Layout, routes) => {

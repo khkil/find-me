@@ -34,7 +34,6 @@ const FindIdToPhone = () => {
   const history = useHistory();
   const onSubmit = (e) => {
     alert('submit');
-    console.log(e)
   }
 
   return (

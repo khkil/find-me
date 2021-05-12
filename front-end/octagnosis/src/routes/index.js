@@ -22,7 +22,6 @@ import {
 
 // Guards
 const AuthGuard = async(() => import("../components/AuthGuard"));
-
 // Auth components
 const SignIn = async(() => import("../pages/auth/SignIn"));
 const SignUp = async(() => import("../pages/auth/SignUp"));
@@ -32,6 +31,10 @@ const FindPw = async(() => import("../pages/auth/FindPw"));
 const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const Page404 = async(() => import("../pages/auth/Page404"));
 const Page500 = async(() => import("../pages/auth/Page500"));
+
+
+// Member components
+const MemberProfile = async(() => import("../pages/member/Profile"));
 
 // Components components
 const Alerts = async(() => import("../pages/components/Alerts"));
@@ -135,7 +138,7 @@ const memberRoutes = {
     {
       path: "/member/profile",
       name: "Profile",
-      component: Settings,
+      component: MemberProfile,
     },
   ]
   

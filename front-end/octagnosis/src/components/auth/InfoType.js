@@ -40,7 +40,6 @@ const InfoType = ({ type }) => {
   }
 
   useEffect(() => {
-    console.log(type);
   })
   return (
     <>

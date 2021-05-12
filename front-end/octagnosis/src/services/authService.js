@@ -18,8 +18,6 @@ export const login = (credentials) => {
         }
         reject(response.data);
         console.log(2);
-        
-        
       })
       .catch((error) => {
         console.log(3);

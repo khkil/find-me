@@ -24,6 +24,7 @@ import {
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
 import { getAuthInfo, login } from "../../redux/actions/authActions";
+import UserGuard from "../../components/UserGuard";
 
 
 const Alert = styled(MuiAlert)(spacing);
@@ -68,7 +69,7 @@ function Login({ history }) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const [showErrorMsg, setShowErrorMsg] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(false);
   const [useCode, setUseCode] = useState(false);
   
 
@@ -78,7 +79,7 @@ function Login({ history }) {
     const { submit } = e;
     
     if(!submit){
-      setShowErrorMsg(true);
+      setErrorMsg("계정정보가 일치하지 않습니다");      
     }
     
     /* 
@@ -100,143 +101,142 @@ function Login({ history }) {
     delete validationSchema.code;
   }
 
-/*   const { isLoggedIn } = useSelector(state => state.authReducer);
-  if(isLoggedIn) return <Redirect to="/" />;
-  const { data, error, loading } = useSelector(state => state.authReducer); */
-
   return (
-    <Wrapper>
-      <Helmet title="로그인" />
-      <Typography component="h1" variant="h4" align="center" gutterBottom>
-        로그인
-      </Typography>
-      <Formik
-        initialValues={{
-          id: "",
-          password: "",
-          code: "",
-          member_type: "individual",
-          submit: false,
-          role: "ROLE_MEMBER"
-        }}
-        validationSchema={Yup.object().shape(validationSchema)}
-        onSubmit={handleSubmit}
-      >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
-          <form noValidate onSubmit={handleSubmit}>
-            {errors.submit && (
-              <Alert mt={2} mb={1} severity="warning">
-                {errors.submit}
-              </Alert>
-            )}
-            <TextField
-              type="id"
-              name="id"
-              label="아이디"
-              value={values.id}
-              error={Boolean(touched.id && errors.id)}
-              fullWidth
-              helperText={touched.id && errors.id}
-              onBlur={handleBlur}
-              onChange={(e) => {
-                handleChange(e);
-                setShowErrorMsg(false);
-              }}
-              my={2}
-            />
-            <TextField
-              type="password"
-              name="password"
-              label="비밀번호"
-              value={values.password}
-              error={Boolean(touched.password && errors.password)}
-              fullWidth
-              helperText={touched.password && errors.password}
-              onBlur={handleBlur}
-              onChange={(e) => {
-                handleChange(e);
-                setShowErrorMsg(false);
-              }}
-              my={2}
-            />
-             {useCode &&  
+    <UserGuard>
+      <Wrapper>
+        <Helmet title="로그인" />
+        <Typography component="h1" variant="h4" align="center" gutterBottom>
+          로그인
+        </Typography>
+        <Formik
+          initialValues={{
+            id: "",
+            password: "",
+            code: "",
+            member_type: "individual",
+            submit: false,
+            role: "ROLE_MEMBER"
+          }}
+          validationSchema={Yup.object().shape(validationSchema)}
+          onSubmit={handleSubmit}
+        >
+          {({
+            errors,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+            isSubmitting,
+            touched,
+            values,
+          }) => (
+            <form noValidate onSubmit={handleSubmit}>
+              {errors.submit && (
+                <Alert mt={2} mb={1} severity="warning">
+                  {errors.submit}
+                </Alert>
+              )}
               <TextField
-                type="code"
-                name="code"
-                label="회차코드"
-                value={values.code}
+                type="id"
+                name="id"
+                label="아이디"
+                value={values.id}
+                error={Boolean(touched.id && errors.id)}
                 fullWidth
-                error={Boolean(touched.code && errors.code)}
-                helperText={touched.code && errors.code}
+                helperText={touched.id && errors.id}
                 onBlur={handleBlur}
                 onChange={(e) => {
                   handleChange(e);
-                  setShowErrorMsg(false);
+                  setErrorMsg("");
                 }}
                 my={2}
-                />
-            }
-            
-            <RadioGroup 
-              row aria-label="position" 
-              name="member_type" 
-              defaultValue="individual"
-              onChange={(e) => { 
-                values.member_type = e.target.value;
-                values.code = "";
-                handleChange;
-                setErrorMsg("");
-                setUseCode("group" === e.target.value ? true : false);
-
-              }}>
-              <FormControlLabel control={<Radio color="primary" value="individual"/>} label="개인회원" />
-              <FormControlLabel control={<Radio color="primary" value="group"/>} label="단체회원" />
-            </RadioGroup>
-            {/* {
-            error.msg && showErrorMsg ? 
-              <p style={{ color: "#f44336" }}>{error.msg}</p>    
-            : loading ?
-              <CircularProgress className={classes.loading} /> : null
-            } */}
-            
-            
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="계정정보 저장"
-            /> */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-            >
-              로그인
+              />
+              <TextField
+                type="password"
+                name="password"
+                label="비밀번호"
+                value={values.password}
+                error={Boolean(touched.password && errors.password)}
+                fullWidth
+                helperText={touched.password && errors.password}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  handleChange(e);
+                  setErrorMsg("");
+                }}
+                my={2}
+              />
+              {useCode &&  
+                <TextField
+                  type="code"
+                  name="code"
+                  label="회차코드"
+                  value={values.code}
+                  fullWidth
+                  error={Boolean(touched.code && errors.code)}
+                  helperText={touched.code && errors.code}
+                  onBlur={handleBlur}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setErrorMsg("");
+                  }}
+                  my={2}
+                  />
+              }
               
-            </Button>
-          </form>
-        )}
-      </Formik>
-      <Grid container style={{marginTop: "20px"}}>
-        <Grid item xs>
-          <Link to="/auth/sign-up" variant="body2">
-            회원가입
-          </Link>
+              <RadioGroup 
+                row aria-label="position" 
+                name="member_type" 
+                defaultValue="individual"
+                onChange={(e) => { 
+                  values.member_type = e.target.value;
+                  values.code = "";
+                  handleChange;
+                  setErrorMsg("");
+                  setUseCode("group" === e.target.value ? true : false);
+
+                }}>
+                <FormControlLabel control={<Radio color="primary" value="individual"/>} label="개인회원" />
+                <FormControlLabel control={<Radio color="primary" value="group"/>} label="단체회원" />
+              </RadioGroup>
+              {/* {
+              !isSubmitting ? 
+                <p style={{ color: "#f44336" }}>{errorMsg}</p>    
+              : isSubmitting ?
+                <CircularProgress className={classes.loading} /> : null
+              }  */}
+              
+              {!isSubmitting && <p style={{ color: "#f44336" }}>{errorMsg}</p>}
+              
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="계정정보 저장"
+              /> 
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+              >
+                로그인
+                
+              </Button>
+            </form>
+          )}
+        </Formik>
+        <Grid container style={{marginTop: "20px"}}>
+          <Grid item xs>
+            <Link to="/auth/sign-up" variant="body2">
+              회원가입
+            </Link>
+          </Grid>
+          <Grid item>
+            <Link to="/auth/find-info" variant="body2">
+              회원정보 찾기
+            </Link>
+          </Grid>
         </Grid>
-        <Grid item>
-          <Link to="/auth/find-info" variant="body2">
-            회원정보 찾기
-          </Link>
-        </Grid>
-      </Grid>
-    </Wrapper>
+      </Wrapper>
+    </UserGuard>
   );
 }
 

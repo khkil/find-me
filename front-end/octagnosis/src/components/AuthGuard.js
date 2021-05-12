@@ -8,7 +8,6 @@ const AuthGuard = ({ children, path }) => {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    
     dispatch(getAuthInfo());
   }, [token])
   const redirectPath = path.indexOf("admin") > -1 ? "/admin/login" : "/auth/login";

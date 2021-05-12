@@ -11,7 +11,6 @@ export default function reducer(state = initialState, action) {
     case types.AUTH_GET_INFO_REQUEST:
       return {
         ...state,
-        isLoggedIn: false,
         loading: true
       };
     case types.AUTH_GET_INFO_SUCCESS:
