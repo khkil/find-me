@@ -1,9 +1,6 @@
 import axios from "../utils/axios";
 
 axios.interceptors.request.use((config) => {
-
-  console.log('axios interceptor: ', config);
-  //
   return config;
 });
 
@@ -14,10 +11,8 @@ export const login = (credentials) => {
       .then((response) => {
         if (response.status === 200) {
           resolve(response.data);
-          console.log(1);
         }
         reject(response.data);
-        console.log(2);
       })
       .catch((error) => {
         console.log(3);

@@ -3,6 +3,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.backend.api.auth.MemberMapper">
+    <update id="updateMember" parameterType="com.example.backend.api.auth.Member">
+
+        UPDATE member
+        <trim prefix="SET" suffixOverrides=", ">
+            <if test="member.password != null"> password = #{member.password}</if>
+            <if test="member.email != null"> password = #{member.email}</if>
+            <if test="member.phone != null"> password = #{member.phone}</if>
+            WHERE idx = #{idx};
+        </trim>
+    </update>
 
     <select id="loadUserByUserName" parameterType="com.example.backend.api.auth.Member" resultType="com.example.backend.api.auth.Member">
         SELECT * FROM member
