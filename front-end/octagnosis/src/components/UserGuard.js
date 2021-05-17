@@ -4,8 +4,8 @@ import { Redirect } from "react-router-dom";
 import { boolean } from "yup/lib/locale";
 
 function UserGuard({ children }) {
-  const auth = useSelector((state) => state.authReducer);
-  if(auth && Boolean(auth.isLoggedIn)){
+  const { isLoggedIn, data } = useSelector((state) => state.authReducer);
+  if(isLoggedIn && data){
     return <Redirect to="/" />;
   }
 

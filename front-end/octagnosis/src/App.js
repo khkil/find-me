@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import DateFnsUtils from "@date-io/date-fns";
 import { ThemeProvider } from "styled-components/macro";
@@ -14,13 +14,25 @@ import {
 
 import createTheme from "./theme";
 import Routes from "./routes/Routes";
+import { getAuthInfo } from "./redux/actions/authActions";
 
 const jss = create({
   ...jssPreset(),
   insertionPoint: document.getElementById("jss-insertion-point"),
 });
 
+
+const token = localStorage.getItem("token");
 function App() {
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    
+    if(token){
+      console.log('통신');
+      dispatch(getAuthInfo());
+    }
+  }, [token]);
 
   const theme = useSelector((state) => state.themeReducer);
   let titleTemplate = "%s | 옥타그노시스";

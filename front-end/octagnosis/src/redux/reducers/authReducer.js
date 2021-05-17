@@ -38,7 +38,6 @@ export default function reducer(state = initialState, action) {
 
 
     case types.AUTH_LOGIN_REQUEST:
-      console.log('request', action);
       return {
         ...state,
         isLoggedIn: false,
@@ -55,7 +54,6 @@ export default function reducer(state = initialState, action) {
       };
 
     case types.AUTH_LOGIN_FAILURE:
-      console.log('fail', action);
       return {
         ...state,
         loading: false,

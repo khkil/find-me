@@ -51,12 +51,7 @@ function SignIn({ history }) {
       setErrorMsg(msg);
     }
   };
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      dispatch(getAuthInfo());
-    }
-  }, [])
+
   const { isLoggedIn } = useSelector(state => state.authReducer);
   if(isLoggedIn) return <Redirect to='/admin' />;
   return (

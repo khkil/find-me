@@ -20,9 +20,11 @@ const IconButton = styled(MuiIconButton)`
   }
 `;
 
+
+
 const MemberDropdown = () => {
 
-  const { isLoggedIn } = useSelector(state => state.authReducer);
+  const { isLoggedIn, data } = useSelector(state => state.authReducer);
   console.log(isLoggedIn);
   const [anchorMenu, setAnchorMenu] = React.useState(null);
   const history = useHistory();
@@ -65,7 +67,7 @@ const MemberDropdown = () => {
         onClose={closeMenu}
       >
 
-        {isLoggedIn ?
+        {isLoggedIn && data ?
           <div>
             <MenuItem>
               <Link to="/member/profile">내 정보</Link>
