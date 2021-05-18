@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components/macro";
 import { NavLink, Redirect } from "react-router-dom";
 
@@ -147,6 +147,9 @@ function Private() {
 }
 
 function Profile() {
+  useEffect(() => {
+
+  }, [])
   return (
     <React.Fragment>
       <Helmet title="Profile" />

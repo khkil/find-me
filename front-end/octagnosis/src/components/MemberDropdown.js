@@ -25,7 +25,6 @@ const IconButton = styled(MuiIconButton)`
 const MemberDropdown = () => {
 
   const { isLoggedIn, data } = useSelector(state => state.authReducer);
-  console.log(isLoggedIn);
   const [anchorMenu, setAnchorMenu] = React.useState(null);
   const history = useHistory();
   const dispatch = useDispatch();

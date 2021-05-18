@@ -123,7 +123,7 @@ const LoginPage = async(() => import("../pages/inspection/Login"));
 const inspectionRoute = {
   path: "/",
   name: "선택 페이지",
-  auth: false,
+  auth: true,
   header: "결과",
   component: InspectionSelectPage
   

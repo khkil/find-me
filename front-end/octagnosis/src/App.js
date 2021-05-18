@@ -25,15 +25,6 @@ const jss = create({
 const token = localStorage.getItem("token");
 function App() {
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    
-    if(token){
-      console.log('통신');
-      dispatch(getAuthInfo());
-    }
-  }, [token]);
-
   const theme = useSelector((state) => state.themeReducer);
   let titleTemplate = "%s | 옥타그노시스";
   let defaultTitle = "옥타그노시스 관리자 페이지";
