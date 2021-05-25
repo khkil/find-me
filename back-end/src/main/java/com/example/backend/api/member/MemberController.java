@@ -1,7 +1,5 @@
 package com.example.backend.api.member;
 
-import com.example.backend.api.auth.Member;
-import com.example.backend.api.auth.MemberService;
 import com.example.backend.common.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

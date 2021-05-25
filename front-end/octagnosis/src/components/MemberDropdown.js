@@ -43,8 +43,8 @@ const MemberDropdown = () => {
   };
 
   useEffect(() => {
-
-  }, [history])
+    setAnchorMenu(null);
+  }, [history.location])
 
   return (
     
@@ -68,9 +68,14 @@ const MemberDropdown = () => {
 
         {isLoggedIn && data ?
           <div>
-            <MenuItem>
-              <Link to="/member/profile">내 정보</Link>
-            </MenuItem>
+            <Link to="/">
+              <MenuItem>홈</MenuItem>
+            </Link>
+            <Link to="/member/profile">
+              <MenuItem>
+                내 정보
+              </MenuItem>
+            </Link>
             <MenuItem onClick={handleSignOut}>
               로그아웃
             </MenuItem>

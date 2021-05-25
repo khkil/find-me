@@ -2,6 +2,8 @@ package com.example.backend.api.auth;
 
 import com.example.backend.api.coolsms.Coolsms;
 import com.example.backend.api.coolsms.CoolsmsService;
+import com.example.backend.api.member.Member;
+import com.example.backend.api.member.MemberService;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.util.enumerator.SearchTypes;
@@ -99,6 +101,7 @@ public class AuthController {
         String authNo = session.getAttribute("authNo").toString();
 
         if(number.equals(authNo)){
+            session.invalidate();
             return ResponseEntity.ok(CommonResponse.successResult());
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult("인증번호가 다릅니다."));

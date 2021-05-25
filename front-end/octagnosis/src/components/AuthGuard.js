@@ -12,7 +12,7 @@ const AuthGuard = ({ children, path }) => {
       console.log('통신');
       dispatch(getAuthInfo());
     }
-  }, [token]);
+  }, [token, path]);
 
   const redirectPath = path.indexOf("admin") > -1 ? "/admin/login" : "/auth/login";
   const { data, isLoggedIn } = useSelector(state => state.authReducer);

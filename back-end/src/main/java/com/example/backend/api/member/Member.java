@@ -1,4 +1,4 @@
-package com.example.backend.api.auth;
+package com.example.backend.api.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +14,12 @@ public class Member implements UserDetails{
     private String idx;
     private String id;
     private String password;
+    private String name;
     private String role;
     private String email;
     private String phone;
+    private String cDate;
+    private String uDate;
 
     private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;

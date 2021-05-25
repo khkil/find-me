@@ -59,7 +59,7 @@ const loadigBar = styled(CircularProgress)`
 function Login({ history }) {
 
   const useStyles = makeStyles({
-    loading: {
+    center: {
       margin: "0 auto",
       position: "relative",
       display: "block",
@@ -72,6 +72,7 @@ function Login({ history }) {
   const [errorMsg, setErrorMsg] = useState(false);
   const [useCode, setUseCode] = useState(false);
   
+  const { loading, error } = useSelector(state => state.authReducer);
 
   const handleSubmit = async (e) => {
 
@@ -205,7 +206,12 @@ function Login({ history }) {
                 <CircularProgress className={classes.loading} /> : null
               }  */}
               
-              {!isSubmitting && <p style={{ color: "#f44336" }}>{errorMsg}</p>}
+              {
+                loading ? 
+                  <CircularProgress className={classes.center} /> : 
+                error ? 
+                  <p style={{ color: "#f44336" }}>{errorMsg}</p> : null
+              }
               
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

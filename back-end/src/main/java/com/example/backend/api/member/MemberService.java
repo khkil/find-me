@@ -1,4 +1,4 @@
-package com.example.backend.api.auth;
+package com.example.backend.api.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

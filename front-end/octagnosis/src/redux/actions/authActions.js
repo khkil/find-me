@@ -8,6 +8,7 @@ export const login = (credentials, history) => async dispatch  => {
   const { pathname } = location;
   const redirectPath = pathname.indexOf('admin') > -1 ? '/admin' : '/';
   dispatch({ type: types.AUTH_LOGIN_REQUEST });
+ 
   try{
     const data = await authService.login(credentials);
     dispatch({ type: types.AUTH_LOGIN_SUCCESS, data: data });

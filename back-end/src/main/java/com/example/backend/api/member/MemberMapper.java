@@ -1,8 +1,6 @@
-package com.example.backend.api.auth;
+package com.example.backend.api.member;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 @Repository

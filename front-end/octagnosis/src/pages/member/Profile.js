@@ -1,6 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { NavLink, Redirect } from "react-router-dom";
+import * as memberService from "../../services/memberService";
+
+import * as types from "../../constants";
 
 import Helmet from "react-helmet";
 
@@ -21,7 +24,8 @@ import {
 import { CloudUpload as MuiCloudUpload } from "@material-ui/icons";
 
 import { spacing } from "@material-ui/system";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateMember } from "../../redux/actions/memberActions";
 
 const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
 
@@ -41,115 +45,35 @@ const CenteredContent = styled.div`
   text-align: center;
 `;
 
-const BigAvatar = styled(Avatar)`
-  width: 120px;
-  height: 120px;
-  margin: 0 auto ${(props) => props.theme.spacing(2)}px;
-`;
 
+const Profile = ({ history }) => {
 
-function Private() {
+  const dispatch = useDispatch();
   const { data } = useSelector(state => state.authReducer);
-  const { id, idx, username } = data.principal;
-  
-  return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Private info
-        </Typography>
+  const { idx, id, password, name, email, phone } = data.principal;
+  const [form, setForm] = useState({})
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value
+    })
+  };
+  const onSubmit = () => {
+    dispatch(updateMember(idx, form));
+  }
 
-        <Grid container spacing={6}>
-          <Grid item md={6}>
-            <TextField
-              id="first-name"
-              label="First name"
-              variant="outlined"
-              defaultValue={username}
-              fullWidth
-              my={2}
-            />
-          </Grid>
-          <Grid item md={6}>
-            <TextField
-              id="last-name"
-              label="Last name"
-              variant="outlined"
-              defaultValue="Lavender"
-              fullWidth
-              my={2}
-            />
-          </Grid>
-        </Grid>
+  const member = useSelector(state => state.memberReducer);
 
-        <TextField
-          id="email"
-          label="Email"
-          variant="outlined"
-          type="email"
-          defaultValue="lucylavender@gmail.com"
-          fullWidth
-          my={2}
-        />
-
-        <TextField
-          id="address"
-          label="Address"
-          variant="outlined"
-          fullWidth
-          my={2}
-        />
-
-        <TextField
-          id="address2"
-          label="Apartment, studio, or floor"
-          variant="outlined"
-          fullWidth
-          my={2}
-        />
-
-        <Grid container spacing={6}>
-          <Grid item md={6}>
-            <TextField
-              id="city"
-              label="City"
-              variant="outlined"
-              fullWidth
-              my={2}
-            />
-          </Grid>
-          <Grid item md={4}>
-            <TextField
-              id="state"
-              label="State"
-              variant="outlined"
-              fullWidth
-              my={2}
-            />
-          </Grid>
-          <Grid item md={2}>
-            <TextField
-              id="zip"
-              label="Zip"
-              variant="outlined"
-              fullWidth
-              my={2}
-            />
-          </Grid>
-        </Grid>
-
-        <Button variant="contained" color="primary" mt={3}>
-          Save changes
-        </Button>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Profile() {
   useEffect(() => {
+    
+    const isSuccess = Boolean(member.data && member.data.success);
+    if(isSuccess){
+      alert("정보수정에 성공하였습니다.");
+      history.push("/");
+    }
+  }, [member])
 
-  }, [])
   return (
     <React.Fragment>
       <Helmet title="Profile" />
@@ -158,12 +82,97 @@ function Profile() {
         내 정보
       </Typography>
 
-
       <Divider my={6} />
-
+      
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <Private />
+          <Card mb={6}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                내정보 수정
+              </Typography>
+              <Grid container spacing={6}>
+                <Grid item md={6}>
+                  <TextField
+                    disabled
+                    name="id"
+                    label="아이디"
+                    variant="outlined"
+                    defaultValue={id}
+                    fullWidth
+                    my={2}
+                  />
+                </Grid>
+                <Grid item md={6}>
+                  <TextField
+                    type="password"
+                    name="password"
+                    label="비밀번호"
+                    variant="outlined"
+                    defaultValue={password}
+                    onChange={onChange}
+                    fullWidth
+                    my={2}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={6}>
+                <Grid item md={6}>
+                  <TextField
+                    name="name"
+                    label="이름"
+                    variant="outlined"
+                    defaultValue={name}
+                    onChange={onChange}
+                    fullWidth
+                    my={2}
+                  />
+                </Grid>
+                <Grid item md={6}>
+                  <TextField
+                    name="email"
+                    label="E-mail"
+                    variant="outlined"
+                    defaultValue={email}
+                    onChange={onChange}
+                    fullWidth
+                    my={2}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={6}>
+                <Grid item md={6}>
+                  <TextField
+                    id="city"
+                    name="phone"
+                    label="휴대폰번호"
+                    variant="outlined"
+                    defaultValue={phone}
+                    onChange={onChange}
+                    fullWidth
+                    my={2}
+                  />
+                </Grid>
+                <Grid item md={6}>
+                  <TextField
+                    id="city"
+                    name="phone"
+                    label="휴대폰번호"
+                    variant="outlined"
+                    defaultValue={phone}
+                    onChange={onChange}
+                    fullWidth
+                    my={2}
+                  />
+                </Grid>
+              </Grid>
+
+              <Button variant="contained" color="primary" mt={3} onClick={onSubmit}>
+                확인
+              </Button>
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
     </React.Fragment>
