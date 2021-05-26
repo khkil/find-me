@@ -85,7 +85,6 @@ const MemberDropdown = () => {
             <MenuItem>
               <Link to="/auth/login">로그인</Link>
             </MenuItem>
-            
           </div>
         }
 

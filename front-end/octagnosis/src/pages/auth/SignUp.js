@@ -340,7 +340,6 @@ const SignUp = () => {
                 fullWidth
                 my={3}
               />
-              {auth.start &&
                 <Box mb={4}>
                   <Typography component="h2" variant="body1" >
                     휴대폰 번호로 전송된 인증번호를 시간내로 입력해주세요 
@@ -348,7 +347,6 @@ const SignUp = () => {
                   </Typography>
                   
                 </Box>
-              }
               
               <Button
                 variant="outlined" 

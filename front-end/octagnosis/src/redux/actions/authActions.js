@@ -53,7 +53,6 @@ export const findId = (credentials, type) => async dispatch => {
     const data = await authService.findId(credentials, type);
     dispatch({ type: types.AUTH_FIND_ID_SUCCESS, data: data });
 
-
   } catch (e) {
     console.error(e);
     dispatch({ type: types.AUTH_FIND_ID_FAILURE, error: e });
@@ -61,10 +60,16 @@ export const findId = (credentials, type) => async dispatch => {
 }
 
 export const logout = () => (dispatch) => {
-  authService.logout();
-  dispatch({
-    type: types.AUTH_LOGOUT,
-  });
+
+  try{
+    authService.logout();
+    dispatch({
+      type: types.AUTH_LOGOUT,
+    });
+  }catch(e){
+    console.error(e);
+  }
+  
 };
 
 

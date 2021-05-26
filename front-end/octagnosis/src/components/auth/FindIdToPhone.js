@@ -8,6 +8,7 @@ import { Formik } from "formik";
 import { resetPassword } from "../../redux/actions/authActions";
 
 import {
+  Badge,
   Button,
   Paper,
   TextField as MuiTextField,
@@ -15,6 +16,8 @@ import {
 } from "@material-ui/core";
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
+import { Box } from "react-feather";
+import { timeFormat } from "../../utils/util"
 
 const Alert = styled(MuiAlert)(spacing);
 
@@ -87,9 +90,14 @@ const FindIdToPhone = () => {
               onChange={handleChange}
               my={3}
             />
+            <Typography component="h6" style={{padding: "6px"}}>
+                문자로 전송된 인증번호를 시간내로 입력해주세요 
+                <Badge badgeContent={timeFormat("300")} color="error" variant="standard" style={{marginLeft: "1.2rem", padding: "1px"}}/>
+            </Typography>
+              
             <Button
               disabled={Boolean(!touched.phone || errors.phone)}
-              type="button"
+              type="submit"
               fullWidth
               variant="contained"
               color="primary"

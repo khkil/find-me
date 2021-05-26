@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled, { withTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { Search as SearchIcon } from "react-feather";
-import { withRouter } from 'react-router';
+import { useHistory, withRouter } from 'react-router';
 
 import {
   Grid,
@@ -16,7 +16,8 @@ import {
   Typography,
   Button,
   AppBar,
-  IconButton
+  IconButton,
+  makeStyles
 } from "@material-ui/core";
 
 import { Menu as MenuIcon } from "@material-ui/icons";
@@ -28,13 +29,29 @@ import UserDropdown from "./UserDropdown";
 import { sidebarRoutes as routes } from "../routes/index";
 import { Autocomplete } from "@material-ui/lab";
 import MemberDropdown from "./MemberDropdown";
-import { getAuthInfo } from "../redux/actions/authActions";
+import * as authActions from "../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
+import { useStyles } from "@material-ui/pickers/views/Calendar/SlideTransition";
 
 
 
 
 const Header = () => {
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const useStyles = makeStyles({
+    menu: {
+      padding: '10px',
+    }
+  });
+  const classes = useStyles();
+  
+  const logout = () => {
+    if(confirm("로그아웃 하시겠습니까?")){
+      dispatch(authActions.logout());
+    }
+  }
 
   return (
     <React.Fragment>
@@ -49,20 +66,20 @@ const Header = () => {
         </Typography>
           <Button color="inherit">Login</Button> */}
           <Grid container alignItems="center">
-            <Grid item>
-              <Typography variant="h6" >
-                test
+            <Button color="inherit" onClick={() => { history.push("/")}}>
+              <Typography variant="h3">
+                옥타그노시스 검사 페이지
               </Typography>
-            </Grid>
-            <Grid item xs>
-
-
-            </Grid>
+            </Button>
+            
             <Grid item xs />
-            <Grid item>
+            
+            <Button size="large" color="inherit" onClick={() => {history.push("/member/profile")}}>내 정보</Button>
+            <Button size="large" color="inherit" onClick={logout}>로그아웃</Button>
 
+            {/* <Grid item>
               <MemberDropdown />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Toolbar>
       </AppBar>

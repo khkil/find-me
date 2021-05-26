@@ -23,7 +23,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         isLoggedIn: false,
-        data: null,
+        loading: false,
         error: action.error
       };
 
@@ -58,6 +58,9 @@ export default function reducer(state = initialState, action) {
         isLoggedIn: false,
         error: action.error
       };
+
+    case types.AUTH_LOGOUT:
+      return initialState;
 
     case types.AUTH_SIGN_OUT:
       return {
@@ -113,7 +116,7 @@ export default function reducer(state = initialState, action) {
     case types.AUTH_SEND_SMS_SUCCESS:
       return {
         ...state,
-        data: 'test',
+        data: action.data,
         loading: false
       };
     case types.AUTH_SEND_SMS_FAILURE:
