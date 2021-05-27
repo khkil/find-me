@@ -24,7 +24,7 @@
     </select>
 
     <select id="findIdByInfo" resultType="com.example.backend.api.member.Member" parameterType="map">
-        SELECT id FROM member WHERE id = #{id} AND email = #{email};
+        SELECT id FROM member WHERE name = #{name} AND email = #{email};
     </select>
 
     <select id="findIdByPhone" resultType="com.example.backend.api.member.Member" parameterType="map">

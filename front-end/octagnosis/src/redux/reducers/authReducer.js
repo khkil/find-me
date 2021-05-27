@@ -90,20 +90,20 @@ export default function reducer(state = initialState, action) {
 
     case types.AUTH_FIND_ID_REQUEST:
       return {
-        ...state,
+        ...initialState,
         loading: true
       };
 
     case types.AUTH_FIND_ID_SUCCESS:
       return {
         ...state,
-        isLoggedIn: true,
+        loading: false,
         data: action.data
       };
     case types.AUTH_FIND_ID_FAILURE:
       return {
         ...state,
-        isLoggedIn: false,
+        loading: false,
         error: action.error
       };
 

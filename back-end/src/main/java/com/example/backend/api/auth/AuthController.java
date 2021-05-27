@@ -4,6 +4,7 @@ import com.example.backend.api.coolsms.Coolsms;
 import com.example.backend.api.coolsms.CoolsmsService;
 import com.example.backend.api.member.Member;
 import com.example.backend.api.member.MemberService;
+import com.example.backend.common.exception.ApiException;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.util.enumerator.SearchTypes;
@@ -113,16 +114,17 @@ public class AuthController {
     public ResponseEntity getUserId(@RequestParam Map<String, String> param, @PathVariable String searchType){
         Member member = new Member();
         if(searchType.equals(SearchTypes.INFO.getSearchType())){
-            member = memberService.findIdByInfo(param.get("id"), param.get("email"));
+            member = memberService.findIdByInfo(param.get("name"), param.get("email"));
+
         }else if(searchType.equals(SearchTypes.PHONE.getSearchType())){
 
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.failResult("invalid search type"));
         }
 
-        if(member == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(CommonResponse.failResult("no member"));
+        if(member == null) throw new ApiException("유효하지 않은 정보입니다.");
 
-        return ResponseEntity.ok().body(member);
+        return ResponseEntity.ok().body(CommonResponse.successResult());
     }
 
 }
