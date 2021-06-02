@@ -31,9 +31,13 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     public String createToken(String userPk, List<String> roles) {
+        return createToken(userPk, roles, tokenValidMilisecond);
+    };
+
+    public String createToken(String userPk, List<String> roles, long expiredTime) {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
-        Date expireDate = new Date(now.getTime() + tokenValidMilisecond);
+        Date expireDate = new Date(now.getTime() + expiredTime);
         claims.put("roles", roles);
         claims.put("expire_date", expireDate);
         return Jwts.builder()

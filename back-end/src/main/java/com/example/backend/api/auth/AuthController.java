@@ -1,7 +1,7 @@
 package com.example.backend.api.auth;
 
-import com.example.backend.api.coolsms.Coolsms;
-import com.example.backend.api.coolsms.CoolsmsService;
+import com.example.backend.api.auth.coolsms.Coolsms;
+import com.example.backend.api.auth.coolsms.CoolsmsService;
 import com.example.backend.api.member.Member;
 import com.example.backend.api.member.MemberService;
 import com.example.backend.common.exception.ApiException;

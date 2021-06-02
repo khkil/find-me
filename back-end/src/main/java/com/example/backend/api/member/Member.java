@@ -20,6 +20,7 @@ public class Member implements UserDetails{
     private String phone;
     private String cDate;
     private String uDate;
+    private String authKey;
 
     private boolean isAccountNonExpired;
     private boolean isAccountNonLocked;

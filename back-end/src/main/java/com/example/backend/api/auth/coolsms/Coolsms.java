@@ -1,4 +1,4 @@
-package com.example.backend.api.coolsms;
+package com.example.backend.api.auth.coolsms;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
