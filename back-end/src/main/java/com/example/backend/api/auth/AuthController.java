@@ -4,6 +4,7 @@ import com.example.backend.api.auth.coolsms.Coolsms;
 import com.example.backend.api.auth.coolsms.CoolsmsService;
 import com.example.backend.api.member.Member;
 import com.example.backend.api.member.MemberService;
+import com.example.backend.api.user.User;
 import com.example.backend.common.exception.ApiException;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
@@ -72,9 +73,20 @@ public class AuthController {
 
 
     @GetMapping("/info")
-    public ResponseEntity getUserInfo(Authentication authentication){
+    public ResponseEntity getUserInfo(HttpServletRequest request){
 
-        return ResponseEntity.ok().body(authentication);
+        String token = request.getHeader(jwtTokenProvider.AUTHORIZATION);
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        return ResponseEntity.ok().body(authentication.getPrincipal());
+    }
+
+    @PostMapping("/check-id")
+    public ResponseEntity checkId(@RequestBody Member member){
+
+        Member duplicateMember = memberService.duplicateMember(member);
+        if(duplicateMember != null) throw new ApiException("이미 사용중인 아이디 입니다.");
+        return ResponseEntity.ok(CommonResponse.successResult());
+
     }
 
     @PostMapping("/send-sms")
@@ -96,17 +108,19 @@ public class AuthController {
     @PostMapping("/check-sms")
     public ResponseEntity checkPhone(@RequestBody Map<String, String> param, HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        if(session.getAttribute("authNo") == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult("세션이 유효하지 않습니다"));
+        if(session.getAttribute("authNo") == null)
+            throw new ApiException("세션이 유효하지 않습니다");
 
         String number = param.get("number");
         String authNo = session.getAttribute("authNo").toString();
 
-        if(number.equals(authNo)){
-            session.invalidate();
-            return ResponseEntity.ok(CommonResponse.successResult());
-        }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult("인증번호가 다릅니다."));
-        }
+        if(!number.equals(authNo))
+            throw new ApiException("인증번호가 다릅니다");
+
+
+
+        //session.invalidate();
+        return ResponseEntity.ok().body(CommonResponse.successResult());
 
     }
 

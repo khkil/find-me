@@ -40,22 +40,22 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const data = useSelector(state => state.authReducer);
+  const expiredTime = 180;
 
   const [checkedId, setCheckedId] = useState(false);
   const [checkedIdMsg, setCheckedIdMsg] = useState("아이디를 입력해주세요.");
   const [auth, setAuth] = useState({
-    time: 180,
+    time: expiredTime,
     start: false,
     error: false,
-    completed: false
+    expire: false
   })
  
   const idInputRef = useRef();
   const passwordInputRef = useRef();
   const submitButtonRef = useRef();
 
-  const checkId = async (id, errors) => {
+  const checkId = async (id) => {
     if(!id){
       idInputRef.current.focus();
       setCheckedIdMsg('아이디를 입력해주세요.');
@@ -67,64 +67,34 @@ const SignUp = () => {
       return;
     }
     
-    const { success, code } = await authService.checkId(id);
-    if(success && code === types.SUCCESS_CODE){
+    try{
+      await authService.checkId(id);
       setCheckedId(true);
       setTimeout(() => {
         passwordInputRef.current.focus();
       }, 200)
-    }else{
-      setCheckedIdMsg("이미 사용중인 아이디 입니다.");
+    }catch(error){
+      const { msg } = error;
+      setCheckedIdMsg(msg);
       setCheckedId(false);
       setTimeout(() => {
         idInputRef.current.focus();
       }, 200)
       
     }
-    
   }
+
+  const sms = useSelector(state => state.smsReducer);
 
   const sendAuthSms = async (to) => {
     const params = {
       to: to
     };
     dispatch(authActions.sendAuthSms(params));
-    
-
-    console.log(data);
-
-    
-    /* const { success, code, error } = await authService.sendAuthSms(param);
-    if(success && code === types.SUCCESS_CODE){
-      alert('인증번호가 발송되었습니다');
-      setAuth({
-        ...auth,
-        start: true
-      })
-    }else{
-      
-      alert('통신오류가 발생하였습니다.');
-      console.error(error);
-    
-    } */
   }
 
   const validateSms = async (number) => {
-    const param = {
-      number: number
-    };
-    const { success, code, error } = await authService.validateAuthSms(param);
-    if(success && code === types.SUCCESS_CODE){
-      alert('인증에 성공하였습니다.');
-      setAuth({
-        ...auth,
-        completed: true
-      })
-    }else{
-      alert('인증번호가 다릅니다.')
-      console.error(error);
-    
-    }
+    dispatch(authActions.validateSms(number));
   }
 
   const timeFormat = (time) => {
@@ -134,7 +104,7 @@ const SignUp = () => {
     return `${m}:${s}`
   }
  
- 
+  
   useEffect(() => {
     if(auth.time > 0 && auth.start){
       const timer = setInterval(() => {
@@ -142,11 +112,31 @@ const SignUp = () => {
           ...auth,
           time: auth.time -1
         })     
-     }, 1000);
-     
-     return () => clearInterval(timer);
+      }, 1000);
+      return () => clearInterval(timer);
+
+    }else if(auth.time === 0){
+      console.log("만료");
+      setAuth({
+        ...auth,
+        expire: true
+      })
+    } 
+  }, [auth.start, auth.time]);
+
+  useEffect(() => {
+
+    if(sms.data && sms.data.success){
+      setAuth({
+        ...auth,
+        start: true,
+        time: expiredTime,
+        expire: false,
+      })
+    }else if(sms.data && sms.data.error){
+      alert("서버와 오류가 발생 하였습니다.");
     }
-  }, [auth]);
+  }, [sms])
 
   return (
     <Wrapper>
@@ -336,24 +326,23 @@ const SignUp = () => {
                 helperText={touched.authNumber && errors.authNumber}
                 onBlur={handleBlur}
                 onChange={handleChange}
-                disabled={!auth.start}
+                disabled={!auth.start || auth.expire}
                 fullWidth
                 my={3}
               />
               {auth.start &&
                 <Box mb={4}>
                   <Typography component="h2" variant="body1" >
-                    휴대폰 번호로 전송된 인증번호를 시간내로 입력해주세요 
-                      <Badge badgeContent={timeFormat(auth.time)} color="error" variant="standard" style={{marginLeft: "2rem"}}/>
+                    {auth.expire ? "시간이 만료되었습니다. 인증번호를 다시 받아주세요." : "휴대폰 번호로 전송된 인증번호를 시간내로 입력해주세요 "}
+                    {!auth.expire && <Badge badgeContent={timeFormat(auth.time)} color="error" variant="standard" style={{marginLeft: "2rem"}}/>}
                   </Typography>
                   
                 </Box>
               }
-              
               <Button
                 variant="outlined" 
                 color="secondary" 
-                disabled={!auth.start}
+                disabled={!auth.start || auth.expire}
                 onClick={() => {validateSms(values.authNumber)}}
               >
                 인증

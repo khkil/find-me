@@ -43,10 +43,8 @@ public class MemberService implements UserDetailsService {
     public void updateMember(String idx, Member member){
         memberMapper.updateMember(idx, member);
     }
-    public void validateDulplicateMember(Member member){
-        Member findMember = memberMapper.loadUserByUserName(member.getId());
-        if(findMember != null){
-            throw new IllegalArgumentException("이미 존재하는 회원 입니다");
-        }
+    public Member duplicateMember(Member member){
+        Member duplicateMember = memberMapper.loadUserByUserName(member.getId());
+        return duplicateMember;
     }
 }

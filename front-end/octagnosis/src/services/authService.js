@@ -31,7 +31,10 @@ export const checkId = (id) => {
     axios
       .post('/api/auth/check-id', params)
       .then((response) => {
-        resolve(response.data);
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+        reject(response.data);
       })
       .catch((error) => {
         reject(error);
@@ -92,17 +95,20 @@ export function sendAuthSms(params) {
   });
 }
 
-export function validateAuthSms(params) {
+export function validateSms(number) {
   return new Promise((resolve, reject) => {
     axios
-      .post("/api/auth/check-sms", params)
+      .post("/api/auth/check-sms", {"number": number})
       .then((response) => {
         if (response.status === 200) {
+          console.log("200");
           resolve(response.data);
         }
+        console.log("no 200");
         reject(response.data);
       })
       .catch((error) => {
+        console.log("400");
         reject(error);
       });
   });

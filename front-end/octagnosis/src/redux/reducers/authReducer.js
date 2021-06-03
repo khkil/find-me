@@ -88,38 +88,38 @@ export default function reducer(state = initialState, action) {
         error: action.error
       };
 
-    case types.AUTH_FIND_ID_REQUEST:
+    case types.AUTH_FIND_ID_REQUEST, types.AUTH_CHECK_ID_REQUEST:
       return {
         ...initialState,
         loading: true
       };
 
-    case types.AUTH_FIND_ID_SUCCESS:
+    case types.AUTH_FIND_ID_SUCCESS, types.AUTH_CHECK_ID_SUCCESS:
       return {
         ...state,
         loading: false,
         data: action.data
       };
-    case types.AUTH_FIND_ID_FAILURE:
+    case types.AUTH_FIND_ID_FAILURE, types.AUTH_CHECK_ID_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.error
       };
 
-    case types.AUTH_SEND_SMS_REQUEST:
+    case types.AUTH_SMS_VALIDATE_REQUEST:
       return {
         ...state,
         loading: true
       };
 
-    case types.AUTH_SEND_SMS_SUCCESS:
+    case types.AUTH_SMS_VALIDATE_SUCCESS:
       return {
         ...state,
         data: action.data,
         loading: false
       };
-    case types.AUTH_SEND_SMS_FAILURE:
+    case types.AUTH_SMS_VALIDATE_FAILURE:
       return {
         ...state,
         error: action.error,

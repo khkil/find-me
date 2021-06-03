@@ -3,7 +3,7 @@ import * as authService from "../../services/authService";
 import { timeout } from "../../utils/util";
 
 
-export const login = (credentials, history) => async dispatch  => {
+export const login = (credentials, history) => async dispatch => {
   const { location } = history;
   const { pathname } = location;
   const redirectPath = pathname.indexOf('admin') > -1 ? '/admin' : '/';
@@ -18,6 +18,22 @@ export const login = (credentials, history) => async dispatch  => {
     dispatch({ type: types.AUTH_LOGIN_FAILURE, error: e });
   }
 } 
+
+export const checkId = (id) => async dispatch => {
+
+  dispatch({ type: types.AUTH_CHECK_ID_REQUEST });
+  try {
+    const data = await authService.checkId(id);
+    dispatch({ type: types.AUTH_CHECK_ID_SUCCESS, data: data });
+
+  } catch (e) {
+    console.error(e);
+    dispatch({
+      type: types.AUTH_CHECK_ID_FAILURE,
+      error: e
+    })
+  }
+}
 
 export const getAuthInfo = () => async dispatch => {
   dispatch({ type: types.AUTH_GET_INFO_REQUEST });
@@ -36,15 +52,27 @@ export const getAuthInfo = () => async dispatch => {
 
 export const sendAuthSms = (params) => async dispatch => {
 
-  dispatch({ type: types.AUTH_SEND_SMS_REQUEST });
+  dispatch({ type: types.SMS_SEND_REQUEST });
   try {
     const data = await authService.sendAuthSms(params);
-    dispatch({ type: types.AUTH_SEND_SMS_SUCCESS, data: data});
+    dispatch({ type: types.SMS_SEND_SUCCESS, data: data});
   }catch (e) {
     console.error(e);
-    dispatch({ type: types.AUTH_SEND_SMS_FAILURE, error: e });
+    dispatch({ type: types.SMS_SEND_FAILURE, error: e });
   }
+}
 
+export const validateSms = (number) => async dispatch => {
+  dispatch({ type: types.AUTH_SMS_VALIDATE_REQUEST });
+  try {
+    const data = authService.validateSms(number);
+    dispatch({ type: types.AUTH_SMS_VALIDATE_SUCCESS, data: data});
+    console.log("try");
+  }catch (error) {
+    console.log("error");
+    dispatch({ type: types.AUTH_SMS_VALIDATE_FAILURE, error: error });
+  }
+  
 }
 
 export const findId = (credentials, type) => async dispatch => {
@@ -73,7 +101,7 @@ export const logout = () => (dispatch) => {
 };
 
 
-export const signUp = (credentials, history) => async dispatch => {
+export const signUp = (credentials, history) => async dispatch =>{
 
   const { location } = history;
   const { pathname } = location;
@@ -97,14 +125,6 @@ export const signUp = (credentials, history) => async dispatch => {
   }
 }
 
-export function signOut() {
-  return async (dispatch) => {
-    dispatch({
-      type: types.AUTH_SIGN_OUT,
-    });
-  };
-}
-
 export function resetPassword(credentials) {
   return async (dispatch) => {
     dispatch({ type: types.AUTH_RESET_PASSWORD_REQUEST });
@@ -120,5 +140,13 @@ export function resetPassword(credentials) {
         dispatch({ type: types.AUTH_RESET_PASSWORD_FAILURE });
         throw error;
       });
+  };
+}
+
+export function signOut() {
+  return async (dispatch) => {
+    dispatch({
+      type: types.AUTH_SIGN_OUT,
+    });
   };
 }

@@ -50,8 +50,10 @@ const Profile = ({ history }) => {
 
   const dispatch = useDispatch();
   const { data } = useSelector(state => state.authReducer);
-  const { idx, id, password, name, email, phone } = data.principal;
-  const [form, setForm] = useState({})
+  const { idx, id, password, name, email, phone } = data;
+
+  const [form, setForm] = useState({});
+
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm({
