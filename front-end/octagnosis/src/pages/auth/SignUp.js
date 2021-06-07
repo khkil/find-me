@@ -48,7 +48,8 @@ const SignUp = () => {
     time: expiredTime,
     start: false,
     error: false,
-    expire: false
+    expire: false,
+    completed: false
   })
  
   const idInputRef = useRef();
@@ -84,7 +85,8 @@ const SignUp = () => {
     }
   }
 
-  const sms = useSelector(state => state.smsReducer);
+  const smsReducer = useSelector(state => state.smsReducer);
+  const authReducer = useSelector(state => state.authReducer);
 
   const sendAuthSms = async (to) => {
     const params = {
@@ -126,18 +128,32 @@ const SignUp = () => {
 
   useEffect(() => {
 
-    if(sms.data && sms.data.success){
+    if(smsReducer.data && smsReducer.data.success){
       setAuth({
         ...auth,
         start: true,
         time: expiredTime,
         expire: false,
       })
-    }else if(sms.data && sms.data.error){
+    }else if(smsReducer.data && smsReducer.data.error){
       alert("서버와 오류가 발생 하였습니다.");
     }
-  }, [sms])
+  }, [smsReducer])
 
+  useEffect(() => {
+    const { data, error } = authReducer;
+    if(data && data.error){
+      alert("실패");
+      return;
+    }
+    alert("성공");
+    setAuth({
+      ...auth,
+      completed: true
+    })
+    
+    
+  }, [authReducer])
   return (
     <Wrapper>
       <Helmet title="회원가입" />
@@ -188,7 +204,7 @@ const SignUp = () => {
           authNumber: Yup.string()
           .required("인증번호를 입력해주세요")
           .matches(/^[0-9]/g, "숫자만 입력 가능합니다.")
-          .test("authNumber", "인증을 진행해주세요",() => auth.completed)
+          .test("authNumber", authReducer.error && authReducer.error.msg ? authReducer.error.msg : "인증을 진행해주세요", () => auth.completed)
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -330,7 +346,7 @@ const SignUp = () => {
                 fullWidth
                 my={3}
               />
-              {auth.start &&
+              {Boolean(auth.start && !auth.completed) &&
                 <Box mb={4}>
                   <Typography component="h2" variant="body1" >
                     {auth.expire ? "시간이 만료되었습니다. 인증번호를 다시 받아주세요." : "휴대폰 번호로 전송된 인증번호를 시간내로 입력해주세요 "}

@@ -65,7 +65,7 @@ export const sendAuthSms = (params) => async dispatch => {
 export const validateSms = (number) => async dispatch => {
   dispatch({ type: types.AUTH_SMS_VALIDATE_REQUEST });
   try {
-    const data = authService.validateSms(number);
+    const data = await authService.validateSms(number);
     dispatch({ type: types.AUTH_SMS_VALIDATE_SUCCESS, data: data});
     console.log("try");
   }catch (error) {

@@ -109,7 +109,7 @@ export default function reducer(state = initialState, action) {
 
     case types.AUTH_SMS_VALIDATE_REQUEST:
       return {
-        ...state,
+        initialState,
         loading: true
       };
 
