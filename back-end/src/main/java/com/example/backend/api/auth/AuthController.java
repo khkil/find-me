@@ -101,7 +101,7 @@ public class AuthController {
         session.setAttribute("authNo", authNo);
         coolSms.setText("[humannx] 인증번호는 " + authNo + " 입니다");
         System.out.println(session.getAttribute("authNo").toString());
-        //coolsmsService.sendSms(coolSms);
+       // coolsmsService.sendSms(coolSms);
         return ResponseEntity.ok(CommonResponse.successResult());
     }
 

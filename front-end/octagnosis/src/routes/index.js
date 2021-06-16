@@ -18,6 +18,7 @@ import {
   PieChart,
   Sliders,
   Users,
+  Circle
 } from "react-feather";
 
 // Guards
@@ -32,6 +33,8 @@ const ResetPassword = async(() => import("../pages/auth/ResetPassword"));
 const Page404 = async(() => import("../pages/auth/Page404"));
 const Page500 = async(() => import("../pages/auth/Page500"));
 
+//admin > member
+const AdminMemberList = async(() => import("../pages/admin/member/AdminMemberList"))
 
 // Member components
 const MemberProfile = async(() => import("../pages/member/Profile"));
@@ -119,6 +122,44 @@ const ProtectedPage = async(() => import("../pages/protected/ProtectedPage"));
 
 const InspectionSelectPage = async(() => import("../pages/inspection/InspectionSelectPage"));
 const LoginPage = async(() => import("../pages/inspection/Login"));
+
+const adminInpectionRoutes = {
+  header: "검사 관리",
+  id: "사고력 검사",
+  path: "/admin/inspections",
+  icon: <Circle />,
+  containsHome: true,
+  children: [
+    {
+      path: "/admin/inspections/:idx/questions",
+      name: "문항관리",
+      component: Default,
+    },
+   
+  ],
+  component: null,
+
+  
+}
+
+const adminMemberRoutes = {
+  id: "회원",
+  path: "/admin/members",
+  header: "회원 관리",
+  icon: <PieChart />,
+  containsHome: true,
+  children: [
+    {
+      path: "/admin/members",
+      name: "회원 목록",
+      component: AdminMemberList,
+    },
+   
+  ],
+  component: null,
+  
+}
+
 
 const inspectionRoute = {
   path: "/",
@@ -611,7 +652,9 @@ export const inspectionRoutes = [
 ]
 
 export const dashboardLayoutRoutes = [
+  adminInpectionRoutes,
   dashboardsRoutes,
+  adminMemberRoutes,
   pagesRoutes,
   projectsRoutes,
   orderRoutes,
@@ -638,21 +681,4 @@ export const presentationLayoutRoutes = [landingRoutes];
 export const protectedRoutes = [protectedPageRoutes, profileRoutes];
 
 // Routes visible in the sidebar
-export const sidebarRoutes = [
-  dashboardsRoutes,
-  pagesRoutes,
-  projectsRoutes,
-  orderRoutes,
-  invoiceRoutes,
-  tasksRoutes,
-  calendarRoutes,
-  authRoutes,
-  componentsRoutes,
-  chartRoutes,
-  formsRoutes,
-  tablesRoutes,
-  iconsRoutes,
-  mapsRoutes,
-  documentationRoutes,
-  changelogRoutes,
-];
+export const sidebarRoutes = dashboardLayoutRoutes;

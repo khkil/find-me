@@ -123,7 +123,7 @@ const AppBarComponent = ({ onDrawerToggle, history }) => {
                 
             <Autocomplete
               options={menus}
-              getOptionLabel={(menu) => menu.name}
+              getOptionLabel={"test"}
               onChange={(event, value) => moveMenu(value)}
               renderInput={(params) => <TextField {...params} label="메뉴 검색" variant="outlined" />}
            />

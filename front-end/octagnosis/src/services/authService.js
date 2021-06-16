@@ -101,14 +101,11 @@ export function validateSms(number) {
       .post("/api/auth/check-sms", {"number": number})
       .then((response) => {
         if (response.status === 200) {
-          console.log("200");
           resolve(response.data);
         }
-        console.log("no 200");
         reject(response.data);
       })
       .catch((error) => {
-        console.log("400");
         reject(error);
       });
   });

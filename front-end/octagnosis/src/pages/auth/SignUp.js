@@ -40,7 +40,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const expiredTime = 180;
+  const expiredTime = 4;
 
   const [checkedId, setCheckedId] = useState(false);
   const [checkedIdMsg, setCheckedIdMsg] = useState("아이디를 입력해주세요.");
@@ -129,6 +129,7 @@ const SignUp = () => {
   useEffect(() => {
 
     if(smsReducer.data && smsReducer.data.success){
+      alert("인증번호가 발송되었습니다.")
       setAuth({
         ...auth,
         start: true,
@@ -142,17 +143,16 @@ const SignUp = () => {
 
   useEffect(() => {
     const { data, error } = authReducer;
-    if(data && data.error){
-      alert("실패");
+    if(data && data.success){
+      alert("인증에 성공하였습니다.")
+      setAuth({
+        ...auth,
+        completed: true
+      })
       return;
+    }else if(error){
+      alert("인증에 실패하였습니다.");
     }
-    alert("성공");
-    setAuth({
-      ...auth,
-      completed: true
-    })
-    
-    
   }, [authReducer])
   return (
     <Wrapper>
@@ -342,7 +342,7 @@ const SignUp = () => {
                 helperText={touched.authNumber && errors.authNumber}
                 onBlur={handleBlur}
                 onChange={handleChange}
-                disabled={!auth.start || auth.expire}
+                disabled={!auth.start || auth.expire || auth.completed}
                 fullWidth
                 my={3}
               />
