@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { NavLink } from "react-router-dom";
 
 import Helmet from "react-helmet";
-
+import { withStyles } from '@material-ui/core/styles';
 import {
   Avatar as MuiAvatar,
   Box,
@@ -39,7 +39,9 @@ import {
 } from "@material-ui/icons";
 
 import { spacing } from "@material-ui/system";
-
+import DropDownMenu from "../../../components/common/DropDownMenu"
+import { useDispatch, useSelector } from "react-redux";
+import { getMemberList } from "../../../redux/actions/memberActions";
 const Divider = styled(MuiDivider)(spacing);
 
 const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
@@ -72,411 +74,57 @@ const Customer = styled.div`
   align-items: center;
 `;
 
-function createData(
-  customer,
-  customerEmail,
-  customerAvatar,
-  status,
-  amount,
-  id,
-  date
-) {
-  return { customer, customerEmail, customerAvatar, status, amount, id, date };
-}
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
-const rows = [
-  createData(
-    "Anna Walley",
-    "anna@walley.com",
-    "A",
-    0,
-    "$530,00",
-    "000112",
-    "2020-01-02"
-  ),
-  createData(
-    "Doris Fritz",
-    "doris@fritz.com",
-    "D",
-    1,
-    "$209,00",
-    "000114",
-    "2020-02-13"
-  ),
-  createData(
-    "Edward Adkins",
-    "edward@adkins.com",
-    "E",
-    2,
-    "$535,00",
-    "000117",
-    "2020-03-04"
-  ),
-  createData(
-    "Edwin Baker",
-    "edwin@baker.com",
-    "E",
-    2,
-    "$678,00",
-    "000115",
-    "2020-02-17"
-  ),
-  createData(
-    "Gordon Workman",
-    "gordan@workman.com",
-    "G",
-    0,
-    "$314,00",
-    "000119",
-    "2020-03-28"
-  ),
-  createData(
-    "Jo Avery",
-    "jo@avery.com",
-    "J",
-    0,
-    "$864,00",
-    "000113",
-    "2020-01-23"
-  ),
-  createData(
-    "Leigha Hyden",
-    "leigha@hyden.com",
-    "L",
-    2,
-    "$341,00",
-    "000118",
-    "2020-03-14"
-  ),
-  createData(
-    "Maureen Gagnon",
-    "maureen@gagnon.com",
-    "M",
-    1,
-    "$781,00",
-    "000116",
-    "2020-02-22"
-  ),
-  createData(
-    "Maxine Thompson",
-    "maxine@thompson.com",
-    "M",
-    0,
-    "$273,00",
-    "000121",
-    "2020-05-31"
-  ),
-  createData(
-    "Shawn Waddell",
-    "shawn@waddell.com",
-    "S",
-    0,
-    "$713,00",
-    "000120",
-    "2020-04-25"
-  ),
-];
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
+const AdminMemberList = (props) => {
+  
+  const dispatch = useDispatch();
+  const members = useSelector(state => state.dataReducer);
+  const { data } = members;
+  useEffect(() => {
+    dispatch(getMemberList());
+  }, []);
 
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-const headCells = [
-  { id: "status", alignment: "left", label: "Status" },
-  { id: "customer", alignment: "left", label: "Customer" },
-  { id: "id", alignment: "right", label: "ID" },
-  { id: "amount", alignment: "right", label: "Amount" },
-  { id: "date", alignment: "left", label: "Issue Date" },
-  { id: "actions", alignment: "right", label: "Actions" },
-];
-
-function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all" }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.alignment}
-            padding={headCell.disablePadding ? "none" : "default"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-let EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar>
-      <ToolbarTitle>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="h6" id="tableTitle">
-            Invoices
-          </Typography>
-        )}
-      </ToolbarTitle>
-      <Spacer />
-      <div>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <ArchiveIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
-    </Toolbar>
-  );
-};
-
-function EnhancedTable() {
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("customer");
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const isSelected = (id) => selected.indexOf(id) !== -1;
-
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-  return (
-    <div>
-      <Paper>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            aria-labelledby="tableTitle"
-            size={"medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={`${row.id}-${index}`}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                          onClick={(event) => handleClick(event, row.id)}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        <Customer>
-                          <Avatar>{row.customerAvatar}</Avatar>
-                          <Box ml={3}>
-                            {row.customer}
-                            <br />
-                            {row.customerEmail}
-                          </Box>
-                        </Customer>
-                      </TableCell>
-                      <TableCell>
-                        {row.status === 0 && (
-                          <Chip size="small" mr={1} mb={1} label="Sent" sent />
-                        )}
-                        {row.status === 1 && (
-                          <Chip size="small" mr={1} mb={1} label="Void" />
-                        )}
-                        {row.status === 2 && (
-                          <Chip size="small" mr={1} mb={1} label="Paid" paid />
-                        )}
-                      </TableCell>
-                      <TableCell align="right">#{row.id}</TableCell>
-                      <TableCell align="right">{row.amount}</TableCell>
-                      <TableCell>{row.date}</TableCell>
-                      <TableCell align="right">
-                        <IconButton aria-label="delete">
-                          <ArchiveIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="details"
-                          component={NavLink}
-                          to="/invoices/detail"
-                        >
-                          <RemoveRedEyeIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={7} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
-  );
-}
-
-const AdminMemberList = () => {
+  
+  if(!data) return null;
   return (
     <React.Fragment>
-      <Helmet title="Invoices" />
+      <Helmet title="회원 목록" />
 
-      <Grid justify="space-between" container spacing={24}>
+      <Grid justify="space-between" container spacing={10}>
         <Grid item>
           <Typography variant="h3" gutterBottom display="inline">
-            Invoices
+            회원목록
           </Typography>
 
           <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-            <Link component={NavLink} exact to="/">
-              Dashboard
+            <Typography>회원 관리</Typography>
+            <Link component={NavLink} exact to="/admin/members">
+              회원 목록
             </Link>
-            <Link component={NavLink} exact to="/">
-              Pages
-            </Link>
-            <Typography>Invoices</Typography>
           </Breadcrumbs>
         </Grid>
         <Grid item>
           <div>
             <Button variant="contained" color="primary">
               <AddIcon />
-              New Invoice
+              회원 추가
             </Button>
           </div>
         </Grid>
@@ -486,7 +134,46 @@ const AdminMemberList = () => {
 
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <EnhancedTable />
+          <Paper>
+            {/* <Toolbar>
+              <ToolbarTitle>
+              <Typography variant="h6" id="tableTitle">
+                회원
+              </Typography>
+              </ToolbarTitle>
+            </Toolbar> */}
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">이름</TableCell>
+                  <TableCell align="center">아이디</TableCell>
+                  <TableCell align="center">이메일</TableCell>
+                  <TableCell align="center">휴대전화</TableCell>
+                  <TableCell align="center">가입일</TableCell>
+                  <TableCell align="center">기능</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((member, index) => (
+
+                  <StyledTableRow key={index}>
+                    <StyledTableCell align="center">{member.name}</StyledTableCell>
+                    <StyledTableCell align="center">{member.id}</StyledTableCell>
+                    <StyledTableCell align="center">{member.email}</StyledTableCell>
+                    <StyledTableCell align="center">{member.phone}</StyledTableCell>
+                    <StyledTableCell align="center">{member.cdate}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      <DropDownMenu idx={member.idx}/>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+                
+
+              </TableBody>
+
+            </Table>
+          </Paper>
+
         </Grid>
       </Grid>
     </React.Fragment>

@@ -12,6 +12,11 @@ export const THEMES = {
   INDIGO: "INDIGO",
 };
 
+//common
+export const DATA_REQUEST = "DATA_REQUEST";
+export const DATA_SUCCESS = "DATA_SUCCESS";
+export const DATA_FAILURE = "DATA_FAILURE";
+
 // Auth
 export const AUTH_SIGN_UP_REQUEST = "AUTH_SIGN_UP_REQUEST";
 export const AUTH_SIGN_UP_SUCCESS = "AUTH_SIGN_UP_SUCCESS";

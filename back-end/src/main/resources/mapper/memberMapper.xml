@@ -30,6 +30,15 @@
     <select id="findIdByPhone" resultType="com.example.backend.api.member.Member" parameterType="map">
         SELECT id FROM member WHERE id = #{id} AND email = #{email};
     </select>
+    <select id="getMemberList" resultType="com.example.backend.api.member.Member">
+
+        SELECT * FROM member;
+    </select>
+
+    <select id="getMemberDetail" resultType="com.example.backend.api.member.Member">
+        SELECT * FROM member
+        WHERE idx = #{idx}
+    </select>
 
     <insert id="insertMember" parameterType="com.example.backend.api.member.Member" useGeneratedKeys="true" keyProperty="idx">
         INSERT INTO member(id, password, role, email) VALUES(#{id}, #{password}, #{role}, #{email});

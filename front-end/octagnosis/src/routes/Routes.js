@@ -21,8 +21,6 @@ const childRoutes = (Layout, routes) => {
     routes.map(({ component: Component, children, path, auth }, index) => {
       return children ? (
         children.map((element, index) => {
-          console.log(element.path);
-          
           return (
             <Route
               key={index}

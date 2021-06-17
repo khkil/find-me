@@ -35,6 +35,7 @@ const Page500 = async(() => import("../pages/auth/Page500"));
 
 //admin > member
 const AdminMemberList = async(() => import("../pages/admin/member/AdminMemberList"))
+const AdminMemberDetail = async(() => import("../pages/admin/member/AdminMemberDetail"))
 
 // Member components
 const MemberProfile = async(() => import("../pages/member/Profile"));
@@ -154,12 +155,20 @@ const adminMemberRoutes = {
       name: "회원 목록",
       component: AdminMemberList,
     },
+    
    
   ],
   component: null,
-  
 }
 
+const adminMemberDetailRoute = {
+  id: "회원",
+  path: "/admin/members/:idx",
+  header: "회원 상세",
+  containsHome: true,
+  component: AdminMemberDetail
+
+}
 
 const inspectionRoute = {
   path: "/",
@@ -182,8 +191,8 @@ const memberRoutes = {
       component: MemberProfile,
     },
   ]
-  
 }
+
 
 
 const dashboardsRoutes = {
@@ -653,8 +662,9 @@ export const inspectionRoutes = [
 
 export const dashboardLayoutRoutes = [
   adminInpectionRoutes,
-  dashboardsRoutes,
   adminMemberRoutes,
+  adminMemberDetailRoute,
+  dashboardsRoutes,
   pagesRoutes,
   projectsRoutes,
   orderRoutes,
@@ -681,4 +691,22 @@ export const presentationLayoutRoutes = [landingRoutes];
 export const protectedRoutes = [protectedPageRoutes, profileRoutes];
 
 // Routes visible in the sidebar
-export const sidebarRoutes = dashboardLayoutRoutes;
+export const sidebarRoutes = [
+  adminInpectionRoutes,
+  dashboardsRoutes,
+  adminMemberRoutes,
+  pagesRoutes,
+  projectsRoutes,
+  orderRoutes,
+  invoiceRoutes,
+  tasksRoutes,
+  calendarRoutes,
+  componentsRoutes,
+  chartRoutes,
+  formsRoutes,
+  tablesRoutes,
+  iconsRoutes,
+  mapsRoutes,
+  documentationRoutes,
+  changelogRoutes,
+];;
