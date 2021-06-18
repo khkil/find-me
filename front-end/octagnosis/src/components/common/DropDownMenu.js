@@ -32,7 +32,7 @@ export default function DropDownMenu({ idx }) {
         color="primary"
         onClick={handleClick}
       >
-        ...
+        메뉴
       </Button>
       <Menu
         id="simple-menu"

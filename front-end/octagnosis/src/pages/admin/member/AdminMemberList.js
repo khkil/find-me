@@ -102,7 +102,7 @@ const AdminMemberList = (props) => {
   }, []);
 
   
-  if(!data) return null;
+  if(!data || !data.memberList) return null;
   return (
     <React.Fragment>
       <Helmet title="회원 목록" />
@@ -154,7 +154,7 @@ const AdminMemberList = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((member, index) => (
+                {data.memberList.map((member, index) => (
 
                   <StyledTableRow key={index}>
                     <StyledTableCell align="center">{member.name}</StyledTableCell>

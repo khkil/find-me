@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as Yup from "yup";
 import styled from "styled-components/macro";
 import { NavLink } from "react-router-dom";
@@ -23,6 +23,9 @@ import { Alert as MuiAlert } from "@material-ui/lab";
 import { spacing } from "@material-ui/system";
 
 import { Helmet } from "react-helmet";
+import { useDispatch, useSelector } from "react-redux";
+import { getMemberDetail } from "../../../redux/actions/memberActions";
+import { updateMember } from "../../../services/memberService";
 
 const Divider = styled(MuiDivider)(spacing);
 
@@ -38,32 +41,22 @@ const Button = styled(MuiButton)(spacing);
 
 const timeOut = (time) => new Promise((res) => setTimeout(res, time));
 
-const initialValues = {
-  firstName: "Lucy",
-  lastName: "Lavender",
+/* const initialValues = {
+  id: "Lucy",
+  password: "Lavender",
   email: "lucylavender@gmail.com",
   password: "mypassword123",
-  confirmPassword: "mypassword123",
-};
+  phone: "mypassword123",
+}; */
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  email: Yup.string().email().required("Required"),
-  password: Yup.string()
-    .min(12, "Must be at least 12 characters")
-    .max(255)
-    .required("Required"),
-  confirmPassword: Yup.string().when("password", {
-    is: (val) => (val && val.length > 0 ? true : false),
-    then: Yup.string().oneOf(
-      [Yup.ref("password")],
-      "Both password need to be the same"
-    ),
-  }),
+  id: Yup.string().required("필수입력 값 입니다"),
+  password: Yup.string().max(255).required("필수입력 값 입니다"),
+  email: Yup.string().email("이메일 형식에 맞게 입력하세요").required("필수입력 값 입니다"),
+  phone: Yup.string().required("필수입력 값 입니다"),
 });
 
-function BasicForm() {
+/* function BasicForm() {
   const handleSubmit = async (
     values,
     { resetForm, setErrors, setStatus, setSubmitting }
@@ -120,12 +113,12 @@ function BasicForm() {
                 <Grid container spacing={6}>
                   <Grid item md={6}>
                     <TextField
-                      name="firstName"
+                      name="id"
                       label="First Name"
-                      value={values.firstName}
-                      error={Boolean(touched.firstName && errors.firstName)}
+                      value={values.id}
+                      error={Boolean(touched.id && errors.id)}
                       fullWidth
-                      helperText={touched.firstName && errors.firstName}
+                      helperText={touched.id && errors.id}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       variant="outlined"
@@ -134,12 +127,12 @@ function BasicForm() {
                   </Grid>
                   <Grid item md={6}>
                     <TextField
-                      name="lastName"
+                      name="password"
                       label="Last Name"
-                      value={values.lastName}
-                      error={Boolean(touched.lastName && errors.lastName)}
+                      value={values.password}
+                      error={Boolean(touched.password && errors.password)}
                       fullWidth
-                      helperText={touched.lastName && errors.lastName}
+                      helperText={touched.password && errors.password}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       variant="outlined"
@@ -177,14 +170,14 @@ function BasicForm() {
                 />
 
                 <TextField
-                  name="confirmPassword"
+                  name="phone"
                   label="Confirm password"
-                  value={values.confirmPassword}
+                  value={values.phone}
                   error={Boolean(
-                    touched.confirmPassword && errors.confirmPassword
+                    touched.phone && errors.phone
                   )}
                   fullWidth
-                  helperText={touched.confirmPassword && errors.confirmPassword}
+                  helperText={touched.phone && errors.phone}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="password"
@@ -208,9 +201,35 @@ function BasicForm() {
     </Formik>
   );
 }
+ */
+function AdminMemberDetail({ match }) {
+  const dispatch = useDispatch();
+  const { idx } = match.params;
+  const { data } = useSelector(state => state.dataReducer);
+  
+  const handleSubmit = async (
+    values,
+    { setErrors, setStatus, setSubmitting }
+  ) => {
+    console.log(values);
+    try {
+      await timeOut(500);
+      updateMember(idx, values);
+      setStatus({ sent: true });
+      setSubmitting(false);
+    } catch (error) {
+      setStatus({ sent: false });
+      setErrors({ submit: error.message });
+      setSubmitting(false);
+    }
+  };
 
-function AdminMemberDetail() {
-  return (
+  useEffect(() => {
+    dispatch(getMemberDetail(idx));
+  },[])
+
+  if(!data || !data.memberDetail) return null;
+  return ( 
     <React.Fragment>
       <Helmet title="Formik" />
       <Typography variant="h3" gutterBottom display="inline">
@@ -227,7 +246,123 @@ function AdminMemberDetail() {
 
       <Divider my={6} />
 
-      <BasicForm />
+      <Formik
+        initialValues={data.memberDetail}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+      {({
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        touched,
+        values,
+        status,
+      }) => (
+        <Card mb={6}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              {values.name} 님의 회원정보
+            </Typography>
+          
+
+            {status && status.sent && (
+              <Alert severity="success" my={3}>
+                회원정보 수정에 성공하였습니다.
+              </Alert>
+            )}
+
+            {isSubmitting ? (
+              <Box display="flex" justifyContent="center" my={6}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <Grid container spacing={6}>
+                  <Grid item md={6}>
+                    <TextField
+                      name="id"
+                      label="아이디"
+                      value={values.id}
+                      error={Boolean(touched.id && errors.id)}
+                      fullWidth
+                      helperText={touched.id && errors.id}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      variant="outlined"
+                      disabled={true}
+                      my={2}
+                    />
+                  </Grid>
+                  <Grid item md={6}>
+                    <TextField
+                      name="password"
+                      label="비밀번호"
+                      value={values.password}
+                      error={Boolean(touched.password && errors.password)}
+                      fullWidth
+                      helperText={touched.password && errors.password}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      type="password"
+                      variant="outlined"
+                      my={2}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={6}>
+                  <Grid item md={6}>
+                    <TextField
+                      name="email"
+                      label="E-mail"
+                      value={values.email}
+                      error={Boolean(touched.email && errors.email)}
+                      fullWidth
+                      helperText={touched.email && errors.email}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      type="text"
+                      variant="outlined"
+                      my={2}
+                    />
+                  </Grid>
+                  <Grid item md={6}>
+                    <TextField
+                      name="phone"
+                      label="휴대전화"
+                      value={values.phone}
+                      error={Boolean(
+                        touched.phone && errors.phone
+                      )}
+                      fullWidth
+                      helperText={touched.phone && errors.phone}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      type="text"
+                      variant="outlined"
+                      my={2}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  mt={3}
+                >
+                  수정
+                </Button>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </Formik>
+
+      
     </React.Fragment>
   );
 }

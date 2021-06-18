@@ -36,7 +36,7 @@
     </select>
 
     <select id="getMemberDetail" resultType="com.example.backend.api.member.Member">
-        SELECT * FROM member
+        SELECT idx, name, id, password, email, phone FROM member
         WHERE idx = #{idx}
     </select>
 

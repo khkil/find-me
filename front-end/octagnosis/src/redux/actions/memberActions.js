@@ -5,7 +5,20 @@ export const getMemberList = () => async dispatch  => {
   dispatch({ type: types.DATA_REQUEST });
   try {
     const data = await memberService.getMemberList();
-    dispatch({ type: types.DATA_SUCCESS, data: data });
+    dispatch({ type: types.DATA_SUCCESS, data: {memberList : data} });
+
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: types.DATA_FAILURE, error: e });
+    
+  } 
+}
+
+export const getMemberDetail = (idx) => async dispatch  => {
+  dispatch({ type: types.DATA_REQUEST });
+  try {
+    const data = await memberService.getMemberDetail(idx);
+    dispatch({ type: types.DATA_SUCCESS, data: {memberDetail: data} });
 
   } catch (e) {
     console.error(e);
