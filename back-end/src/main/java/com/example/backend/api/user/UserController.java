@@ -4,11 +4,13 @@ import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.api.result.UserResult;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +48,8 @@ public class UserController {
             int answerIdx = answer.get("answer_idx");
             userServcice.insertUserAnswers(userIdx, questionIdx, answerIdx);
         }
-        return new ResponseEntity<>(CommonResponse.successResult(), HttpStatus.OK);
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("user_idx", userIdx);
+        return new ResponseEntity<>(CommonResponse.successResult(userInfo), HttpStatus.OK);
     }
 }

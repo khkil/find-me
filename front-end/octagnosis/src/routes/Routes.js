@@ -5,7 +5,9 @@ import {
   authLayoutRoutes,
   presentationLayoutRoutes,
   protectedRoutes,
-  inspectionRoutes
+  inspectionRoutes,
+  utilRoutes,
+  groundUtilRoutes
 } from "./index";
 
 import DashboardLayout from "../layouts/Dashboard";
@@ -76,6 +78,7 @@ const Routes = () => (
       {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
       {childRoutes(DashboardLayout, protectedRoutes)}
       {childRoutes(DashboardLayout, presentationLayoutRoutes)}
+      {childRoutes(({children}) => (<div>{children}</div>), groundUtilRoutes)}
       <Route
         render={() => (
           <AuthLayout>

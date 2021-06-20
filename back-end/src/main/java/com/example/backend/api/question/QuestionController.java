@@ -18,8 +18,14 @@ public class QuestionController {
     QuestionServcice questionServcice;
 
     @GetMapping
-    public ResponseEntity<List> getQuestionList (@PathVariable int idx){
+    public ResponseEntity<List> getAllQuestionList (@PathVariable int idx){
         return new ResponseEntity<>(questionServcice.getQuestionList(idx), HttpStatus.OK);
+    }
+
+    @GetMapping("/inspections/{inspectionIdx}")
+    public ResponseEntity<?> getQuestionList(@PathVariable int inspectionIdx){
+
+        return new ResponseEntity<>(questionServcice.getQuestionList(inspectionIdx), HttpStatus.OK);
     }
 
     @GetMapping("/inspections/{inspection_idx}/pages/{page}")

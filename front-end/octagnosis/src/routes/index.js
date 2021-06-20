@@ -1,6 +1,6 @@
 import React from "react";
-
 import async from "../components/Async";
+import DataRegistPage from "../pages/util/ground/DataRegistPage";
 
 import {
   BookOpen,
@@ -20,6 +20,7 @@ import {
   Users,
   Circle
 } from "react-feather";
+import DataListPage from "../pages/util/ground/DataListPage";
 
 // Guards
 const AuthGuard = async(() => import("../components/AuthGuard"));
@@ -193,7 +194,24 @@ const memberRoutes = {
   ]
 }
 
-
+const groundUtilRoute = {
+  path: "/ground",
+  name: "지면검사 관리 페이지",
+  auth: false,
+  children: [
+    {
+      path: "/ground",
+      name: "지면검사 목록",
+      component: DataListPage,
+    },
+    {
+      path: "/ground/regist",
+      name: "지면검사 입력",
+      component: DataRegistPage,
+    },
+    
+  ]
+}
 
 const dashboardsRoutes = {
   id: "통계",
@@ -709,4 +727,8 @@ export const sidebarRoutes = [
   mapsRoutes,
   documentationRoutes,
   changelogRoutes,
-];;
+];
+
+export const groundUtilRoutes = [
+  groundUtilRoute
+]

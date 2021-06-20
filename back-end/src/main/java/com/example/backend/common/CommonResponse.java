@@ -1,6 +1,10 @@
 package com.example.backend.common;
 
 import lombok.Data;
+import org.json.JSONObject;
+
+import java.util.Map;
+import java.util.Optional;
 
 @Data
 public class CommonResponse {
@@ -8,7 +12,7 @@ public class CommonResponse {
     private boolean success;
     private int code;
     private String msg;
-    private String data;
+    private Map<String, Object> data;
 
     private enum CommonResult {
         SUCCESS(0, "success"),
@@ -38,7 +42,7 @@ public class CommonResponse {
 
         return result;
     }
-    public static CommonResponse successResult(String data) {
+    public static CommonResponse successResult(Map<String, Object> data) {
         CommonResponse result = new CommonResponse();
         result.setSuccess(true);
         result.setData(data);
