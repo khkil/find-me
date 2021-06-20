@@ -22,5 +22,9 @@
     <select id="getPageInfo" resultMap="ResultMap">
         SELECT * from question WHERE question_page = #{page} AND inspection_idx = #{inspection_idx};
     </select>
+    <select id="getQuestionInfo">
+
+
+    </select>
 
 </mapper>

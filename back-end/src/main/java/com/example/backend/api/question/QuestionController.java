@@ -23,9 +23,9 @@ public class QuestionController {
     }
 
     @GetMapping("/inspections/{inspectionIdx}")
-    public ResponseEntity<?> getQuestionList(@PathVariable int inspectionIdx){
+    public ResponseEntity<?> getQuestionInfo(@PathVariable int inspectionIdx){
 
-        return new ResponseEntity<>(questionServcice.getQuestionList(inspectionIdx), HttpStatus.OK);
+        return new ResponseEntity<>(questionServcice.getQuestionInfo(inspectionIdx), HttpStatus.OK);
     }
 
     @GetMapping("/inspections/{inspection_idx}/pages/{page}")
