@@ -13,7 +13,7 @@ import { getQuestionList } from '../../../redux/actions/questionActions';
 import { columnsTotalWidthSelector } from '@material-ui/data-grid';
 import { Box, Button, Chip, Container, Grid } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { getGroupList } from '../../../redux/actions/groupActions';
+import { getGroupList, registGroup } from '../../../redux/actions/groupActions';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -101,17 +101,23 @@ const GroupComboBox = () => {
     })
   }
 
-  const registGroup = () => {
-    
+  const onCreate = () => {
+    console.log(form);
+    dispatch(registGroup(form));
   }
   
-  
   useEffect(() => {
+    console.log("group re-rendering")
     dispatch(getGroupList());
-  }, [group])
+  }, [])
 
   const group = useSelector(state => state.groupReducer);
-  const { data } = group;
+  const { data, loading } = group;
+
+  console.log(data);
+  
+  
+  
   if(!data) return null;
   return (
     <>
@@ -121,7 +127,7 @@ const GroupComboBox = () => {
       {showForm ? (
           <Box style={{padding: "20px"}}>
             <TextField label="기관명" margin="normal" name="name" onChange={handleChange}/><br/>
-            <Button variant="contained" color="primary">등록</Button>
+            <Button variant="contained" color="primary" onClick={onCreate}>등록</Button>
           </Box>
         ) : (
           <Autocomplete

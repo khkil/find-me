@@ -24,6 +24,26 @@ export default function reducer(state = initialState, actions) {
         error: actions.error
       };
 
+    case types.GROUP_REGIST_REQUEST:
+      return {
+        ...initialState,
+        loading: true
+      };
+
+    case types.GROUP_REGIST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: actions.data
+      };
+    case types.GROUP_REGIST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: actions.error
+      };
+
+
     default:
       return state;
   }

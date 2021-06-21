@@ -3,6 +3,7 @@ package com.example.backend.common;
 import lombok.Data;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -59,5 +60,11 @@ public class CommonResponse {
         result.setCode(CommonResult.FAIL.getCode());
         result.setMsg(msg);
         return result;
+    }
+
+    public static Map<String, Object> getDataMap(String key, Object data){
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put(key, data);
+        return dataMap;
     }
 }

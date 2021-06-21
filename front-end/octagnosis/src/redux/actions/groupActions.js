@@ -13,3 +13,16 @@ export const getGroupList = () => async dispatch  => {
     
   } 
 }
+
+export const registGroup = (group) => async dispatch  => {
+  dispatch({ type: types.GROUP_REGIST_REQUEST });
+  try {
+    const data = await service.registGroup(group);
+    dispatch({ type: types.GROUP_REGIST_SUCCESS, data: data});
+
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: types.GROUP_REGIST_FAILURE, error: e });
+    
+  } 
+}

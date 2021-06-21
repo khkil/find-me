@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/groups")
@@ -25,6 +27,7 @@ public class GroupController {
     public ResponseEntity insertGroup(@RequestBody Group group){
 
         groupServcice.insertGroup(group);
-        return ResponseEntity.ok(CommonResponse.successResult());
+        Map<String, Object> groupMap = CommonResponse.getDataMap("group", group);
+        return ResponseEntity.ok(CommonResponse.successResult(groupMap));
     }
 }
