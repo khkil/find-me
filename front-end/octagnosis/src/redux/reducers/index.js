@@ -4,11 +4,13 @@ import themeReducer from "./themeReducer";
 import authReducer from "./authReducer";
 import memberReducer from "./memberReducer";
 import smsReducer from "./smsReducer";
+import groupReducer from "./groupReducer";
 
 export const rootReducer = combineReducers({
+  dataReducer,
   themeReducer,
   authReducer,
   memberReducer,
   smsReducer,
-  dataReducer
+  groupReducer,
 });

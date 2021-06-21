@@ -233,7 +233,7 @@ function AdminMemberDetail({ match }) {
     <React.Fragment>
       <Helmet title="Formik" />
       <Typography variant="h3" gutterBottom display="inline">
-        Formik
+        회원 상세
       </Typography>
 
       <Breadcrumbs aria-label="Breadcrumb" mt={2}>

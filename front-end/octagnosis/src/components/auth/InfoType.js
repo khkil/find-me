@@ -113,8 +113,8 @@ const InfoType = ({ type }) => {
               }}
               my={2}
             />
-            <AuthLoader loading={loading}></AuthLoader>
-            { Boolean(error && showErrorMsg) && <p className={classes.error_text}>{error.msg}</p> }
+            <AuthLoader loading={loading}></AuthLoader>{/* 
+            { Boolean(error && showErrorMsg) && <p className={classes.error_text}>{error.msg}</p> } */}
             <p className={classes.error_text}></p>
             <Button
               className={classes.submit_btn}

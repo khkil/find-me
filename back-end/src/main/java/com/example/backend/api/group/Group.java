@@ -11,5 +11,6 @@ public class Group {
     private String contactName;
     private String contactEmail;
     private String contactTel;
+    private String flag;
 
 }

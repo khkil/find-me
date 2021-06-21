@@ -18,4 +18,8 @@ public class GroupServcice {
         return groupMapper.getGroupList();
     }
 
+    public void insertGroup(Group group) {
+        groupMapper.insertGroup(group);
+    }
+
 }
