@@ -27,7 +27,6 @@ public class GroupController {
     public ResponseEntity insertGroup(@RequestBody Group group){
 
         groupServcice.insertGroup(group);
-        Map<String, Object> groupMap = CommonResponse.getDataMap("group", group);
-        return ResponseEntity.ok(CommonResponse.successResult(groupMap));
+        return ResponseEntity.ok(group);
     }
 }

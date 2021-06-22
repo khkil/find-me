@@ -83,61 +83,116 @@ const getQuestions = (questions) => {
   return result;
 }
 
-const GroupComboBox = () => {
+const UserInfoInput = ({ dataForm, setDataForm }) => {
 
   const dispatch = useDispatch();
-  const [form, setForm] = useState({ flag: -1});
-  const [showForm, setShowForm] = useState(false);
+  const [groupForm, setGroupForm] = useState({ flag: -1});
+
+  const [showGroupForm, setShowGroupForm] = useState(false);
 
   const toggleForm = () => {
-    setShowForm(!showForm);
+    setShowGroupForm(!showGroupForm);
   }
 
-  const handleChange = (e) => {
+  const handleChangeGroup = (e) => {
     const { name, value } = e.target;
-    setForm({
-      ...form,
+    setGroupForm({
+      ...groupForm,
       [name]: value
     })
   }
 
-  const onCreate = () => {
-    console.log(form);
-    dispatch(registGroup(form));
+  const onCreateGroup = () => {
+    const { name } = groupForm;
+    if(!name){
+      alert("기관명을 입력해주세요"); 
+      return false;
+    } 
+    dispatch(registGroup(groupForm))
+    .then(() => {
+      if(error){
+        alert("등록시 오류 발생")
+      }else{
+        alert(`${name} 기관이 등록되었습니다`)
+        setShowGroupForm(false);
+        setGroupForm({});
+      }
+    }); 
   }
   
   useEffect(() => {
-    console.log("group re-rendering")
     dispatch(getGroupList());
-  }, [])
+  }, [groupReducer])
 
-  const group = useSelector(state => state.groupReducer);
-  const { data, loading } = group;
-
-  console.log(data);
-  
-  
+  const groupReducer = useSelector(state => state.groupReducer);
+  const { data, error } = groupReducer;  
   
   if(!data) return null;
   return (
-    <>
+    <Grid item xs={12}>
       <Box style={{padding: "20px"}}>
-        <Button variant="contained" color="primary" onClick={toggleForm}>{showForm ? "- 등록취소" : "+ 기관등록"}</Button>
-      </Box>
-      {showForm ? (
-          <Box style={{padding: "20px"}}>
-            <TextField label="기관명" margin="normal" name="name" onChange={handleChange}/><br/>
-            <Button variant="contained" color="primary" onClick={onCreate}>등록</Button>
-          </Box>
+        <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관등록"}</Button>
+      </Box> 
+      {showGroupForm ? (
+        <Box style={{padding: "20px"}}>
+          <TextField label="기관명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>
+          <Button variant="contained" color="primary" onClick={onCreateGroup}>등록</Button>
+        </Box>
         ) : (
-          <Autocomplete
-            options={data}
-            getOptionLabel={(group) => group.name}
-            style={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="기관" variant="outlined" />}
-      />)
-      }
-    </>
+        <Autocomplete
+          options={data}
+          getOptionLabel={(group) => group.name}
+          onChange={(event, value) => { 
+            const { idx } = value;
+            setDataForm({
+              ...dataForm,
+              user_info : {
+                ...dataForm.user_info,
+                group_idx: idx
+              }
+            })
+          }}
+          style={{ width: 300 }}
+          renderInput={(params) =>
+            <TextField {...params} 
+              label="기관" 
+              variant="outlined" 
+            />
+          }
+        />
+      )}
+      <TextField 
+        name="user_grade" 
+        label="학년"  
+        margin="normal"
+        onChange={(e) => {
+          const { name, value } = e.target;
+          setDataForm({
+            ...dataForm,
+            user_info : {
+              ...dataForm.user_info,
+              [name]: value
+            }
+          })
+        }
+      }/>
+      <TextField 
+        name="user_etc" 
+        label="반" 
+        margin="normal"
+        onChange={(e) => {
+          const { name, value } = e.target;
+          setDataForm({
+            ...dataForm,
+            user_info : {
+              ...dataForm.user_info,
+              [name]: value
+            }
+          })
+
+        }}
+      />
+    </Grid>
   );
 }
 
@@ -151,6 +206,12 @@ const CustomizedTables = () => {
 
   const classes = useStyles();
   const { data } = useSelector(state => state.dataReducer);
+
+  const [dataForm, setDataForm] = useState({
+    user_info: {},
+    user_answers: []
+  });
+
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
@@ -168,11 +229,8 @@ const CustomizedTables = () => {
   return (
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
-      <Grid item xs={12}>
-        <GroupComboBox/>
-        <TextField label="학년" margin="normal"/>
-        <TextField label="반" margin="normal"/>
-      </Grid>
+      
+        <UserInfoInput dataForm={dataForm} setDataForm={setDataForm}/>
       
         <TableContainer component={Paper}>
         
@@ -209,9 +267,24 @@ const CustomizedTables = () => {
                   />
                   </StyledTableCell>
                   
-                  {getQuestions(data.questions)[key].map((value, y) => (
+                  {getQuestions(data.questions)[key].map((value, y) =>  (
                     <StyledTableCell align="center" component="th" scope="row" key={y}>
-                      <TextField size="small" type="number" required={true}/>
+                      <TextField size="medium" type="number" required={true} onChange={(e) => {
+                        const { question_idx } = value;
+                        const answer_idx = e.target.value;
+                        const { user_answers } = dataForm;
+                        setDataForm({
+                          ...dataForm,
+                          user_answers:[
+                            ...user_answers, {
+                              question_idx: question_idx,
+                              answer_idx: answer_idx
+                            }
+                          ]
+                        })
+                        console.log(question_idx, answer_idx);
+
+                      }}/>
                     </StyledTableCell>
                   ))}
                   
@@ -225,9 +298,11 @@ const CustomizedTables = () => {
           <Grid item xs={4} style={{textAlign:"center", paddingTop:"50px"}}>
             <Paper className={classes.paper}>
 
-            <Button variant="contained" color="primary" type="submit">
+            <Button variant="contained" color="primary" size="large" type="submit">
               등록
             </Button>
+            {JSON.stringify(dataForm)}
+
             </Paper>
           </Grid>
           <Grid item xs={4}/>

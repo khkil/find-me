@@ -7,7 +7,7 @@ export default function reducer(state = initialState, actions) {
     
     case types.GROUP_LIST_REQUEST:
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
 
@@ -26,7 +26,7 @@ export default function reducer(state = initialState, actions) {
 
     case types.GROUP_REGIST_REQUEST:
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
 
@@ -34,7 +34,7 @@ export default function reducer(state = initialState, actions) {
       return {
         ...state,
         loading: false,
-        data: actions.data
+        data: [...state.data, actions.data]
       };
     case types.GROUP_REGIST_FAILURE:
       return {

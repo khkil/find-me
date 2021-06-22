@@ -12,6 +12,7 @@ public class User {
     private String user_name;
     private String user_age;
     private String user_gender;
+    private String group_idx;
     private Date cdate;
 
 }
