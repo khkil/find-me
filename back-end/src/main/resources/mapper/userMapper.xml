@@ -9,7 +9,9 @@
     </select>
 
     <insert id="insertUserInfo" parameterType="com.example.backend.api.result.UserResult" useGeneratedKeys="true">
-        INSERT INTO user(inspection_idx, user_name, user_age, user_gender,cdate) VALUES (#{inspection_idx}, #{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender}, now());
+        INSERT INTO
+            user(inspection_idx, group_idx, user_name, user_age, user_gender,user_grade, user_etc, cdate)
+            VALUES (#{inspection_idx}, #{user_info.group_idx},#{user_info.user_name}, #{user_info.user_age}, #{user_info.user_gender}, #{user_info.user_grade}, #{user_info.user_etc}, now());
         <selectKey keyProperty="user_idx" resultType="int" order="AFTER">
             select LAST_INSERT_ID();
         </selectKey>

@@ -5,6 +5,7 @@ import authReducer from "./authReducer";
 import memberReducer from "./memberReducer";
 import smsReducer from "./smsReducer";
 import groupReducer from "./groupReducer";
+import userReducer from "./userReducer";
 
 export const rootReducer = combineReducers({
   dataReducer,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
   memberReducer,
   smsReducer,
   groupReducer,
+  userReducer
 });

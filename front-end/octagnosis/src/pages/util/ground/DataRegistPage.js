@@ -14,6 +14,7 @@ import { columnsTotalWidthSelector } from '@material-ui/data-grid';
 import { Box, Button, Chip, Container, Grid } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { getGroupList, registGroup } from '../../../redux/actions/groupActions';
+import { registUserAnswers } from '../../../redux/actions/userActions';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -140,7 +141,7 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
         </Box>
         ) : (
         <Autocomplete
-          options={data}
+          options={data.filter(group => group.name !== null)}
           getOptionLabel={(group) => group.name}
           onChange={(event, value) => { 
             const { idx } = value;
@@ -208,6 +209,7 @@ const CustomizedTables = () => {
   const { data } = useSelector(state => state.dataReducer);
 
   const [dataForm, setDataForm] = useState({
+    inspection_idx: 3,
     user_info: {},
     user_answers: []
   });
@@ -215,8 +217,28 @@ const CustomizedTables = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
-    console.log(e);
     e.preventDefault();
+    dispatch(registUserAnswers(dataForm))
+    .then(() => {
+      
+    });
+    
+  }
+
+  const filteredValue = (questionIdx, answerIdx) => {
+    const { user_answers } = dataForm;
+    const values = user_answers.map(answer => answer.question_idx);
+    const containedIndex = values.indexOf(questionIdx);
+    const filteredAnswers = user_answers.filter((answer, index) => index !== containedIndex);
+
+    setDataForm({
+      ...dataForm,
+      user_answers: [...(containedIndex > -1 ? filteredAnswers : user_answers), {
+        question_idx: questionIdx,
+        answer_idx: answerIdx
+      }]
+    })
+    
   }
   useEffect(() => {
     dispatch(getQuestionList(3));
@@ -272,18 +294,8 @@ const CustomizedTables = () => {
                       <TextField size="medium" type="number" required={true} onChange={(e) => {
                         const { question_idx } = value;
                         const answer_idx = e.target.value;
-                        const { user_answers } = dataForm;
-                        setDataForm({
-                          ...dataForm,
-                          user_answers:[
-                            ...user_answers, {
-                              question_idx: question_idx,
-                              answer_idx: answer_idx
-                            }
-                          ]
-                        })
-                        console.log(question_idx, answer_idx);
-
+                        filteredValue(question_idx, answer_idx);
+                        
                       }}/>
                     </StyledTableCell>
                   ))}
