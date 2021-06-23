@@ -1,6 +1,6 @@
 import React from "react";
 import async from "../components/Async";
-import DataRegistPage from "../pages/util/ground/DataRegistPage";
+
 
 import {
   BookOpen,
@@ -20,6 +20,9 @@ import {
   Users,
   Circle
 } from "react-feather";
+
+import MainPage from "../pages/util/ground/MainPage";
+import DataRegistPage from "../pages/util/ground/DataRegistPage";
 import DataListPage from "../pages/util/ground/DataListPage";
 
 // Guards
@@ -202,12 +205,17 @@ const groundUtilRoute = {
     {
       path: "/ground",
       name: "지면검사 목록",
-      component: DataListPage,
+      component: MainPage,
     },
     {
       path: "/ground/regist",
       name: "지면검사 입력",
       component: DataRegistPage,
+    },
+    {
+      path: "/ground/users",
+      name: "지면검사 회원목록",
+      component: DataListPage,
     },
     
   ]

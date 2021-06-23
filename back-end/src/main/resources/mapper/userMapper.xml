@@ -7,6 +7,14 @@
     <select id="getUsers" parameterType="int" resultType="com.example.backend.api.user.User">
         SELECT * FROM user WHERE inspection_idx = #{inspection_idx};
     </select>
+    <select id="getUserDetail" resultType="com.example.backend.api.user.User">
+        SELECT * FROM user WHERE user_idx = #{userIdx};
+
+    </select>
+
+    <select id="getUserAnswers" resultType="java.util.Map">
+        SELECT * FROM user_answer WHERE user_idx = #{userIdx} ORDER BY question_idx;
+    </select>
 
     <insert id="insertUserInfo" parameterType="com.example.backend.api.result.UserResult" useGeneratedKeys="true">
         INSERT INTO

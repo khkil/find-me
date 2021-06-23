@@ -164,6 +164,7 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
       )}
       <TextField 
         name="user_grade" 
+        type="number"
         label="학년"  
         margin="normal"
         onChange={(e) => {
@@ -178,7 +179,8 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
         }
       }/>
       <TextField 
-        name="user_etc" 
+        name="user_etc"
+       
         label="반" 
         margin="normal"
         onChange={(e) => {
@@ -203,7 +205,9 @@ const groups = [
 ];
 
 
-const CustomizedTables = () => {
+
+
+const DataRegistPage = ({ history }) => {
 
   const classes = useStyles();
   const { data } = useSelector(state => state.dataReducer);
@@ -215,14 +219,22 @@ const CustomizedTables = () => {
   });
 
   const dispatch = useDispatch();
+  const userReducer = useSelector(state => state.userReducer);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(registUserAnswers(dataForm))
-    .then(() => {
-      
-    });
-    
+    console.log(history);
+    /* if(confirm("등록하시겠습니까?")){
+      dispatch(registUserAnswers(dataForm))
+      .then(() => {
+        const { data } = userReducer;
+        if(data){
+          const { user_idx } = data;
+
+        }
+        console.log(data);
+      });
+    } */
   }
 
   const filteredValue = (questionIdx, answerIdx) => {
@@ -291,12 +303,16 @@ const CustomizedTables = () => {
                   
                   {getQuestions(data.questions)[key].map((value, y) =>  (
                     <StyledTableCell align="center" component="th" scope="row" key={y}>
-                      <TextField size="medium" type="number" required={true} onChange={(e) => {
-                        const { question_idx } = value;
-                        const answer_idx = e.target.value;
-                        filteredValue(question_idx, answer_idx);
-                        
-                      }}/>
+                      <TextField 
+                        size="medium" 
+                        type="number" 
+                        InputProps={{ inputProps: { min: 1, max: 5 } }} 
+                        onChange={(e) => {
+                          const { question_idx } = value;
+                          const answer_idx = e.target.value;
+                          filteredValue(question_idx, answer_idx);
+                        }}
+                      />
                     </StyledTableCell>
                   ))}
                   
@@ -322,14 +338,6 @@ const CustomizedTables = () => {
         
       </form>
     </Container>
-  );
-}
-
-const DataRegistPage = () => {
-  return (
-    <div>
-      <CustomizedTables></CustomizedTables>
-    </div>
   )
 }
 

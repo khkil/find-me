@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Container } from '@material-ui/core';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -79,9 +80,9 @@ const CustomizedTables = () => {
 
 const DataListPage = () => {
   return (
-    <div>
+    <Container maxWidth="lg">
       <CustomizedTables></CustomizedTables>
-    </div>
+    </Container>
   )
 }
 

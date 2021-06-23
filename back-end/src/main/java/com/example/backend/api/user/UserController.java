@@ -32,10 +32,18 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/answers/inspection/{inspection_idx}")
-    public int getUserAnswers(@PathVariable int inspection_idx){
-        return -1;
+    @GetMapping("/{userIdx}")
+    public ResponseEntity getUserDetail(@PathVariable int userIdx){
+        User user = userServcice.getUserDetail(userIdx);
+        return ResponseEntity.ok(user);
     }
+
+    @GetMapping("/{userIdx}/answers")
+    public ResponseEntity getUserAnswers(@PathVariable int userIdx){
+        List<Map<String, Object>> userAnswers = userServcice.getUserAnswers(userIdx);
+        return ResponseEntity.ok(userAnswers);
+    }
+
 
     @PostMapping("/answers")
     public ResponseEntity<CommonResponse> insertUserAnswers(@RequestBody UserResult userResult) {

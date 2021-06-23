@@ -7,12 +7,12 @@ import java.sql.Date;
 @Data
 public class User {
 
-    private int user_idx;
-    private int inspection_idx;
-    private String user_name;
-    private String user_age;
-    private String user_gender;
-    private String group_idx;
+    private int userIdx;
+    private int inspectionIdx;
+    private String userName;
+    private String userAge;
+    private String userGender;
+    private String groupIdx;
     private Date cdate;
 
 }
