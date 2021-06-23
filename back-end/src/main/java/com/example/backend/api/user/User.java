@@ -1,6 +1,8 @@
 package com.example.backend.api.user;
 
+import com.example.backend.api.group.Group;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 
@@ -12,7 +14,11 @@ public class User {
     private String userName;
     private String userAge;
     private String userGender;
+    private int userGrade;
+    private String userEtc;
     private String groupIdx;
     private Date cdate;
+
+    private Group group;
 
 }

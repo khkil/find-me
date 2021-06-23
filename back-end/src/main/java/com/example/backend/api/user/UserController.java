@@ -1,5 +1,7 @@
 package com.example.backend.api.user;
 
+import com.example.backend.api.question.QuestionServcice;
+import com.example.backend.common.exception.ApiException;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.api.result.UserResult;
@@ -23,6 +25,9 @@ public class UserController {
     UserServcice userServcice;
 
     @Autowired
+    QuestionServcice questionServcice;
+
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
 
 
@@ -34,14 +39,20 @@ public class UserController {
 
     @GetMapping("/{userIdx}")
     public ResponseEntity getUserDetail(@PathVariable int userIdx){
-        UserDetail user = userServcice.getUserDetail(userIdx);
+        User user = userServcice.getUserDetail(userIdx);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/{userIdx}/answers")
     public ResponseEntity getUserAnswers(@PathVariable int userIdx){
-        List<Map<String, Object>> userAnswers = userServcice.getUserAnswers(userIdx);
-        return ResponseEntity.ok(userAnswers);
+
+        User user = userServcice.getUserDetail(userIdx);
+        Map<String, Object> result = new HashMap<>();
+        result.put("user", user);
+        if(user ==  null) throw new ApiException("유저정보가 없습니다");
+        result.put("answers", userServcice.getUserAnswers(userIdx));
+        result.put("questions", questionServcice.getQuestionList(user.getInspectionIdx()));
+        return ResponseEntity.ok(result);
     }
 
 

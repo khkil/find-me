@@ -19,7 +19,7 @@ public class UserServcice {
        return userMapper.getUsers(inspection_idx);
     }
 
-    public UserDetail getUserDetail(int userIdx){
+    public User getUserDetail(int userIdx){
         return userMapper.getUserDetail(userIdx);
     }
 

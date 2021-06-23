@@ -4,24 +4,24 @@
 
 <mapper namespace="com.example.backend.api.user.UserMapper">
 
+    <resultMap id="groupMap" type="com.example.backend.api.group.Group">
+        <result column="idx" property="idx"></result>
+        <result column="name" property="name"></result>
+    </resultMap>
     <resultMap id="userMap" type="com.example.backend.api.user.User">
-        <id property="userIdx" column="user_idx"></id>
-        <id property="groupIdx" column="group_idx"></id>
+        <result column="inspection_idx" property="inspectionIdx"></result>
+        <result column="user_idx" property="userIdx"></result>
+        <result column="user_name" property="userName"></result>
+        <result column="user_grade" property="userGrade"></result>
+        <result column="user_etc" property="userEtc"></result>
+        <collection property="group" resultMap="groupMap"></collection>
     </resultMap>
 
-    <resultMap id="groupMap" type="com.example.backend.api.group.Group">
-        <id property="idx" column="idx"></id>
-        <id property="name" column="name"></id>
-    </resultMap>
-    <resultMap id="userCombinedGroupMap" type="com.example.backend.api.user.UserDetail">
-        <collection property="user" resultMap="userMap"/>
-        <collection property="group" resultMap="groupMap"/>
-    </resultMap>
 
     <select id="getUsers" parameterType="int" resultType="com.example.backend.api.user.User">
         SELECT * FROM user WHERE inspection_idx = #{inspection_idx};
     </select>
-    <select id="getUserDetail" resultType="com.example.backend.api.user.UserDetail">
+    <select id="getUserDetail" resultMap="userMap">
         SELECT  * FROM
         user u
             LEFT OUTER JOIN
@@ -30,7 +30,7 @@
         WHERE user_idx = #{userIdx};
     </select>
 
-    <select id="getUserAnswers" resultMap="userCombinedGroupMap">
+    <select id="getUserAnswers" resultType="java.util.Map">
         SELECT * FROM user_answer WHERE user_idx = #{userIdx} ORDER BY question_idx;
     </select>
 

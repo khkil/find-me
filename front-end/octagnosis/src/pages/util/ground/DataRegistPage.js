@@ -224,17 +224,16 @@ const DataRegistPage = ({ history }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(history);
-    /* if(confirm("등록하시겠습니까?")){
+    if(confirm("등록하시겠습니까?")){
       dispatch(registUserAnswers(dataForm))
       .then(() => {
-        const { data } = userReducer;
+        const { data } = userReducer.data;
         if(data){
           const { user_idx } = data;
-
+          history.push(`/ground/users/${user_idx}`);
         }
-        console.log(data);
       });
-    } */
+    }
   }
 
   const filteredValue = (questionIdx, answerIdx) => {
@@ -290,34 +289,8 @@ const DataRegistPage = ({ history }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.keys(getQuestions(data.questions)).map((key, x) => (
-                
-                <StyledTableRow key={x}>
-                  <StyledTableCell align="center" component="th" scope="row">
-                    <Chip
-                      size="small"
-                      label={`문항 ${x + 1}  ${resultMap[x + 1].title}`}
-                      color="primary"
-                  />
-                  </StyledTableCell>
-                  
-                  {getQuestions(data.questions)[key].map((value, y) =>  (
-                    <StyledTableCell align="center" component="th" scope="row" key={y}>
-                      <TextField 
-                        size="medium" 
-                        type="number" 
-                        InputProps={{ inputProps: { min: 1, max: 5 } }} 
-                        onChange={(e) => {
-                          const { question_idx } = value;
-                          const answer_idx = e.target.value;
-                          filteredValue(question_idx, answer_idx);
-                        }}
-                      />
-                    </StyledTableCell>
-                  ))}
-                  
-                </StyledTableRow>
-              ))}
+           
+           
             </TableBody>
           </Table>
         </TableContainer>
@@ -329,7 +302,6 @@ const DataRegistPage = ({ history }) => {
             <Button variant="contained" color="primary" size="large" type="submit">
               등록
             </Button>
-            {JSON.stringify(dataForm)}
 
             </Paper>
           </Grid>

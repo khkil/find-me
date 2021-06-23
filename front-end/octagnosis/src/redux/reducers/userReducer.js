@@ -24,6 +24,25 @@ export default function reducer(state = initialState, actions) {
         error: actions.error
       };
 
+    case types.USER_ANSWER_LIST_REQUEST:
+      return {
+        ...initialState,
+        loading: true
+      };
+
+    case types.USER_ANSWER_LIST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: actions.data
+      };
+    case types.USER_ANSWER_LIST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: actions.error
+      };
+
     default:
       return state;
   }

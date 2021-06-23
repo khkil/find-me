@@ -12,7 +12,7 @@ import java.util.Map;
 public interface UserMapper {
 
     List<User> getUsers(int inspection_idx);
-    UserDetail getUserDetail(int userIdx);
+    User getUserDetail(int userIdx);
     List<Map<String, Object>> getUserAnswers(int userIdx);
     void insertUserInfo(UserResult userResult);
     void insertUserAnswers(int user_idx, int question_idx, int answer_idx);
