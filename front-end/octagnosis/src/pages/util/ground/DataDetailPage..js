@@ -15,6 +15,7 @@ import { Box, Button, Chip, Container, Grid } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { getGroupList, registGroup } from '../../../redux/actions/groupActions';
 import { getUserAnswers, registUserAnswers } from '../../../redux/actions/userActions';
+import { resultMap } from './DataRegistPage';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -46,7 +47,6 @@ const useStyles = makeStyles({
 const DataDetailPage = ({ history, match }) => {
 
   const classes = useStyles();
-  const { data } = useSelector(state => state.dataReducer);
 
   const [dataForm, setDataForm] = useState({
     inspection_idx: 3,
@@ -55,7 +55,6 @@ const DataDetailPage = ({ history, match }) => {
   });
 
   const dispatch = useDispatch();
-  const userReducer = useSelector(state => state.userReducer);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,6 +70,23 @@ const DataDetailPage = ({ history, match }) => {
       });
     }
   }
+
+  const getQuestions = (questions) => {
+  
+    let result = new Object();
+    questions.forEach(question => {
+      const key = question.result_idx;
+      if(!result[key]){
+        result[key] = [question];
+      }else{
+        result[key] = [...result[key], question];
+      }
+      
+    });
+    return result;
+  }
+
+  const getAnswers = (question, idx) => question[idx];
 
   const filteredValue = (questionIdx, answerIdx) => {
     const { user_answers } = dataForm;
@@ -93,9 +109,12 @@ const DataDetailPage = ({ history, match }) => {
     dispatch(getUserAnswers(user_idx));
   }, [])
 
-  
 
+  const { data } = useSelector(state => state.userReducer);
+  if(!data) return null;
 
+  const { user, questions, answers } = data;
+  console.log(getQuestions(questions));
   return (
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -124,7 +143,36 @@ const DataDetailPage = ({ history, match }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-            
+              {Object.keys(getQuestions(questions)).map((key, x) => {
+                const question = getQuestions(questions)[key];
+                return (
+                  <StyledTableRow key={x}>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      <Chip
+                        size="small"
+                        label={`문항 ${x + 1}  ${resultMap[x + 1].title}`}
+                        color="primary"
+                    />
+                    </StyledTableCell>
+                    {question.map((value, y) =>  (
+                      <StyledTableCell align="center" component="th" scope="row" key={y}>
+                        <TextField 
+                          size="medium" 
+                          type="number" 
+                          InputProps={{ inputProps: { min: 1, max: 5 } }} 
+                          onChange={(e) => {
+                            const { question_idx } = value;
+                            const answer_idx = e.target.value;
+                            filteredValue(question_idx, answer_idx);
+                          }}
+                        />
+                      </StyledTableCell>
+                    ))}
+
+
+                  </StyledTableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </TableContainer>

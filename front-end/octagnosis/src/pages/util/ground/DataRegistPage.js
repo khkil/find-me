@@ -289,8 +289,34 @@ const DataRegistPage = ({ history }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-           
-           
+              {Object.keys(getQuestions(data.questions)).map((key, x) => (
+                
+                <StyledTableRow key={x}>
+                  <StyledTableCell align="center" component="th" scope="row">
+                    <Chip
+                      size="small"
+                      label={`문항 ${x + 1}  ${resultMap[x + 1].title}`}
+                      color="primary"
+                  />
+                  </StyledTableCell>
+                  
+                  {getQuestions(data.questions)[key].map((value, y) =>  (
+                    <StyledTableCell align="center" component="th" scope="row" key={y}>
+                      <TextField 
+                        size="medium" 
+                        type="number" 
+                        InputProps={{ inputProps: { min: 1, max: 5 } }} 
+                        onChange={(e) => {
+                          const { question_idx } = value;
+                          const answer_idx = e.target.value;
+                          filteredValue(question_idx, answer_idx);
+                        }}
+                      />
+                    </StyledTableCell>
+                  ))}
+                  
+                </StyledTableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
