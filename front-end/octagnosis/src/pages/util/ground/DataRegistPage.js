@@ -221,18 +221,10 @@ const DataRegistPage = ({ history }) => {
   const dispatch = useDispatch();
   const userReducer = useSelector(state => state.userReducer);
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e){
     e.preventDefault();
-    console.log(history);
     if(confirm("등록하시겠습니까?")){
-      dispatch(registUserAnswers(dataForm))
-      .then(() => {
-        const { data } = userReducer.data;
-        if(data){
-          const { user_idx } = data;
-          history.push(`/ground/users/${user_idx}`);
-        }
-      });
+      dispatch(registUserAnswers(dataForm, history))
     }
   }
 

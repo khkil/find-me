@@ -14,10 +14,12 @@ export const getUserAnswers = (userIdx) => async dispatch  => {
   } 
 }
 
-export const registUserAnswers = (param) => async dispatch  => {
+export const registUserAnswers = (param, history) => async dispatch  => {
   dispatch({ type: types.USER_ANSWER_REGIST_REQUEST });
   try {
-    const data = await service.registUserAnswers(param);
+    const { data } = await service.registUserAnswers(param);
+    const { user_idx } = data;
+    history.push(`/ground/users/${user_idx}`);
     dispatch({ type: types.USER_ANSWER_REGIST_SUCCESS, data: data});
 
   } catch (e) {

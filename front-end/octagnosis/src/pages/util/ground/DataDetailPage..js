@@ -86,7 +86,6 @@ const DataDetailPage = ({ history, match }) => {
     return result;
   }
 
-  const getAnswers = (question, idx) => question[idx];
 
   const filteredValue = (questionIdx, answerIdx) => {
     const { user_answers } = dataForm;
@@ -109,12 +108,21 @@ const DataDetailPage = ({ history, match }) => {
     dispatch(getUserAnswers(user_idx));
   }, [])
 
+  const getAnswers = (answers) => {
+    let map = {};
+    answers.forEach(answer => {
+      const { question_idx, answer_idx } = answer;
+      map[question_idx] = answer_idx
+    })
+    return map;
+  }
+
 
   const { data } = useSelector(state => state.userReducer);
   if(!data) return null;
 
   const { user, questions, answers } = data;
-  console.log(getQuestions(questions));
+  const userAnswerMap = getAnswers(answers);
   return (
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -160,6 +168,7 @@ const DataDetailPage = ({ history, match }) => {
                           size="medium" 
                           type="number" 
                           InputProps={{ inputProps: { min: 1, max: 5 } }} 
+                          defaultValue={userAnswerMap[value.question_idx]}
                           onChange={(e) => {
                             const { question_idx } = value;
                             const answer_idx = e.target.value;
