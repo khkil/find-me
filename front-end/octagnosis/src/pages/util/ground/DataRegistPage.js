@@ -162,39 +162,63 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
           }
         />
       )}
-      <TextField 
-        name="user_grade" 
-        type="number"
-        label="학년"  
-        margin="normal"
-        onChange={(e) => {
-          const { name, value } = e.target;
-          setDataForm({
-            ...dataForm,
-            user_info : {
-              ...dataForm.user_info,
-              [name]: value
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <TextField 
+              name="user_name" 
+              label="이름"  
+              margin="normal"
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setDataForm({
+                  ...dataForm,
+                  user_info : {
+                    ...dataForm.user_info,
+                    [name]: value
+                  }
+                })
+              }
             }
-          })
-        }
-      }/>
-      <TextField 
-        name="user_etc"
-       
-        label="반" 
-        margin="normal"
-        onChange={(e) => {
-          const { name, value } = e.target;
-          setDataForm({
-            ...dataForm,
-            user_info : {
-              ...dataForm.user_info,
-              [name]: value
+          />
+        </Grid> 
+        <Grid item xs={6}>
+          <TextField 
+            name="user_grade" 
+            type="number"
+            label="학년"  
+            margin="normal"
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setDataForm({
+                ...dataForm,
+                user_info : {
+                  ...dataForm.user_info,
+                  [name]: value
+                }
+              })
             }
-          })
+          }/>
+          <TextField 
+            name="user_etc"
+          
+            label="반" 
+            margin="normal"
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setDataForm({
+                ...dataForm,
+                user_info : {
+                  ...dataForm.user_info,
+                  [name]: value
+                }
+              })
 
-        }}
-      />
+            }}
+          />
+        </Grid>
+        
+      </Grid>
+     
     </Grid>
   );
 }
@@ -210,23 +234,15 @@ const groups = [
 const DataRegistPage = ({ history }) => {
 
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { data } = useSelector(state => state.dataReducer);
+  const userReducer = useSelector(state => state.userReducer);
 
   const [dataForm, setDataForm] = useState({
     inspection_idx: 3,
     user_info: {},
     user_answers: []
   });
-
-  const dispatch = useDispatch();
-  const userReducer = useSelector(state => state.userReducer);
-
-  async function handleSubmit(e){
-    e.preventDefault();
-    if(confirm("등록하시겠습니까?")){
-      dispatch(registUserAnswers(dataForm, history))
-    }
-  }
 
   const filteredValue = (questionIdx, answerIdx) => {
     const { user_answers } = dataForm;
@@ -243,6 +259,22 @@ const DataRegistPage = ({ history }) => {
     })
     
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(confirm("등록하시겠습니까?")){
+      dispatch(registUserAnswers(dataForm, history));
+    }
+  }
+  useEffect(() => {
+    console.log(userReducer);
+    const { data } = userReducer;
+    if(data && data.user_idx){
+      history.push(`/ground/users/${data.user_idx}`);
+    }
+  }, [userReducer])
+
+
   useEffect(() => {
     dispatch(getQuestionList(3));
   }, [])

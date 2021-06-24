@@ -41,6 +41,108 @@ const useStyles = makeStyles({
   },
 });
 
+const UserInfoInput = ({ dataForm, setDataForm, user }) => {
+
+  const dispatch = useDispatch();
+  const { userName, userGrade, userEtc } = user;
+  console.log(user);
+  useEffect(() => {
+    dispatch(getGroupList());
+  }, [groupReducer])
+
+  const groupReducer = useSelector(state => state.groupReducer);
+  const { data, error } = groupReducer;  
+  
+  if(!data) return null;
+  return (
+    <Grid item xs={12}>
+      
+      <Autocomplete
+        options={data.filter(group => group.name !== null)}
+        getOptionLabel={(group) => group.name}
+        onChange={(event, value) => { 
+          const { idx } = value;
+          setDataForm({
+            ...dataForm,
+            user_info : {
+              ...dataForm.user_info,
+              group_idx: idx
+            }
+          })
+        }}
+        style={{ width: 300 }}
+        renderInput={(params) =>
+          <TextField {...params} 
+            label="기관" 
+            variant="outlined" 
+          />
+        }
+      />
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <TextField 
+              name="user_name" 
+              label="이름"  
+              margin="normal"
+              disabled={true}
+              value={userName}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setDataForm({
+                  ...dataForm,
+                  user_info : {
+                    ...dataForm.user_info,
+                    [name]: value
+                  }
+                })
+              }
+            }
+          />
+        </Grid> 
+        <Grid item xs={6}>
+          <TextField 
+            name="user_grade" 
+            type="number"
+            label="학년"  
+            margin="normal"
+            disabled={true}
+            value={userGrade}
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setDataForm({
+                ...dataForm,
+                user_info : {
+                  ...dataForm.user_info,
+                  [name]: value
+                }
+              })
+            }
+          }/>
+          <TextField 
+            name="user_etc"
+            label="반" 
+            margin="normal"
+            disabled={true}
+            value={userEtc}
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setDataForm({
+                ...dataForm,
+                user_info : {
+                  ...dataForm.user_info,
+                  [name]: value
+                }
+              })
+
+            }}
+          />
+        </Grid>
+        
+      </Grid>
+     
+    </Grid>
+  );
+}
 
 
 
@@ -55,6 +157,14 @@ const DataDetailPage = ({ history, match }) => {
   });
 
   const dispatch = useDispatch();
+
+  const userReducer = useSelector(state => state.userReducer);
+
+  useEffect(() => {
+    console.log("useEffect");
+    const { user_idx } = match.params;
+    dispatch(getUserAnswers(user_idx));
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -102,13 +212,8 @@ const DataDetailPage = ({ history, match }) => {
     })
     
   }
-  useEffect(() => {
-    console.log(match);
-    const { user_idx } = match.params;
-    dispatch(getUserAnswers(user_idx));
-  }, [])
 
-  const getAnswers = (answers) => {
+  const getAnswer = (answers) => {
     let map = {};
     answers.forEach(answer => {
       const { question_idx, answer_idx } = answer;
@@ -117,16 +222,19 @@ const DataDetailPage = ({ history, match }) => {
     return map;
   }
 
+  
 
-  const { data } = useSelector(state => state.userReducer);
-  if(!data) return null;
+  const { data } = userReducer;
+
+  if(!data || !data.questions || !data.answers) return null;
 
   const { user, questions, answers } = data;
-  const userAnswerMap = getAnswers(answers);
   return (
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
       
+        <UserInfoInput user={data.user} dataForm={dataForm} setDataForm={setDataForm}/>
+
         <TableContainer component={Paper}>
         
           <Table className={classes.table} aria-label="customized table" size="small"> 
@@ -162,21 +270,26 @@ const DataDetailPage = ({ history, match }) => {
                         color="primary"
                     />
                     </StyledTableCell>
-                    {question.map((value, y) =>  (
-                      <StyledTableCell align="center" component="th" scope="row" key={y}>
-                        <TextField 
-                          size="medium" 
-                          type="number" 
-                          InputProps={{ inputProps: { min: 1, max: 5 } }} 
-                          defaultValue={userAnswerMap[value.question_idx]}
-                          onChange={(e) => {
-                            const { question_idx } = value;
-                            const answer_idx = e.target.value;
-                            filteredValue(question_idx, answer_idx);
-                          }}
-                        />
-                      </StyledTableCell>
-                    ))}
+                    {question.map((value, y) => {
+                      const answer = getAnswer(answers);
+                      const answerValue = answer[value.question_idx];
+                      return (
+                        <StyledTableCell align="center" component="th" scope="row" key={y}>
+                          <TextField 
+                            size="medium" 
+                            type="number" 
+                            InputProps={{ inputProps: { min: 1, max: 5 } }} 
+                            value={answerValue}
+                            disabled={true}
+                            onChange={(e) => {
+                              const { question_idx } = value;
+                              const answer_idx = e.target.value;
+                              filteredValue(question_idx, answer_idx);
+                            }}
+                          />
+                        </StyledTableCell>
+                      )
+                    })}
 
 
                   </StyledTableRow>
@@ -190,10 +303,10 @@ const DataDetailPage = ({ history, match }) => {
           <Grid item xs={4} style={{textAlign:"center", paddingTop:"50px"}}>
             <Paper className={classes.paper}>
 
-            <Button variant="contained" color="primary" size="large" type="submit">
+           {/*  <Button variant="contained" color="primary" size="large" type="submit">
               등록
             </Button>
-
+ */}
             </Paper>
           </Grid>
           <Grid item xs={4}/>

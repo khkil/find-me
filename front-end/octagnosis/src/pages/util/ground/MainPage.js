@@ -46,34 +46,6 @@ const MainPage = ({ history }) => {
             <Box p={3}>지면 검사 결과목록</Box>
           </Button>
         </Grid>
-        
-     
-        {/* <Grid item xs={12}>
-          <Typography component="h1" variant="h6" align="center" gutterBottom>
-            메뉴를 선택해주세요
-          </Typography>
-        </Grid> */}
-        
-        {/* <Grid item xs={12}>
-          <Link to="/auth/find-info/id?type=phone">
-            <Button type="button" width="50%" variant="contained" color="primary" size="large">
-              <MobileScreenShare/> 
-              <Box p={3}>휴대폰으로 찾기</Box>
-            </Button>
-            <Button type="button"  variant="contained" color="primary" size="large">
-              <MobileScreenShare/> 
-              <Box p={3}>휴대폰으로 찾기</Box>
-            </Button>
-          </Link>
-        </Grid>
-        <Grid item xs={12}>
-          <Link to="/auth/find-info/id?type=info">
-            <Button type="submit"  variant="contained" color="primary" size="large">
-              <Person/>
-              <Box p={3}>이름, 이메일로 찾기</Box>
-            </Button>
-          </Link>
-        </Grid> */}
       </Grid>
     </Container>
   )
