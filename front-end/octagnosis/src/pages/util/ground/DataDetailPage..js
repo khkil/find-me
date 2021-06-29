@@ -17,6 +17,8 @@ import { getGroupList, registGroup } from '../../../redux/actions/groupActions';
 import { getUserAnswers, registUserAnswers } from '../../../redux/actions/userActions';
 import { resultMap } from './DataRegistPage';
 import { X } from 'react-feather';
+import { AccountBox, LocalPrintshop } from '@material-ui/icons';
+import { useHistory } from 'react-router-dom';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -58,6 +60,11 @@ const useStyles = makeStyles({
   resultTable: {
     margin: "50px",
     maxWidth: "800px"
+  },
+  resultButton: {
+    margin:"20px",
+    minHeight: "100px",
+    
   }
   
 });
@@ -66,8 +73,9 @@ const rows = [
 
 ];
 
-const ResultTable = ({ ranks }) => {
+const ResultTable = ({ ranks, userIdx }) => {
 
+  const history = useHistory();
   const classes = useStyles();
   let results = new Object();
   const grades = [1,2,3];
@@ -86,57 +94,113 @@ const ResultTable = ({ ranks }) => {
   let maxCount = 0;
   Object.keys(results).forEach(key => {
     const count = results[key].length;
-    maxCount = (maxCount < count && count);
+    if(count > maxCount){
+      maxCount = count;
+      return;
+    }
   });
- 
+
+  let filteredResult = results;
 
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.resultTable} aria-label="spanning table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="center" colSpan={3}>
-              최종순위
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            {grades.map((grade, index) => <TableCell key={index} align="center">{`${grade}순위`}</TableCell> )}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {Array.from(Array(maxCount), (e, x) => 
-            <TableRow key={x}>
-              {grades.map((grade, y) => {
-                const result = results[grade];
-                const resultIdx = result[x] ? result[x].resultIdx : null;
-                return (
-                  <TableCell key={y} align="center">
-                    <Typography variant="h6">
-                    {resultIdx && resultMap[resultIdx].title}  
-                    </Typography>
-                  </TableCell> 
-                )
-              })}
+    <>
+      <Grid container>
+        <Grid item xs={7}>
+        <TableContainer component={Paper}>
+          <Table className={classes.resultTable} aria-label="spanning table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" colSpan={3}>
+                  최종순위
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                {grades.map((grade, index) => <TableCell key={index} align="center">{`${grade}순위`}</TableCell> )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Array.from(Array(maxCount), (e, x) => 
+                <TableRow key={x}>
+                  {grades.map((grade, y) => {
+                    const result = results[grade];
+                    const resultIdx = result[x] ? result[x].resultIdx : null;
+                    return (
+                      <TableCell key={y} align="center">
+                        <Typography variant="h6">
+                        {resultIdx && resultMap[resultIdx].title}  
+                        </Typography>
+                      </TableCell> 
+                    )
+                  })}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        </Grid>
+        <Grid item xs={5} style={{padding: "50px"}}>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            className={classes.resultButton} 
+            fullWidth 
+            onClick={() => { history.push("/ground/regist") }}
+          >
+            <AccountBox/>
+            <Typography variant="h4"> 등록하러 가기</Typography>
+          </Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            className={classes.resultButton} 
+            fullWidth 
+            onClick={() => { history.push({
+              pathname: "/ground/print",
+              state: {
+                results: filteredResult,
+                maxCount: maxCount,
+                grades: grades
+              }
+            }) }}
+          >
+            <LocalPrintshop/>
+            <Typography variant="h4"> 프린트 하기</Typography>
+          </Button>
+        </Grid>
+      </Grid>
+      {/* <TableContainer component={Paper}>
+        <Table className={classes.resultTable} aria-label="spanning table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center" colSpan={3}>
+                최종순위
+              </TableCell>
             </TableRow>
-          )}
-{/* 
-          <TableRow>
-            <TableCell align="center">
-              운동형
-            </TableCell>
-            <TableCell align="center">
-              운동형
-            </TableCell>
-            <TableCell align="center">
-              운동형
-            </TableCell>
-          </TableRow>
-           */}
-        
-          
-        </TableBody>
-      </Table>
-    </TableContainer>
+            <TableRow>
+              {grades.map((grade, index) => <TableCell key={index} align="center">{`${grade}순위`}</TableCell> )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.from(Array(maxCount), (e, x) => 
+              <TableRow key={x}>
+                {grades.map((grade, y) => {
+                  const result = results[grade];
+                  const resultIdx = result[x] ? result[x].resultIdx : null;
+                  return (
+                    <TableCell key={y} align="center">
+                      <Typography variant="h6">
+                      {resultIdx && resultMap[resultIdx].title}  
+                      </Typography>
+                    </TableCell> 
+                  )
+                })}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Button>test</Button> */}
+    </>
   );
 }
 
@@ -253,11 +317,11 @@ const DataDetailPage = ({ history, match }) => {
   });
 
   const dispatch = useDispatch();
-
   const userReducer = useSelector(state => state.userReducer);
+  const { user_idx } = match.params;
 
   useEffect(() => {
-    const { user_idx } = match.params;
+    
     dispatch(getUserAnswers(user_idx));
   }, [])
 
@@ -320,6 +384,7 @@ const DataDetailPage = ({ history, match }) => {
   const getRank = (questions, answers) => {
 
     let ranks = {};
+    let scoreValues = [];
     const answerMap = getAnswer(answers);
     Object.keys(questions).forEach(key => {
       const scoreList = questions[key].map(question => {
@@ -332,18 +397,18 @@ const DataDetailPage = ({ history, match }) => {
         totalScore: totalScore,
       }
       ranks[key] = info;
+      if(scoreValues.indexOf(totalScore) === -1){
+        scoreValues = [...scoreValues, totalScore];
+      }
     });
 
+    const sortedValues = scoreValues.sort((a, b) => a - b);
+    console.log("이전: ", scoreValues);
+    console.log("다음: ",sortedValues);
     Object.keys(ranks).map(x => {
       let rank = ranks[x];
       const { totalScore } = rank;
-      let ranking = Object.keys(ranks).length + 1;
-      Object.keys(ranks).map(y => { 
-        if(ranks[y].totalScore <= totalScore){
-          ranking--;
-        }
-      })
-      rank.ranking = ranking;
+      rank.ranking = sortedValues.length - sortedValues.indexOf(totalScore);
       return rank;
     });
     return ranks;
@@ -366,7 +431,6 @@ const DataDetailPage = ({ history, match }) => {
         <UserInfoInput user={data.user} dataForm={dataForm} setDataForm={setDataForm}/>
 
         <TableContainer component={Paper}>
-        
           <Table className={classes.table} aria-label="customized table" size="small"> 
             <TableHead>
               <TableRow>
@@ -438,9 +502,7 @@ const DataDetailPage = ({ history, match }) => {
                         <Typography variant="h6" className={classes[`rank${ranking}`]}>
                           {ranking}
                         </Typography>
-
                       }
-                     
                     </StyledTableCell>
                   </StyledTableRow>
                 )
@@ -448,7 +510,7 @@ const DataDetailPage = ({ history, match }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <ResultTable ranks={rank}/>
+        <ResultTable ranks={rank} userIdx={user_idx}/>
        {/*  <Grid container item xs={12} spacing={3}>
           <Grid item xs={4}/>
           <Grid item xs={4} style={{textAlign:"center", paddingTop:"50px"}}>
