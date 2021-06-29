@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/inspections/{inspection_idx}/pages/{page}")
     public ResponseEntity getUsersToPages(@PathVariable int inspection_idx, @PathVariable int page){
-        int perPage = 2;
+        int perPage = 10;
         PageHelper.startPage(page, perPage);
         List<User> users = userServcice.getUsers(inspection_idx);
         PageInfo<User> pageInfo = new PageInfo<>(users);

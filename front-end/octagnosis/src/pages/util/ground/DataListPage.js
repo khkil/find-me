@@ -10,6 +10,8 @@ import Paper from '@material-ui/core/Paper';
 import Pagination from '@material-ui/lab/Pagination';
 import { Container } from '@material-ui/core';
 import queryString from "query-string";
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserList } from '../../../redux/actions/userActions';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -44,6 +46,9 @@ const rows = [
 
 
 const useStyles = makeStyles((theme) => ({
+  root : {
+    paddingTop: "100px"
+  },
   table: {
     minWidth: 700,
   },
@@ -61,40 +66,59 @@ const useStyles = makeStyles((theme) => ({
 
 const DataListPage = ({ history, location }) => {
 
+  const dispatch = useDispatch();
   const classes = useStyles();
-  const [page, setPage] = React.useState(1);
-  const goPage = (event, value) => {
-    setPage(value);
+  const { page } = queryString.parse(location.search);
+  let searchParams = new URLSearchParams(location.search); 
+
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const goPage = (event, page) => {
+    searchParams.set("page", page);
+    history.push({
+      pathname: location.pathname,
+      search: searchParams.toString()
+    })
+    setCurrentPage(page);
   };
   
+  const { data } = useSelector(state => state.userReducer);
   useEffect(() => {
-    
+    if(page){
+      setCurrentPage(parseInt(page));
+    }
+    dispatch(getUserList(3, currentPage));
+  }, [page])
 
-  }, [])
-  
+
+  if(!data) return null;
+  const { list, pages, total, startRow, endRow } = data;
+  let startNum = total - startRow + 1;
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" className={classes.root}>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>
               <TableCell>-</TableCell>
-              <TableCell align="right">Calories</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
+              <TableCell align="center">이름</TableCell>
+              <TableCell align="center">기관</TableCell>
+              <TableCell align="center">학년</TableCell>
+              <TableCell align="center">반</TableCell>
+              <TableCell align="center">등록일</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
+            {list.map(({ userIdx, userName, userGrade, userEtc, cdate, group }) => (
+              <StyledTableRow key={ userIdx }>
                 <StyledTableCell component="th" scope="row">
-                  {row.name}
+                  {startNum--}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                <StyledTableCell align="center">{userName}</StyledTableCell>
+                <StyledTableCell align="center">{group && group.name}</StyledTableCell>
+                <StyledTableCell align="center">{userGrade}</StyledTableCell>
+                <StyledTableCell align="center">{userEtc}</StyledTableCell>
+                <StyledTableCell align="center">{cdate}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -102,7 +126,7 @@ const DataListPage = ({ history, location }) => {
       </TableContainer>
       <div className={classes.paging}>
         {/* <Pagination count={10} defaultPage={page && parseInt(page)}  color="primary" onChange={goPage} /> */}
-        <Pagination count={11} defaultPage={page} onChange={goPage}  />
+        <Pagination count={pages} page={currentPage} onChange={goPage}  />
       </div>
     </Container>
   )

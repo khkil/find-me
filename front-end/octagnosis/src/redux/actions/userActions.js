@@ -1,6 +1,18 @@
 import * as types from "../../constants";
 import * as service from "../../services/userService";
 
+export const getUserList = (inspectionIdx, page) => async dispatch  => {
+  dispatch({ type: types.USER_LIST_REQUEST });
+  try {
+    const data = await service.getUserList(inspectionIdx, page);
+    dispatch({ type: types.USER_LIST_SUCCESS, data: data });
+
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: types.USER_LIST_FAILURE, error: e });
+    
+  }
+}
 export const getUserAnswers = (userIdx) => async dispatch  => {
   dispatch({ type: types.USER_ANSWER_LIST_REQUEST });
   try {

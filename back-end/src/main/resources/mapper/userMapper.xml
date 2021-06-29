@@ -15,12 +15,19 @@
         <result column="user_grade" property="userGrade"></result>
         <result column="user_etc" property="userEtc"></result>
         <result column="group_idx" property="groupIdx"></result>
+        <result column="cdate" property="cdate"></result>
+
         <collection property="group" resultMap="groupMap"></collection>
     </resultMap>
 
 
-    <select id="getUsers" parameterType="int" resultType="com.example.backend.api.user.User">
-        SELECT * FROM user WHERE inspection_idx = #{inspection_idx}
+    <select id="getUsers" parameterType="int" resultMap="userMap">
+        SELECT  * FROM
+        user u
+            LEFT OUTER JOIN
+        `group` g
+            ON u.group_idx = g.idx
+            WHERE u.inspection_idx = #{inspection_idx}
     </select>
     <select id="getUserDetail" resultMap="userMap">
         SELECT  * FROM
