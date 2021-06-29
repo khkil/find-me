@@ -20,7 +20,7 @@
 
 
     <select id="getUsers" parameterType="int" resultType="com.example.backend.api.user.User">
-        SELECT * FROM user WHERE inspection_idx = #{inspection_idx};
+        SELECT * FROM user WHERE inspection_idx = #{inspection_idx}
     </select>
     <select id="getUserDetail" resultMap="userMap">
         SELECT  * FROM
@@ -28,11 +28,11 @@
             LEFT OUTER JOIN
         `group` g
             ON u.group_idx = g.idx
-        WHERE user_idx = #{userIdx};
+        WHERE user_idx = #{userIdx}
     </select>
 
     <select id="getUserAnswers" resultType="java.util.Map">
-        SELECT * FROM user_answer WHERE user_idx = #{userIdx} ORDER BY question_idx;
+        SELECT * FROM user_answer WHERE user_idx = #{userIdx} ORDER BY question_idx
     </select>
 
     <insert id="insertUserInfo" parameterType="com.example.backend.api.result.UserResult" useGeneratedKeys="true">

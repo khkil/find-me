@@ -5,6 +5,8 @@ import com.example.backend.common.exception.ApiException;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.api.result.UserResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,15 @@ public class UserController {
     public ResponseEntity getUsers(@PathVariable int inspection_idx){
         List<User> users = userServcice.getUsers(inspection_idx);
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/inspections/{inspection_idx}/pages/{page}")
+    public ResponseEntity getUsersToPages(@PathVariable int inspection_idx, @PathVariable int page){
+        int perPage = 2;
+        PageHelper.startPage(page, perPage);
+        List<User> users = userServcice.getUsers(inspection_idx);
+        PageInfo<User> pageInfo = new PageInfo<>(users);
+        return ResponseEntity.ok(pageInfo);
     }
 
     @GetMapping("/{userIdx}")

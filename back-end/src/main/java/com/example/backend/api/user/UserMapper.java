@@ -1,6 +1,7 @@
 package com.example.backend.api.user;
 
 import com.example.backend.api.result.UserResult;
+import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

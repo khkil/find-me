@@ -43,7 +43,7 @@
     "jss": "10.5.0",
     "material-ui-dropzone": "3.5.0",
     "polished": "4.0.5",
-    "query-string": "^7.0.0",
+    "query-string": "^7.0.1",
     "react": "^17.0.1",
     "react-app-polyfill": "2.0.0",
     "react-chartjs-2": "2.11.1",
