@@ -8,7 +8,6 @@ import com.example.backend.api.result.UserResult;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +69,7 @@ public class UserController {
     @PostMapping("/answers")
     public ResponseEntity<CommonResponse> insertUserAnswers(@RequestBody UserResult userResult) {
 
-        userServcice.inserUserInfo(userResult);
+        userServcice.insertUserInfo(userResult);
         List<Map<String, Integer>> userAnswers = userResult.getUser_answers();
         int userIdx = userResult.getUser_idx();
         for (Map<String, Integer> answer : userAnswers) {

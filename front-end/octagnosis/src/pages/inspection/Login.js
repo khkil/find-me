@@ -59,7 +59,7 @@ const loadigBar = styled(CircularProgress)`
 function Login({ history }) {
 
   const useStyles = makeStyles({
-    center: {
+    loader: {
       margin: "0 auto",
       position: "relative",
       display: "block",

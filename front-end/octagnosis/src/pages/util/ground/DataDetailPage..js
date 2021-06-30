@@ -19,6 +19,7 @@ import { resultMap } from './DataRegistPage';
 import { X } from 'react-feather';
 import { AccountBox, LocalPrintshop } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
+import Loading from '../../../components/common/Loading';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -42,6 +43,9 @@ const useStyles = makeStyles({
   root: {
     maxWidth : "1600px"
   },
+  userInfo: {
+    padding: "30px"
+  },
   table: {
     minWidth: 700,
   },
@@ -59,7 +63,7 @@ const useStyles = makeStyles({
   },
   resultTable: {
     margin: "50px",
-    maxWidth: "800px"
+    maxWidth: "600px"
   },
   resultButton: {
     margin:"20px",
@@ -168,46 +172,16 @@ const ResultTable = ({ ranks, userIdx }) => {
           </Button>
         </Grid>
       </Grid>
-      {/* <TableContainer component={Paper}>
-        <Table className={classes.resultTable} aria-label="spanning table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" colSpan={3}>
-                최종순위
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              {grades.map((grade, index) => <TableCell key={index} align="center">{`${grade}순위`}</TableCell> )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Array.from(Array(maxCount), (e, x) => 
-              <TableRow key={x}>
-                {grades.map((grade, y) => {
-                  const result = results[grade];
-                  const resultIdx = result[x] ? result[x].resultIdx : null;
-                  return (
-                    <TableCell key={y} align="center">
-                      <Typography variant="h6">
-                      {resultIdx && resultMap[resultIdx].title}  
-                      </Typography>
-                    </TableCell> 
-                  )
-                })}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Button>test</Button> */}
+   
     </>
   );
 }
 
-const UserInfoInput = ({ dataForm, setDataForm, user }) => {
+const UserInfo = ({ dataForm, setDataForm, user }) => {
 
   const dispatch = useDispatch();
-  const { userName, userGrade, userEtc } = user;
+  const classes = useStyles();
+  const { userName, userGrade, userEtc, group } = user;
   useEffect(() => {
     dispatch(getGroupList());
   }, [groupReducer])
@@ -217,9 +191,15 @@ const UserInfoInput = ({ dataForm, setDataForm, user }) => {
   
   if(!data) return null;
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} className={classes.userInfo}>
       
-      <Autocomplete
+      <TextField 
+        label="기관" 
+        variant="outlined"
+        value={group && group.name} 
+        readOnly
+      />
+      {/* <Autocomplete
         options={data.filter(group => group.name !== null)}
         getOptionLabel={(group) => group.name}
         onChange={(event, value) => { 
@@ -239,7 +219,7 @@ const UserInfoInput = ({ dataForm, setDataForm, user }) => {
             variant="outlined" 
           />
         }
-      />
+      /> */}
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <TextField 
@@ -415,8 +395,9 @@ const DataDetailPage = ({ history, match }) => {
   }
 
 
-  const { data } = userReducer;
+  const { data, loading } = userReducer;
 
+  if(loading) return <Loading/>;
   if(!data || !data.questions || !data.answers) return null;
 
   const { user, answers } = data;
@@ -428,7 +409,7 @@ const DataDetailPage = ({ history, match }) => {
     <Container maxWidth="lg" className={classes.root}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
       
-        <UserInfoInput user={data.user} dataForm={dataForm} setDataForm={setDataForm}/>
+        <UserInfo user={data.user} dataForm={dataForm} setDataForm={setDataForm}/>
 
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="customized table" size="small"> 
@@ -511,20 +492,6 @@ const DataDetailPage = ({ history, match }) => {
           </Table>
         </TableContainer>
         <ResultTable ranks={rank} userIdx={user_idx}/>
-       {/*  <Grid container item xs={12} spacing={3}>
-          <Grid item xs={4}/>
-          <Grid item xs={4} style={{textAlign:"center", paddingTop:"50px"}}>
-            <Paper className={classes.paper}>
-
-            <Button variant="contained" color="primary" size="large" type="submit">
-              등록
-            </Button>
-         
-            </Paper>
-          </Grid>
-          <Grid item xs={4}/>
-        </Grid> */}
-        
       </form>
     </Container>
   )

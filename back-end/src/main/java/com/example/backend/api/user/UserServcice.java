@@ -31,7 +31,7 @@ public class UserServcice {
         userMapper.insertUserAnswers(user_idx, question_idx, answer_idx);
     }
 
-    public void inserUserInfo(UserResult userResult){
+    public void insertUserInfo(UserResult userResult){
         userMapper.insertUserInfo(userResult);
     }
 }

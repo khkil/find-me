@@ -6,7 +6,7 @@ import React from 'react';
 
 const AuthLoader = ({ loading }) => {
   const useStyles = makeStyles({
-    center: {
+    loader: {
       margin: "0 auto",
       position: "relative",
       display: "block",
