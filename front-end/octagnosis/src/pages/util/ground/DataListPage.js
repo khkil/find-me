@@ -137,6 +137,15 @@ const DataListPage = ({ history, location }) => {
     const { name, value } = e.target;
     setSearchText(value);
   }
+
+  const handleKeyDown = (e) => {
+    const { key } = e;
+    console.log(key);
+    if(key === "Enter"){
+      search();
+    }
+
+  }
   
   const search = () => {
     console.log(searchText);
@@ -149,17 +158,9 @@ const DataListPage = ({ history, location }) => {
   
   const { data, loading } = useSelector(state => state.userReducer);
   useEffect(() => {
-    console.log("useEffect");
-    if(page){
-      setCurrentPage(parseInt(page));
-    }else{
-      setCurrentPage(1);
-    }
-    if(text){
-      setSearchText(text);
-    }else{
-      setSearchText("");
-    }
+
+    setCurrentPage(page ? parseInt(page) : 1);
+    setSearchText(text ? text : "");
     dispatch(getUserList(3, currentPage, query));
     
   }, [page, text])
@@ -178,6 +179,7 @@ const DataListPage = ({ history, location }) => {
         label="이름, 기관명을 입력하세요"
         value={searchText}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         InputProps={{
           endAdornment: (
             <InputAdornment>

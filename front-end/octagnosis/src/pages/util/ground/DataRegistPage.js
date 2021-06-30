@@ -34,18 +34,6 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
@@ -69,26 +57,11 @@ export const resultMap = {
   ,14: {title: "창조형"}
   ,15: {title: "추리형"} 
 }
-const getQuestions = (questions) => {
-  
-  let result = new Object();
-  questions.forEach(question => {
-    const key = question.result_idx;
-    if(!result[key]){
-      result[key] = [question];
-    }else{
-      result[key] = [...result[key], question];
-    }
-    
-  });
-  return result;
-}
 
 const UserInfoInput = ({ dataForm, setDataForm }) => {
 
   const dispatch = useDispatch();
   const [groupForm, setGroupForm] = useState({ flag: -1});
-
   const [showGroupForm, setShowGroupForm] = useState(false);
 
   const toggleForm = () => {
@@ -111,7 +84,7 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
     } 
     dispatch(registGroup(groupForm))
     .then(() => {
-      if(error){
+      if(groupReducer.error){
         alert("등록시 오류 발생")
       }else{
         alert(`${name} 기관이 등록되었습니다`)
@@ -126,9 +99,8 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
   }, [groupReducer])
 
   const groupReducer = useSelector(state => state.groupReducer);
-  const { data, error } = groupReducer;  
   
-  if(!data) return null;
+  if(!groupReducer.data) return null;
   return (
     <Grid item xs={12}>
       <Box style={{padding: "20px"}}>
@@ -141,17 +113,19 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
         </Box>
         ) : (
         <Autocomplete
-          options={data.filter(group => group.name !== null)}
+          options={groupReducer.data.filter(group => group.name !== null)}
           getOptionLabel={(group) => group.name}
           onChange={(event, value) => { 
-            const { idx } = value;
-            setDataForm({
-              ...dataForm,
-              user_info : {
-                ...dataForm.user_info,
-                group_idx: idx
-              }
-            })
+            if(value){
+              const { idx } = value;
+              setDataForm({
+                ...dataForm,
+                user_info : {
+                  ...dataForm.user_info,
+                  group_idx: idx
+                }
+              })
+            }
           }}
           style={{ width: 300 }}
           renderInput={(params) =>
@@ -223,13 +197,6 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
   );
 }
 
-const groups = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-];
-
-
-
 
 const DataRegistPage = ({ history }) => {
 
@@ -258,6 +225,20 @@ const DataRegistPage = ({ history }) => {
       }]
     })
     
+  }
+  const getQuestions = (questions) => {
+  
+    let result = new Object();
+    questions.forEach(question => {
+      const key = question.result_idx;
+      if(!result[key]){
+        result[key] = [question];
+      }else{
+        result[key] = [...result[key], question];
+      }
+      
+    });
+    return result;
   }
 
   const handleSubmit = (e) => {
