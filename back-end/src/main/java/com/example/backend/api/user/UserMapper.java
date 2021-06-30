@@ -3,6 +3,7 @@ package com.example.backend.api.user;
 import com.example.backend.api.result.UserResult;
 import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
 
-    List<User> getUsers(int inspection_idx);
+    List<User> getUsers(int inspection_idx, @Param("param") Map<String, Object> param);
     User getUserDetail(int userIdx);
     List<Map<String, Object>> getUserAnswers(int userIdx);
     void insertUserInfo(UserResult userResult);

@@ -1,10 +1,10 @@
 import * as types from "../../constants";
 import * as service from "../../services/userService";
 
-export const getUserList = (inspectionIdx, page) => async dispatch  => {
+export const getUserList = (inspectionIdx, page, params) => async dispatch  => {
   dispatch({ type: types.USER_LIST_REQUEST });
   try {
-    const data = await service.getUserList(inspectionIdx, page);
+    const data = await service.getUserList(inspectionIdx, page, params);
     dispatch({ type: types.USER_LIST_SUCCESS, data: data });
 
   } catch (e) {

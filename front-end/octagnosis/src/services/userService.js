@@ -1,9 +1,12 @@
 import axios from "../utils/axios";
 
-export const getUserList = (inspectionIdx, page) => {
+export const getUserList = (inspectionIdx, page, params) => {
+  console.log(params);
   return new Promise((resolve, reject) => {
     axios
-      .get(`/api/users/inspections/${inspectionIdx}/pages/${page}`)
+      .get(`/api/users/inspections/${inspectionIdx}/pages/${page}`,{
+        params: params
+      })
       .then((response) => {
         if (response.status === 200) {
           resolve(response.data);

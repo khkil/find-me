@@ -21,13 +21,20 @@
     </resultMap>
 
 
-    <select id="getUsers" parameterType="int" resultMap="userMap">
+    <select id="getUsers"  resultMap="userMap">
         SELECT  * FROM
         user u
             LEFT OUTER JOIN
         `group` g
             ON u.group_idx = g.idx
             WHERE u.inspection_idx = #{inspection_idx}
+            <if test="param.text != null and param.text != '' ">
+                AND (
+                    u.user_name LIKE CONCAT('%',#{param.text},'%')
+                    OR g.name LIKE CONCAT('%',#{param.text},'%')
+                )
+            </if>
+
     </select>
     <select id="getUserDetail" resultMap="userMap">
         SELECT  * FROM

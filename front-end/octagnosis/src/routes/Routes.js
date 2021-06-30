@@ -75,10 +75,12 @@ const Routes = () => (
     <Switch>
       {childRoutes(InspectionLayout, inspectionRoutes)}
       {childRoutes(AuthLayout, authLayoutRoutes)}
-      {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
-      {childRoutes(DashboardLayout, protectedRoutes)}
-      {childRoutes(DashboardLayout, presentationLayoutRoutes)}
       {childRoutes(({children}) => (<div>{children}</div>), groundUtilRoutes)}
+
+      {/* {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
+      {childRoutes(DashboardLayout, protectedRoutes)}
+      {childRoutes(DashboardLayout, presentationLayoutRoutes)} */}
+      
       <Route
         render={() => (
           <AuthLayout>

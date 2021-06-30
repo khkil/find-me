@@ -34,15 +34,15 @@ public class UserController {
 
     @GetMapping("/inspections/{inspection_idx}")
     public ResponseEntity getUsers(@PathVariable int inspection_idx){
-        List<User> users = userServcice.getUsers(inspection_idx);
+        List<User> users = userServcice.getUsers(inspection_idx, new HashMap<>());
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/inspections/{inspection_idx}/pages/{page}")
-    public ResponseEntity getUsersToPages(@PathVariable int inspection_idx, @PathVariable int page){
+    public ResponseEntity getUsersToPages(@PathVariable int inspection_idx, @PathVariable int page, @RequestParam Map<String,Object> param){
         int perPage = 10;
         PageHelper.startPage(page, perPage);
-        List<User> users = userServcice.getUsers(inspection_idx);
+        List<User> users = userServcice.getUsers(inspection_idx, param);
         PageInfo<User> pageInfo = new PageInfo<>(users);
         return ResponseEntity.ok(pageInfo);
     }

@@ -15,8 +15,8 @@ public class UserServcice {
     @Autowired
     UserMapper userMapper;
 
-    public List<User> getUsers(int inspection_idx){
-       return userMapper.getUsers(inspection_idx);
+    public List<User> getUsers(int inspection_idx, Map<String, Object> param){
+       return userMapper.getUsers(inspection_idx, param);
     }
 
     public User getUserDetail(int userIdx){

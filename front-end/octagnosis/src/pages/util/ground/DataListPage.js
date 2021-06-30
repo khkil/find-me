@@ -15,6 +15,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUserList } from '../../../redux/actions/userActions';
 import Loading from '../../../components/common/Loading';
 import { useHistory } from 'react-router-dom';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import {
+ TextField,
+} from "@material-ui/core"
+import { SearchIcon } from '@material-ui/data-grid';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -54,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     minWidth: 700,
+  },
+  searchBar: {
+    minWidth: "40%",
   },
   paging: {
     '& > *': {
@@ -104,13 +112,16 @@ const Buttons = ({ userIdx }) => {
   )
 }
 
+
 const DataListPage = ({ history, location }) => {
 
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { page } = queryString.parse(location.search);
+  const query = queryString.parse(location.search);
+  const { page, text } = query;
   let searchParams = new URLSearchParams(location.search); 
 
+  const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const goPage = (event, page) => {
@@ -121,18 +132,38 @@ const DataListPage = ({ history, location }) => {
     })
     setCurrentPage(page);
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSearchText(value);
+  }
+  
+  const search = () => {
+    console.log(searchText);
+    searchParams.set("text", searchText);
+    history.push({
+      pathname: location.pathname,
+      search: searchParams.toString()
+    })
+  }
   
   const { data, loading } = useSelector(state => state.userReducer);
   useEffect(() => {
+    console.log("useEffect");
     if(page){
       setCurrentPage(parseInt(page));
+    }else{
+      setCurrentPage(1);
     }
-    dispatch(getUserList(3, currentPage));
-    console.log("useEffect")
-  }, [page])
+    if(text){
+      setSearchText(text);
+    }else{
+      setSearchText("");
+    }
+    dispatch(getUserList(3, currentPage, query));
+    
+  }, [page, text])
 
-
-  console.log("render")
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
 
@@ -141,6 +172,23 @@ const DataListPage = ({ history, location }) => {
   
   return (
     <Container maxWidth="lg" className={classes.root}>
+
+      <TextField
+        className={classes.searchBar}
+        label="이름, 기관명을 입력하세요"
+        value={searchText}
+        onChange={handleChange}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment>
+              <IconButton onClick={search}>
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          )
+        }}
+      />
+
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
