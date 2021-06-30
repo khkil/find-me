@@ -9,7 +9,7 @@ const DataPrintPage = ({ match }) => {
   const { state } = location;
   if(!state) return <Redirect to="/ground"/>
 
-  const { results, maxCount, grades } = state; 
+  const { results, maxCount, grades, user } = state; 
 
   console.log(state);
 
@@ -35,7 +35,7 @@ const DataPrintPage = ({ match }) => {
           </ul>
         </div>
         <div className="content">
-          <p className="name"><strong>홍길동</strong>님</p>
+          <p className="name"><strong>{user && user.userName}</strong>님</p>
           <ul>
             {grades.map(grade => { 
               const result = results[grade];

@@ -77,7 +77,7 @@ const rows = [
 
 ];
 
-const ResultTable = ({ ranks, userIdx }) => {
+const ResultTable = ({ ranks, user }) => {
 
   const history = useHistory();
   const classes = useStyles();
@@ -161,6 +161,7 @@ const ResultTable = ({ ranks, userIdx }) => {
             onClick={() => { history.push({
               pathname: "/ground/print",
               state: {
+                user: user,
                 results: filteredResult,
                 maxCount: maxCount,
                 grades: grades
@@ -409,7 +410,7 @@ const DataDetailPage = ({ history, match }) => {
     <Container maxWidth="lg" className={classes.root}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
       
-        <UserInfo user={data.user} dataForm={dataForm} setDataForm={setDataForm}/>
+        <UserInfo user={user} dataForm={dataForm} setDataForm={setDataForm}/>
 
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="customized table" size="small"> 
@@ -491,7 +492,7 @@ const DataDetailPage = ({ history, match }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <ResultTable ranks={rank} userIdx={user_idx}/>
+        <ResultTable ranks={rank} user={user}/>
       </form>
     </Container>
   )

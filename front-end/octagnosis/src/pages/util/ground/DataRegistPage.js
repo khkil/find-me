@@ -58,9 +58,18 @@ export const resultMap = {
   ,15: {title: "추리형"} 
 }
 
-const UserInfoInput = ({ dataForm, setDataForm }) => {
 
+const DataRegistPage = ({ history }) => {
+
+  const classes = useStyles();
   const dispatch = useDispatch();
+
+  const [dataForm, setDataForm] = useState({
+    inspection_idx: 3,
+    user_info: {},
+    user_answers: []
+  });
+
   const [groupForm, setGroupForm] = useState({ flag: -1});
   const [showGroupForm, setShowGroupForm] = useState(false);
 
@@ -94,123 +103,6 @@ const UserInfoInput = ({ dataForm, setDataForm }) => {
     }); 
   }
   
-  useEffect(() => {
-    dispatch(getGroupList());
-  }, [groupReducer])
-
-  const groupReducer = useSelector(state => state.groupReducer);
-  
-  if(!groupReducer.data) return null;
-  return (
-    <Grid item xs={12}>
-      <Box style={{padding: "20px"}}>
-        <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관등록"}</Button>
-      </Box> 
-      {showGroupForm ? (
-        <Box style={{padding: "20px"}}>
-          <TextField label="기관명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>
-          <Button variant="contained" color="primary" onClick={onCreateGroup}>등록</Button>
-        </Box>
-        ) : (
-        <Autocomplete
-          options={groupReducer.data.filter(group => group.name !== null)}
-          getOptionLabel={(group) => group.name}
-          onChange={(event, value) => { 
-            if(value){
-              const { idx } = value;
-              setDataForm({
-                ...dataForm,
-                user_info : {
-                  ...dataForm.user_info,
-                  group_idx: idx
-                }
-              })
-            }
-          }}
-          style={{ width: 300 }}
-          renderInput={(params) =>
-            <TextField {...params} 
-              label="기관" 
-              variant="outlined" 
-            />
-          }
-        />
-      )}
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <TextField 
-              name="user_name" 
-              label="이름"  
-              margin="normal"
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setDataForm({
-                  ...dataForm,
-                  user_info : {
-                    ...dataForm.user_info,
-                    [name]: value
-                  }
-                })
-              }
-            }
-          />
-        </Grid> 
-        <Grid item xs={6}>
-          <TextField 
-            name="user_grade" 
-            type="number"
-            label="학년"  
-            margin="normal"
-            onChange={(e) => {
-              const { name, value } = e.target;
-              setDataForm({
-                ...dataForm,
-                user_info : {
-                  ...dataForm.user_info,
-                  [name]: value
-                }
-              })
-            }
-          }/>
-          <TextField 
-            name="user_etc"
-          
-            label="반" 
-            margin="normal"
-            onChange={(e) => {
-              const { name, value } = e.target;
-              setDataForm({
-                ...dataForm,
-                user_info : {
-                  ...dataForm.user_info,
-                  [name]: value
-                }
-              })
-
-            }}
-          />
-        </Grid>
-        
-      </Grid>
-     
-    </Grid>
-  );
-}
-
-
-const DataRegistPage = ({ history }) => {
-
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const { data } = useSelector(state => state.dataReducer);
-  const userReducer = useSelector(state => state.userReducer);
-
-  const [dataForm, setDataForm] = useState({
-    inspection_idx: 3,
-    user_info: {},
-    user_answers: []
-  });
-
   const filteredValue = (questionIdx, answerIdx) => {
     const { user_answers } = dataForm;
     const values = user_answers.map(answer => answer.question_idx);
@@ -247,6 +139,7 @@ const DataRegistPage = ({ history }) => {
       dispatch(registUserAnswers(dataForm, history));
     }
   }
+
   useEffect(() => {
     console.log(userReducer);
     const { data } = userReducer;
@@ -257,9 +150,13 @@ const DataRegistPage = ({ history }) => {
 
 
   useEffect(() => {
+    dispatch(getGroupList());
     dispatch(getQuestionList(3));
-  }, [])
+  }, [groupReducer])
 
+  const { data } = useSelector(state => state.dataReducer);
+  const userReducer = useSelector(state => state.userReducer);
+  const groupReducer = useSelector(state => state.groupReducer);
   
   if(!data) return null;
 
@@ -268,7 +165,96 @@ const DataRegistPage = ({ history }) => {
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
       
-        <UserInfoInput dataForm={dataForm} setDataForm={setDataForm}/>
+        <Grid item xs={12}>
+          <Box style={{padding: "20px"}}>
+            <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관등록"}</Button>
+          </Box> 
+          {showGroupForm ? (
+            <Box style={{padding: "20px"}}>
+              <TextField label="기관명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>
+              <Button variant="contained" color="primary" onClick={onCreateGroup}>등록</Button>
+            </Box>
+            ) : (
+            <Autocomplete
+              options={groupReducer.data.filter(group => group.name !== null)}
+              getOptionLabel={(group) => group.name}
+              onChange={(event, value) => { 
+                if(value){
+                  const { idx } = value;
+                  setDataForm({
+                    ...dataForm,
+                    user_info : {
+                      ...dataForm.user_info,
+                      group_idx: idx
+                    }
+                  })
+                }
+              }}
+              style={{ width: 300 }}
+              renderInput={(params) =>
+                <TextField {...params} 
+                  label="기관" 
+                  variant="outlined" 
+                />
+              }
+            />
+          )}
+          <Grid container spacing={6}>
+            <Grid item xs={12}>
+              <TextField 
+                  name="user_name" 
+                  label="이름"  
+                  margin="normal"
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    setDataForm({
+                      ...dataForm,
+                      user_info : {
+                        ...dataForm.user_info,
+                        [name]: value
+                      }
+                    })
+                  }
+                }
+              />
+            </Grid> 
+            <Grid item xs={6}>
+              <TextField 
+                name="user_grade" 
+                type="number"
+                label="학년"  
+                margin="normal"
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  setDataForm({
+                    ...dataForm,
+                    user_info : {
+                      ...dataForm.user_info,
+                      [name]: value
+                    }
+                  })
+                }
+              }/>
+              <TextField 
+                name="user_etc"
+              
+                label="반" 
+                margin="normal"
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  setDataForm({
+                    ...dataForm,
+                    user_info : {
+                      ...dataForm.user_info,
+                      [name]: value
+                    }
+                  })
+
+                }}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
       
         <TableContainer component={Paper}>
         
