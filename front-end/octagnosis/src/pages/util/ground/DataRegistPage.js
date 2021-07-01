@@ -59,17 +59,9 @@ export const resultMap = {
 }
 
 
-const DataRegistPage = ({ history }) => {
+const UserInfo = React.memo(({ user, setUser }) => {
 
-  const classes = useStyles();
   const dispatch = useDispatch();
-
-  const [dataForm, setDataForm] = useState({
-    inspection_idx: 3,
-    user_info: {},
-    user_answers: []
-  });
-
   const [groupForm, setGroupForm] = useState({ flag: -1});
   const [showGroupForm, setShowGroupForm] = useState(false);
 
@@ -83,6 +75,11 @@ const DataRegistPage = ({ history }) => {
       ...groupForm,
       [name]: value
     })
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({...user, [name]: value});
   }
 
   const onCreateGroup = () => {
@@ -102,22 +99,150 @@ const DataRegistPage = ({ history }) => {
       }
     }); 
   }
-  
-  const filteredValue = (questionIdx, answerIdx) => {
-    const { user_answers } = dataForm;
-    const values = user_answers.map(answer => answer.question_idx);
-    const containedIndex = values.indexOf(questionIdx);
-    const filteredAnswers = user_answers.filter((answer, index) => index !== containedIndex);
 
-    setDataForm({
-      ...dataForm,
-      user_answers: [...(containedIndex > -1 ? filteredAnswers : user_answers), {
-        question_idx: questionIdx,
-        answer_idx: answerIdx
-      }]
-    })
+  useEffect(() => {
+    dispatch(getGroupList());
+  }, [])
+  const groupReducer = useSelector(state => state.groupReducer);
+  if(!groupReducer.data) return null;
+  return (
+
+    <Grid item xs={12}>
+      <Box style={{padding: "20px"}}>
+        <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관등록"}</Button>
+      </Box> 
+      {showGroupForm ? (
+        <Box style={{padding: "20px"}}>
+          <TextField label="기관명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>
+          <Button variant="contained" color="primary" onClick={onCreateGroup}>등록</Button>
+        </Box>
+        ) : (
+        <Autocomplete
+          options={groupReducer.data.filter(group => group.name !== null)}
+          getOptionLabel={(group) => group.name}
+          onChange={(e, v) => {}}
+          style={{ width: 300 }}
+          renderInput={(params) =>
+            <TextField {...params} 
+              label="기관" 
+              variant="outlined" 
+            />
+          }
+        />
+      )}
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <TextField 
+            name="user_name" 
+            label="이름"  
+            margin="normal"
+            onChange={handleChange}
+          />
+        </Grid> 
+        <Grid item xs={6}>
+          <TextField 
+            name="user_grade" 
+            type="number"
+            label="학년"  
+            margin="normal"
+            onChange={handleChange}
+          />
+          <TextField 
+            name="user_etc"
+          
+            label="반" 
+            margin="normal"
+            onChange={handleChange}
+          />
+        </Grid>
+      </Grid>
+    </Grid>
+  )
+})
+
+
+const AnswerInfo = React.memo (({ questions, answers, setAnswers }) => {
+
+  const classes = useStyles();
+  const handleChangeAnswer = (e) => {
+
+    const answerIdx = e.target.value;
+    const { question_idx } = e.target.dataset;
+    
+    const values = answers.map(answer => answer.question_idx);
+    const index = values.indexOf(question_idx);
+    const filteredAnswers = index > -1 ? answers.filter((answer, index) => index !== index) : answers;
+
+    setAnswers([...filteredAnswers, {
+      question_idx: question_idx,
+      answer_idx: answerIdx
+    }])
     
   }
+
+  console.log("answers 렌더링");
+
+  return (
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="customized table" size="small"> 
+        <TableHead>
+          <TableRow>
+            <TableCell align="center" width="10%">-</TableCell>
+            <TableCell align="center">1번</TableCell>
+            <TableCell align="center">2번</TableCell>
+            <TableCell align="center">3번</TableCell>
+            <TableCell align="center">4번</TableCell>
+            <TableCell align="center">5번</TableCell>
+            <TableCell align="center">6번</TableCell>
+            <TableCell align="center">7번</TableCell>
+            <TableCell align="center">8번</TableCell>
+            <TableCell align="center">9번</TableCell>
+            <TableCell align="center">10번</TableCell>
+            <TableCell align="center">11번</TableCell>
+            <TableCell align="center">12번</TableCell>
+            <TableCell align="center">13번</TableCell>
+            <TableCell align="center">14번</TableCell>
+            <TableCell align="center">15번</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Object.keys(questions).map((key, x) => { 
+            const question = questions[key];
+            return (
+            <StyledTableRow key={x}>
+              <StyledTableCell align="center" component="th" scope="row">
+                <Chip
+                  size="small"
+                  label={`문항 ${x + 1}  ${resultMap[x + 1].title}`}
+                  color="primary"
+              />
+              </StyledTableCell>
+              {question.map((value, y) =>  (
+                <StyledTableCell align="center" component="th" scope="row" key={y}>
+                  <TextField 
+                    size="medium" 
+                    type="number" 
+                    InputProps={{ inputProps: { min: 1, max: 5, "data-question_idx": value.question_idx } }} 
+                    onChange={handleChangeAnswer}
+                  />
+                </StyledTableCell>
+              ))}
+            </StyledTableRow>
+          )})}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
+})
+
+const DataRegistPage = ({ history }) => {
+
+  const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const [answers, setAnswers] = useState([]);
+  const [user, setUser] = useState({});
+
   const getQuestions = (questions) => {
   
     let result = new Object();
@@ -134,9 +259,10 @@ const DataRegistPage = ({ history }) => {
   }
 
   const handleSubmit = (e) => {
+    const params = {};
     e.preventDefault();
     if(confirm("등록하시겠습니까?")){
-      dispatch(registUserAnswers(dataForm, history));
+      dispatch(registUserAnswers(params, history));
     }
   }
 
@@ -150,167 +276,24 @@ const DataRegistPage = ({ history }) => {
 
 
   useEffect(() => {
-    dispatch(getGroupList());
     dispatch(getQuestionList(3));
-  }, [groupReducer])
+  }, [])
 
   const { data } = useSelector(state => state.dataReducer);
   const userReducer = useSelector(state => state.userReducer);
-  const groupReducer = useSelector(state => state.groupReducer);
   
   if(!data) return null;
 
+  const questions = getQuestions(data.questions);
 
   return (
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
       
-        <Grid item xs={12}>
-          <Box style={{padding: "20px"}}>
-            <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관등록"}</Button>
-          </Box> 
-          {showGroupForm ? (
-            <Box style={{padding: "20px"}}>
-              <TextField label="기관명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>
-              <Button variant="contained" color="primary" onClick={onCreateGroup}>등록</Button>
-            </Box>
-            ) : (
-            <Autocomplete
-              options={groupReducer.data.filter(group => group.name !== null)}
-              getOptionLabel={(group) => group.name}
-              onChange={(event, value) => { 
-                if(value){
-                  const { idx } = value;
-                  setDataForm({
-                    ...dataForm,
-                    user_info : {
-                      ...dataForm.user_info,
-                      group_idx: idx
-                    }
-                  })
-                }
-              }}
-              style={{ width: 300 }}
-              renderInput={(params) =>
-                <TextField {...params} 
-                  label="기관" 
-                  variant="outlined" 
-                />
-              }
-            />
-          )}
-          <Grid container spacing={6}>
-            <Grid item xs={12}>
-              <TextField 
-                  name="user_name" 
-                  label="이름"  
-                  margin="normal"
-                  onChange={(e) => {
-                    const { name, value } = e.target;
-                    setDataForm({
-                      ...dataForm,
-                      user_info : {
-                        ...dataForm.user_info,
-                        [name]: value
-                      }
-                    })
-                  }
-                }
-              />
-            </Grid> 
-            <Grid item xs={6}>
-              <TextField 
-                name="user_grade" 
-                type="number"
-                label="학년"  
-                margin="normal"
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  setDataForm({
-                    ...dataForm,
-                    user_info : {
-                      ...dataForm.user_info,
-                      [name]: value
-                    }
-                  })
-                }
-              }/>
-              <TextField 
-                name="user_etc"
-              
-                label="반" 
-                margin="normal"
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  setDataForm({
-                    ...dataForm,
-                    user_info : {
-                      ...dataForm.user_info,
-                      [name]: value
-                    }
-                  })
+        <UserInfo user={user} setUser={setUser}/>
 
-                }}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-      
-        <TableContainer component={Paper}>
+        <AnswerInfo questions={questions} answers={answers} setAnswers={setAnswers}/>
         
-          <Table className={classes.table} aria-label="customized table" size="small"> 
-            <TableHead>
-              <TableRow>
-                <TableCell align="center" width="10%">-</TableCell>
-                <TableCell align="center">1번</TableCell>
-                <TableCell align="center">2번</TableCell>
-                <TableCell align="center">3번</TableCell>
-                <TableCell align="center">4번</TableCell>
-                <TableCell align="center">5번</TableCell>
-                <TableCell align="center">6번</TableCell>
-                <TableCell align="center">7번</TableCell>
-                <TableCell align="center">8번</TableCell>
-                <TableCell align="center">9번</TableCell>
-                <TableCell align="center">10번</TableCell>
-                <TableCell align="center">11번</TableCell>
-                <TableCell align="center">12번</TableCell>
-                <TableCell align="center">13번</TableCell>
-                <TableCell align="center">14번</TableCell>
-                <TableCell align="center">15번</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.keys(getQuestions(data.questions)).map((key, x) => (
-                
-                <StyledTableRow key={x}>
-                  <StyledTableCell align="center" component="th" scope="row">
-                    <Chip
-                      size="small"
-                      label={`문항 ${x + 1}  ${resultMap[x + 1].title}`}
-                      color="primary"
-                  />
-                  </StyledTableCell>
-                  
-                  {getQuestions(data.questions)[key].map((value, y) =>  (
-                    <StyledTableCell align="center" component="th" scope="row" key={y}>
-                      <TextField 
-                        size="medium" 
-                        type="number" 
-                        InputProps={{ inputProps: { min: 1, max: 5 } }} 
-                        onChange={(e) => {
-                          const { question_idx } = value;
-                          const answer_idx = e.target.value;
-                          filteredValue(question_idx, answer_idx);
-                        }}
-                      />
-                    </StyledTableCell>
-                  ))}
-                  
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={4}/>
           <Grid item xs={4} style={{textAlign:"center", paddingTop:"50px"}}>
@@ -319,7 +302,7 @@ const DataRegistPage = ({ history }) => {
             <Button variant="contained" color="primary" size="large" type="submit">
               등록
             </Button>
-
+            {JSON.stringify(user)}
             </Paper>
           </Grid>
           <Grid item xs={4}/>
