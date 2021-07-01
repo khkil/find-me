@@ -101,7 +101,7 @@ const ResultPage = ({ history }) => {
   const { data, loading, error } = useSelector(state => state.result);
   if (loading || !data) return null
   if (error) return <div>에러 발생!</div>;
-  if (data.length === 0) return <Redirect path="/"/>
+  //if (data.length === 0) return <Redirect path="/"/>
 
   return (
     <>

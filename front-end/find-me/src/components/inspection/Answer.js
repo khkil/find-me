@@ -2,23 +2,23 @@ import React from 'react';
 
 const Answer = ({ answer, onChange }) => {
 
-  const { answer_idx, answer_score, answer_text, question_idx } = answer;
+  const { answerIdx, answerScore, answerText, questionIdx } = answer;
   return (
     <div className="findme__question__element__option">
-     <label className="findme__question__element__option" htmlFor={`answer_${answer_idx}`}>
+     <label className="findme__question__element__option" htmlFor={`answer_${answerIdx}`}>
         <input
           type='radio'
-          id={`answer_${answer_idx}`}
-          name={`question_${question_idx}`}
+          id={`answer_${answerIdx}`}
+          name={`question_${questionIdx}`}
           className="dpN"
-          value={answer_idx}
-          label={answer_text}
-          data-answer_score={answer_score}
-          data-question_idx={question_idx}
+          value={answerIdx}
+          label={answerText}
+          data-answer_score={answerScore}
+          data-question_idx={questionIdx}
           onChange={onChange} 
           required/>
         <div className="findme__question__element__option-Checker"></div>
-        {answer_text}
+        {answerText}
       </label>
       
     

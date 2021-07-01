@@ -42,6 +42,7 @@ const QuestionPage = ({ match, history }) => {
     }, 3000);
   }
 
+  console.log(state);
   const goNextPage = (e) => {
     const { userInfo, answerState } = state;
     const { inspection_idx, totalPages } = inspection.data && inspection.data;

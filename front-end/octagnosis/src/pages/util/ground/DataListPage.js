@@ -148,7 +148,8 @@ const DataListPage = ({ history, location }) => {
   }
   
   const search = () => {
-    console.log(searchText);
+    setCurrentPage(1);
+    searchParams.set("page", 1);
     searchParams.set("text", searchText);
     history.push({
       pathname: location.pathname,

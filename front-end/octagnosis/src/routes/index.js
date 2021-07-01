@@ -227,6 +227,7 @@ const groundUtilRoute = {
     {
       path: "/ground/print",
       name: "지면검사 인쇄페이지",
+      hideLayout: true,
       component: DataPrintPage,
     },
     

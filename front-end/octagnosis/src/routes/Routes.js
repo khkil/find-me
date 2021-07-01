@@ -12,6 +12,7 @@ import {
 
 import DashboardLayout from "../layouts/Dashboard";
 import AuthLayout from "../layouts/Auth";
+import GroundLayout from "../layouts/Ground";
 import PresentationLayout from "../layouts/Presentation";
 import Page404 from "../pages/auth/Page404";
 import AuthGuard from "../components/AuthGuard";
@@ -20,7 +21,7 @@ import InspectionLayout from "../layouts/Inspection";
 
 const childRoutes = (Layout, routes) => {
   return (
-    routes.map(({ component: Component, children, path, auth }, index) => {
+    routes.map(({ component: Component, children, path, auth, hideLayout }, index) => {
       return children ? (
         children.map((element, index) => {
           return (
@@ -36,6 +37,9 @@ const childRoutes = (Layout, routes) => {
                     </Layout> 
                   </AuthGuard> 
                 ) : (
+                  hideLayout ? 
+                  <element.component {...props} /> 
+                  :
                   <Layout>
                     <element.component {...props} />
                   </Layout>
@@ -57,6 +61,9 @@ const childRoutes = (Layout, routes) => {
                 </Layout>
               </AuthGuard>
             ) : (
+              hideLayout ?
+              <Component {...props} /> 
+              :
               <Layout>
                 <Component {...props} />
               </Layout>
@@ -75,7 +82,8 @@ const Routes = () => (
     <Switch>
       {childRoutes(InspectionLayout, inspectionRoutes)}
       {childRoutes(AuthLayout, authLayoutRoutes)}
-      {childRoutes(({children}) => (<div>{children}</div>), groundUtilRoutes)}
+      {/* {childRoutes(({children}) => (<div>{children}</div>), groundUtilRoutes)} */}
+      {childRoutes(GroundLayout, groundUtilRoutes)}
 
       {/* {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
       {childRoutes(DashboardLayout, protectedRoutes)}

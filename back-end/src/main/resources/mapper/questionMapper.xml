@@ -10,10 +10,10 @@
     </select>
 
     <resultMap type="com.example.backend.api.question.Question" id="ResultMap">
-        <result property="question_idx" column="question_idx"/>
-        <result property="inspection_idx" column="inspection_idx"/>
-        <result property="result_idx" column="result_idx"/>
-        <result property="question_page" column="question_page"/>
+        <result property="questionIdx" column="question_idx"/>
+        <result property="inspectionIdx" column="inspection_idx"/>
+        <result property="resultIdx" column="result_idx"/>
+        <result property="questionPage" column="question_page"/>
         <collection property="answers" column="question_idx" ofType="Post" select="getAnswerList"/>
     </resultMap>
     <select id="getAnswerList" resultType="com.example.backend.api.answer.Answer" >

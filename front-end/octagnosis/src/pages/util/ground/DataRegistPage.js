@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -59,7 +59,7 @@ export const resultMap = {
 }
 
 
-const UserInfo = React.memo(({ user, setUser }) => {
+const UserForm = React.memo(({ user, setUser }) => {
 
   const dispatch = useDispatch();
   const [groupForm, setGroupForm] = useState({ flag: -1});
@@ -103,6 +103,7 @@ const UserInfo = React.memo(({ user, setUser }) => {
   useEffect(() => {
     dispatch(getGroupList());
   }, [])
+  
   const groupReducer = useSelector(state => state.groupReducer);
   if(!groupReducer.data) return null;
   return (
@@ -120,7 +121,11 @@ const UserInfo = React.memo(({ user, setUser }) => {
         <Autocomplete
           options={groupReducer.data.filter(group => group.name !== null)}
           getOptionLabel={(group) => group.name}
-          onChange={(e, v) => {}}
+          name="group_idx"
+          onChange={(event, value) => {
+            const groupIdx = (value ? value.idx : "");
+            setUser({...user, "group_idx": groupIdx});
+          }}
           style={{ width: 300 }}
           renderInput={(params) =>
             <TextField {...params} 
@@ -161,26 +166,30 @@ const UserInfo = React.memo(({ user, setUser }) => {
 })
 
 
-const AnswerInfo = React.memo (({ questions, answers, setAnswers }) => {
+const AnswersForm = React.memo (({ questions, answers, setAnswers }) => {
 
   const classes = useStyles();
-  const handleChangeAnswer = (e) => {
+  
+  const handleChange = useCallback(e => {
 
     const answerIdx = e.target.value;
     const { question_idx } = e.target.dataset;
     
     const values = answers.map(answer => answer.question_idx);
     const index = values.indexOf(question_idx);
-    const filteredAnswers = index > -1 ? answers.filter((answer, index) => index !== index) : answers;
-
-    setAnswers([...filteredAnswers, {
+    const answer = {
       question_idx: question_idx,
       answer_idx: answerIdx
-    }])
-    
-  }
+    }
 
-  console.log("answers 렌더링");
+    if(index === -1){
+      setAnswers([...answers, answer])
+    }else{
+      const changedAnswers = [...answers.filter((answer, x) => x !== index), answer];
+      //changedAnswers.sort((a, b) => a.question_idx > b.question_idx ? 1 : -1);
+      setAnswers(changedAnswers);
+    }
+  });
 
   return (
     <TableContainer component={Paper}>
@@ -206,9 +215,9 @@ const AnswerInfo = React.memo (({ questions, answers, setAnswers }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Object.keys(questions).map((key, x) => { 
-            const question = questions[key];
-            return (
+        {Object.keys(resultMap).map((k, x) => {
+          const questionList = questions.filter(question => question.result_idx == k);
+          return (
             <StyledTableRow key={x}>
               <StyledTableCell align="center" component="th" scope="row">
                 <Chip
@@ -217,18 +226,19 @@ const AnswerInfo = React.memo (({ questions, answers, setAnswers }) => {
                   color="primary"
               />
               </StyledTableCell>
-              {question.map((value, y) =>  (
+              {questionList.map((value, y) =>  (
                 <StyledTableCell align="center" component="th" scope="row" key={y}>
                   <TextField 
                     size="medium" 
                     type="number" 
                     InputProps={{ inputProps: { min: 1, max: 5, "data-question_idx": value.question_idx } }} 
-                    onChange={handleChangeAnswer}
+                    onChange={handleChange}
                   />
                 </StyledTableCell>
               ))}
             </StyledTableRow>
-          )})}
+          )
+        })}
         </TableBody>
       </Table>
     </TableContainer>
@@ -243,31 +253,24 @@ const DataRegistPage = ({ history }) => {
   const [answers, setAnswers] = useState([]);
   const [user, setUser] = useState({});
 
-  const getQuestions = (questions) => {
-  
-    let result = new Object();
-    questions.forEach(question => {
-      const key = question.result_idx;
-      if(!result[key]){
-        result[key] = [question];
-      }else{
-        result[key] = [...result[key], question];
-      }
-      
-    });
-    return result;
-  }
+  const userReducer = useSelector(state => state.userReducer);
+  const { data } = useSelector(state => state.dataReducer);
 
   const handleSubmit = (e) => {
-    const params = {};
     e.preventDefault();
+    const params = {
+      inspection_idx: 3,
+      user_answers: answers,
+      user_info: user
+    };
+    console.log(params);
     if(confirm("등록하시겠습니까?")){
       dispatch(registUserAnswers(params, history));
     }
   }
 
   useEffect(() => {
-    console.log(userReducer);
+    console.log("userReducer", userReducer);
     const { data } = userReducer;
     if(data && data.user_idx){
       history.push(`/ground/users/${data.user_idx}`);
@@ -278,21 +281,15 @@ const DataRegistPage = ({ history }) => {
   useEffect(() => {
     dispatch(getQuestionList(3));
   }, [])
-
-  const { data } = useSelector(state => state.dataReducer);
-  const userReducer = useSelector(state => state.userReducer);
   
   if(!data) return null;
-
-  const questions = getQuestions(data.questions);
 
   return (
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
       
-        <UserInfo user={user} setUser={setUser}/>
-
-        <AnswerInfo questions={questions} answers={answers} setAnswers={setAnswers}/>
+        <UserForm user={user} setUser={setUser}/>
+        <AnswersForm questions={data.questions} answers={answers} setAnswers={setAnswers}/>
         
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={4}/>
@@ -302,7 +299,6 @@ const DataRegistPage = ({ history }) => {
             <Button variant="contained" color="primary" size="large" type="submit">
               등록
             </Button>
-            {JSON.stringify(user)}
             </Paper>
           </Grid>
           <Grid item xs={4}/>

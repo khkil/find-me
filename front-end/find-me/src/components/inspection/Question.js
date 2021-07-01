@@ -3,13 +3,13 @@ import AnswerPage from '../../pages/AnswerPage';
 
 const Question = ({ question, userAnswers, setUserAnswers, validated }) => {
 
-  const { question_text, result_idx, answers } = question;
+  const { questionText, resultIdx, answers } = question;
   return (
     <div className="findme__question__element__label">
-      {question_text}
+      {questionText}
       <AnswerPage 
         answers={answers} 
-        result_idx={result_idx}
+        result_idx={resultIdx}
         userAnswers={userAnswers} 
         setUserAnswers={setUserAnswers} 
         validated={validated}
