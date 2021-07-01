@@ -15,6 +15,8 @@ import { Box, Button, Chip, Container, Grid } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { getGroupList, registGroup } from '../../../redux/actions/groupActions';
 import { registUserAnswers } from '../../../redux/actions/userActions';
+import Loading from '../../../components/common/Loading';
+import { DatePicker } from '@material-ui/pickers';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -39,7 +41,8 @@ const useStyles = makeStyles({
     minWidth: 700,
   },
   input: {
-    margin: 5
+    margin: 5,
+    minWidth: 200
   }
 });
 
@@ -89,7 +92,7 @@ const UserForm = React.memo(({ user, setUser }) => {
   const onCreateGroup = () => {
     const { name } = groupForm;
     if(!name){
-      alert("기관명을 입력해주세요"); 
+      alert("기관(학교명)명을 입력해주세요"); 
       return false;
     } 
     dispatch(registGroup(groupForm))
@@ -97,7 +100,7 @@ const UserForm = React.memo(({ user, setUser }) => {
       if(groupReducer.error){
         alert("등록시 오류 발생")
       }else{
-        alert(`${name} 기관이 등록되었습니다`)
+        alert(`${name} 기관(학교명)이 등록되었습니다`)
         setShowGroupForm(false);
         setGroupForm({});
       }
@@ -114,11 +117,11 @@ const UserForm = React.memo(({ user, setUser }) => {
 
     <Grid item xs={12}>
       <Box style={{padding: "20px"}}>
-        <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관등록"}</Button>
+        <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관(학교명)등록"}</Button>
       </Box> 
       {showGroupForm ? (
         <Box style={{padding: "20px"}}>
-          <TextField label="기관명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>
+          <TextField label="기관(학교명)명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>
           <Button variant="contained" color="primary" onClick={onCreateGroup}>등록</Button>
         </Box>
         ) : (
@@ -133,7 +136,7 @@ const UserForm = React.memo(({ user, setUser }) => {
           style={{ width: 300 }}
           renderInput={(params) =>
             <TextField {...params} 
-              label="기관" 
+              label="기관(학교명)" 
               variant="outlined" 
             />
           }
@@ -145,7 +148,7 @@ const UserForm = React.memo(({ user, setUser }) => {
             name="user_grade" 
             className={classes.input}
             type="number"
-            label="학년"  
+            label="나이(학년)"  
             margin="normal"
             onChange={handleChange}
           />
@@ -158,13 +161,22 @@ const UserForm = React.memo(({ user, setUser }) => {
           />
         </Grid>
         <Grid item xs={12}>
-          
           <TextField 
             name="user_name" 
             className={classes.input}
             label="이름"  
             margin="normal"
             onChange={handleChange}
+          />
+          <TextField
+            name="cdate" 
+            type="date"
+            className={classes.input}
+            label="시행일"
+            onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
         </Grid> 
         
@@ -262,7 +274,7 @@ const DataRegistPage = ({ history }) => {
   const [user, setUser] = useState({});
 
   const userReducer = useSelector(state => state.userReducer);
-  const { data } = useSelector(state => state.dataReducer);
+  const { data, loading } = useSelector(state => state.dataReducer);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -290,6 +302,7 @@ const DataRegistPage = ({ history }) => {
     dispatch(getQuestionList(3));
   }, [])
   
+  if(loading) return <Loading/>;
   if(!data) return null;
 
   return (

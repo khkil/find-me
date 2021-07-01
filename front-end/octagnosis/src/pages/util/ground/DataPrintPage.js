@@ -59,7 +59,7 @@ const DataPrintPage = ({ match }) => {
           <div className="inner">
             <div className="left">
               <h1 className="logo">한국진로적성센터</h1>
-              <p className="txt-info">국내최초로 진로적성교육을 시작한 유일한 전문기관</p>
+              <p className="txt-info">국내최초로 진로적성교육을 시작한 유일한 전문기관(학교명)</p>
               <p className="txt-phone">02-523-7523 / 02-556-7959</p>
             </div>
             <div className="right">

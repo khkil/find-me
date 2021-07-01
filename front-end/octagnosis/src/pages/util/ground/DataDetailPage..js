@@ -195,7 +195,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
     <Grid item xs={12} className={classes.userInfo}>
       
       <TextField 
-        label="기관" 
+        label="기관(학교명)" 
         variant="outlined"
         value={group && group.name} 
         readOnly
@@ -216,7 +216,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
         style={{ width: 300 }}
         renderInput={(params) =>
           <TextField {...params} 
-            label="기관" 
+            label="기관(학교명)" 
             variant="outlined" 
           />
         }
@@ -226,7 +226,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
           <TextField 
             name="user_grade" 
             type="number"
-            label="학년"  
+            label="나이(학년)"  
             margin="normal"
             readOnly={true}
             value={userGrade}
@@ -301,9 +301,12 @@ const DataDetailPage = ({ history, match }) => {
   const dispatch = useDispatch();
   const userReducer = useSelector(state => state.userReducer);
   const { user_idx } = match.params;
+  const { data, loading } = userReducer;
+  const existData = (data && data.questions && data.answers);
 
   useEffect(() => {
     
+    if(!existData)
     dispatch(getUserAnswers(user_idx));
   }, [])
 
@@ -397,10 +400,8 @@ const DataDetailPage = ({ history, match }) => {
   }
 
 
-  const { data, loading } = userReducer;
-
   if(loading) return <Loading/>;
-  if(!data || !data.questions || !data.answers) return null;
+  if(!existData) return null;
 
   const { user, answers } = data;
   const questions = getQuestions(data.questions);

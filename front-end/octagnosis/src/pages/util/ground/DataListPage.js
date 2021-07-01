@@ -177,7 +177,7 @@ const DataListPage = ({ history, location }) => {
 
       <TextField
         className={classes.searchBar}
-        label="이름, 기관명을 입력하세요"
+        label="이름, 기관(학교명)명을 입력하세요"
         value={searchText}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
@@ -198,8 +198,8 @@ const DataListPage = ({ history, location }) => {
             <TableRow>
               <TableCell>-</TableCell>
               <TableCell align="center">이름</TableCell>
-              <TableCell align="center">기관</TableCell>
-              <TableCell align="center">학년</TableCell>
+              <TableCell align="center">기관(학교명)</TableCell>
+              <TableCell align="center">나이(학년)</TableCell>
               <TableCell align="center">반</TableCell>
               <TableCell align="center">등록일</TableCell>
               <TableCell align="center">기능</TableCell>
