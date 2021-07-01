@@ -38,6 +38,9 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
+  input: {
+    margin: 5
+  }
 });
 
 export const resultMap = {
@@ -62,6 +65,7 @@ export const resultMap = {
 const UserForm = React.memo(({ user, setUser }) => {
 
   const dispatch = useDispatch();
+  const classes = useStyles();
   const [groupForm, setGroupForm] = useState({ flag: -1});
   const [showGroupForm, setShowGroupForm] = useState(false);
 
@@ -135,18 +139,11 @@ const UserForm = React.memo(({ user, setUser }) => {
           }
         />
       )}
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <TextField 
-            name="user_name" 
-            label="이름"  
-            margin="normal"
-            onChange={handleChange}
-          />
-        </Grid> 
+      <Grid container spacing={6, 6}>
         <Grid item xs={6}>
           <TextField 
             name="user_grade" 
+            className={classes.input}
             type="number"
             label="학년"  
             margin="normal"
@@ -154,12 +151,23 @@ const UserForm = React.memo(({ user, setUser }) => {
           />
           <TextField 
             name="user_etc"
-          
+            className={classes.input}
             label="반" 
             margin="normal"
             onChange={handleChange}
           />
         </Grid>
+        <Grid item xs={12}>
+          
+          <TextField 
+            name="user_name" 
+            className={classes.input}
+            label="이름"  
+            margin="normal"
+            onChange={handleChange}
+          />
+        </Grid> 
+        
       </Grid>
     </Grid>
   )
@@ -216,7 +224,7 @@ const AnswersForm = React.memo (({ questions, answers, setAnswers }) => {
         </TableHead>
         <TableBody>
         {Object.keys(resultMap).map((k, x) => {
-          const questionList = questions.filter(question => question.result_idx == k);
+          const questionList = questions.filter(question => question.resultIdx == k);
           return (
             <StyledTableRow key={x}>
               <StyledTableCell align="center" component="th" scope="row">
@@ -231,7 +239,7 @@ const AnswersForm = React.memo (({ questions, answers, setAnswers }) => {
                   <TextField 
                     size="medium" 
                     type="number" 
-                    InputProps={{ inputProps: { min: 1, max: 5, "data-question_idx": value.question_idx } }} 
+                    InputProps={{ inputProps: { min: 1, max: 5, "data-question_idx": value.questionIdx } }} 
                     onChange={handleChange}
                   />
                 </StyledTableCell>

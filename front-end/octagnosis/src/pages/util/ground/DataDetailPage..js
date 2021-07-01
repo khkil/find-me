@@ -221,27 +221,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
           />
         }
       /> */}
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <TextField 
-              name="user_name" 
-              label="이름"  
-              margin="normal"
-              readOnly={true}
-              value={userName}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setDataForm({
-                  ...dataForm,
-                  user_info : {
-                    ...dataForm.user_info,
-                    [name]: value
-                  }
-                })
-              }
-            }
-          />
-        </Grid> 
+      <Grid container spacing={6, 6}>
         <Grid item xs={6}>
           <TextField 
             name="user_grade" 
@@ -280,6 +260,27 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
             }}
           />
         </Grid>
+        <Grid item xs={12}>
+          <TextField 
+              name="user_name" 
+              label="이름"  
+              margin="normal"
+              readOnly={true}
+              value={userName}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setDataForm({
+                  ...dataForm,
+                  user_info : {
+                    ...dataForm.user_info,
+                    [name]: value
+                  }
+                })
+              }
+            }
+          />
+        </Grid> 
+        
       </Grid>
     </Grid>
   );
@@ -324,7 +325,7 @@ const DataDetailPage = ({ history, match }) => {
   
     let result = new Object();
     questions.forEach(question => {
-      const key = question.result_idx;
+      const key = question.resultIdx;
       question.answer_idx = "test";
       if(!result[key]){
         result[key] = [question];
@@ -364,13 +365,15 @@ const DataDetailPage = ({ history, match }) => {
 
   const getRank = (questions, answers) => {
 
+    console.log("questions",questions);
+    console.log("answers", answers);
     let ranks = {};
     let scoreValues = [];
     const answerMap = getAnswer(answers);
     Object.keys(questions).forEach(key => {
       const scoreList = questions[key].map(question => {
-        const { question_idx } = question;
-        const score = answerMap[question_idx] ? answerMap[question_idx] : 0;
+        const { questionIdx } = question;
+        const score = answerMap[questionIdx] ? answerMap[questionIdx] : 0;
         return score;
       });
       const totalScore = scoreList.reduce((a, b) => a + b);
@@ -384,8 +387,6 @@ const DataDetailPage = ({ history, match }) => {
     });
 
     const sortedValues = scoreValues.sort((a, b) => a - b);
-    console.log("이전: ", scoreValues);
-    console.log("다음: ",sortedValues);
     Object.keys(ranks).map(x => {
       let rank = ranks[x];
       const { totalScore } = rank;
@@ -404,6 +405,8 @@ const DataDetailPage = ({ history, match }) => {
   const { user, answers } = data;
   const questions = getQuestions(data.questions);
   const rank = getRank(questions, answers);
+
+  console.log(rank);
   
   
   return (
@@ -448,7 +451,7 @@ const DataDetailPage = ({ history, match }) => {
                     {question.map((value, y) => {
                       
                       const answer = getAnswer(answers);
-                      const answerValue = answer[value.question_idx];
+                      const answerValue = answer[value.questionIdx];
                       return (
                         <StyledTableCell align="center" component="th" scope="row" key={y}>
                           <TextField 
