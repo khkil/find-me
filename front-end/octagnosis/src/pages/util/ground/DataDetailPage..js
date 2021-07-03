@@ -51,6 +51,10 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
+  input: {
+    margin: 5,
+    minWidth: 200
+  },
   rank1: {
     backgroundColor: "#fdcb4d",
     fontSize: "20px"
@@ -215,7 +219,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
 
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { userName, userGrade, userEtc, group } = user;
+  const { userName, userGrade, userEtc, group, cdate } = user;
   useEffect(() => {
     dispatch(getGroupList());
   }, [groupReducer])
@@ -259,6 +263,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
           <TextField 
             name="user_grade" 
             type="number"
+            className={classes.input}
             label="나이(학년)"  
             margin="normal"
             readOnly={true}
@@ -276,6 +281,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
           }/>
           <TextField 
             name="user_etc"
+            className={classes.input}
             label="반" 
             margin="normal"
             readOnly={true}
@@ -296,10 +302,30 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
         <Grid item xs={12}>
           <TextField 
               name="user_name" 
+              className={classes.input}
               label="이름"  
               margin="normal"
               readOnly={true}
               value={userName}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setDataForm({
+                  ...dataForm,
+                  user_info : {
+                    ...dataForm.user_info,
+                    [name]: value
+                  }
+                })
+              }
+            }
+          />
+          <TextField 
+              name="user_name" 
+              className={classes.input}
+              label="시행일"  
+              margin="normal"
+              readOnly={true}
+              value={cdate}
               onChange={(e) => {
                 const { name, value } = e.target;
                 setDataForm({

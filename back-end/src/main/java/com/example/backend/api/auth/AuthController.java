@@ -56,7 +56,7 @@ public class AuthController {
         if(!params.getPassword().equals(member.getPassword())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponse.failResult(LOGIN_ERROR_MESSAGE));
         }
-        return ResponseEntity.ok(new Auth(token));
+        return ResponseEntity.ok(new Auth(token, member));
     }
 
     @PostMapping("/sign-up")
@@ -67,7 +67,7 @@ public class AuthController {
         String token =  jwtTokenProvider.createToken(member.getId(), roles);
         Jws<Claims> claims = jwtTokenProvider.getClaims(token);
 
-        return ResponseEntity.ok(new Auth(token));
+        return ResponseEntity.ok(new Auth(token, member));
     }
 
 

@@ -303,7 +303,7 @@ const DataRegistPage = ({ history }) => {
   }, [])
   
   if(loading) return <Loading/>;
-  if(!data) return null;
+  if(!data || !data.questions) return null;
 
   return (
     <Container maxWidth="lg">

@@ -136,6 +136,7 @@ const adminInpectionRoutes = {
   path: "/admin/inspections",
   icon: <Circle />,
   containsHome: true,
+  auth: true,
   children: [
     {
       path: "/admin/inspections/:idx/questions",
@@ -155,6 +156,7 @@ const adminMemberRoutes = {
   header: "회원 관리",
   icon: <PieChart />,
   containsHome: true,
+  auth: true,
   children: [
     {
       path: "/admin/members",
@@ -172,6 +174,7 @@ const adminMemberDetailRoute = {
   path: "/admin/members/:idx",
   header: "회원 상세",
   containsHome: true,
+  auth: true,
   component: AdminMemberDetail
 
 }
@@ -605,6 +608,7 @@ const landingRoutes = {
   header: "Docs",
   icon: <Monitor />,
   component: Default,
+  auth: true,
   children: null,
 };
 

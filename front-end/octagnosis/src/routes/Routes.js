@@ -21,24 +21,23 @@ import InspectionLayout from "../layouts/Inspection";
 
 const childRoutes = (Layout, routes) => {
   return (
-    routes.map(({ component: Component, children, path, auth }, index) => {
+    routes.map(({ component: Component, children, path, auth, hideLayout }, index) => {
       return children ? (
         children.map((element, index) => {
-          const { hideLayout } = element;
           return (
             <Route
               key={index}
               path={element.path}
               exact
               render={(props) => (
-                auth ? (
+                auth && Boolean(auth) ? (
                   <AuthGuard path={path}>
                     <Layout>
                       <element.component {...props} />
                     </Layout> 
                   </AuthGuard> 
                 ) : (
-                  hideLayout ? 
+                  element.hideLayout && Boolean(element.hideLayout) ? 
                   <element.component {...props} /> 
                   :
                   <Layout>
@@ -55,14 +54,14 @@ const childRoutes = (Layout, routes) => {
           path={path}
           exact
           render={(props) => (
-            auth ? (
+            auth && Boolean(auth) ? (
               <AuthGuard path={path}>
                 <Layout>
                   <Component {...props} />
                 </Layout>
               </AuthGuard>
             ) : (
-              hideLayout ?
+              hideLayout && Boolean(hideLayout) ?
               <Component {...props} /> 
               :
               <Layout>
@@ -83,12 +82,11 @@ const Routes = () => (
     <Switch>
       {childRoutes(InspectionLayout, inspectionRoutes)}
       {childRoutes(AuthLayout, authLayoutRoutes)}
-      {/* {childRoutes(({children}) => (<div>{children}</div>), groundUtilRoutes)} */}
       {childRoutes(GroundLayout, groundUtilRoutes)}
 
-      {/* {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
+      {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
       {childRoutes(DashboardLayout, protectedRoutes)}
-      {childRoutes(DashboardLayout, presentationLayoutRoutes)} */}
+      {childRoutes(DashboardLayout, presentationLayoutRoutes)}
       
       <Route
         render={() => (

@@ -18,6 +18,9 @@ export const DATA_SUCCESS = "DATA_SUCCESS";
 export const DATA_FAILURE = "DATA_FAILURE";
 
 // Auth
+export const ROLE_MEMBER = "ROLE_MEMBER";
+export const ROLE_ADMIN = "ROLE_ADMIN";
+
 export const AUTH_SIGN_UP_REQUEST = "AUTH_SIGN_UP_REQUEST";
 export const AUTH_SIGN_UP_SUCCESS = "AUTH_SIGN_UP_SUCCESS";
 export const AUTH_SIGN_UP_FAILURE = "AUTH_SIGN_UP_FAILURE";

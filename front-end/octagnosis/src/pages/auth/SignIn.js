@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
-
 import {
   Avatar,
   Checkbox,
@@ -46,14 +45,11 @@ function SignIn({ history }) {
   const handleSubmit = async (e) => {
     const { id, password } = e;
     const credentials = { id: id, password: password, role: 'ROLE_ADMIN' };
-    const { success, msg, code } = await login(credentials, history);
-    if(msg){
-      setErrorMsg(msg);
-    }
+    dispatch(login(credentials));
+
+  
   };
 
-  const { isLoggedIn } = useSelector(state => state.authReducer);
-  if(isLoggedIn) return <Redirect to='/admin' />;
   return (
     <Wrapper>
       <Helmet title="로그인" />
@@ -124,14 +120,6 @@ function SignIn({ history }) {
             >
               로그인
             </Button>
-            {/* <Button
-              component={Link}
-              to="/auth/reset-password"
-              fullWidth
-              color="primary"
-            >
-              Forgot password
-            </Button> */}
           </form>
         )}
       </Formik>

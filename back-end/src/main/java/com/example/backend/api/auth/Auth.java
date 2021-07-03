@@ -1,5 +1,6 @@
 package com.example.backend.api.auth;
 
+import com.example.backend.api.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,5 +9,6 @@ import lombok.Data;
 public class Auth {
 
     private String token;
+    private Member member;
 
 }
