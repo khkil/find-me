@@ -5,6 +5,7 @@ import com.example.backend.common.exception.ApiException;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
 import com.example.backend.api.result.UserResult;
+import com.example.backend.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,8 @@ public class UserController {
     @GetMapping("/inspections/{inspection_idx}/pages/{page}")
     public ResponseEntity getUsersToPages(@PathVariable int inspection_idx, @PathVariable int page, @RequestParam Map<String,Object> param){
         int perPage = 10;
-        PageHelper.startPage(page, perPage);
+        String orderBy = PageUtil.orderBy("cdate", String.valueOf(param.get("order")));
+        PageHelper.startPage(page, perPage, orderBy);
         List<User> users = userServcice.getUsers(inspection_idx, param);
         PageInfo<User> pageInfo = new PageInfo<>(users);
         return ResponseEntity.ok(pageInfo);
