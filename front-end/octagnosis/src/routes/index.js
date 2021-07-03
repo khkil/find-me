@@ -202,7 +202,7 @@ const memberRoutes = {
 const groundUtilRoute = {
   path: "/ground",
   name: "지면검사 관리 페이지",
-  auth: false,
+  auth: true,
   children: [
     {
       path: "/ground",

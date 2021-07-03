@@ -48,20 +48,20 @@ const useStyles = makeStyles({
 
 export const resultMap = {
   1: {title: "운동형"}
-  ,2: {title: "교육형"}
-  ,3: {title: "규범형"}
-  ,4: {title: "복합형"}
-  ,5: {title: "봉사형"}
-  ,6: {title: "분석형"}
-  ,7: {title: "생명형"}
-  ,8: {title: "소통형"}
-  ,9: {title: "실용형"}
-  ,10: {title: "운동형"}
+  ,2: {title: "관찰형"}
+  ,3: {title: "분석형"}
+  ,4: {title: "규범형"}
+  ,5: {title: "진취형"}
+  ,6: {title: "소통형"}
+  ,7: {title: "실용형"}
+  ,8: {title: "생명형"}
+  ,9: {title: "제작형"}
+  ,10: {title: "복합형"}
   ,11: {title: "원리형"}
-  ,12: {title: "제작형"}
-  ,13: {title: "진취형"}
-  ,14: {title: "창조형"}
-  ,15: {title: "추리형"} 
+  ,12: {title: "창조형"}
+  ,13: {title: "추리형"}
+  ,14: {title: "교육형"}
+  ,15: {title: "봉사형"} 
 }
 
 

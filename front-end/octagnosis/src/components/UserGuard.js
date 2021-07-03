@@ -8,9 +8,6 @@ function UserGuard({ children }) {
   if(isLoggedIn && data){
     return <Redirect to="/" />;
   }
-
-  
-
   return children;
 }
 

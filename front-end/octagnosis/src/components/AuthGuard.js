@@ -6,7 +6,13 @@ import { getAuthInfo } from "../redux/actions/authActions";
 const AuthGuard = ({ children, path }) => {
   
   const dispatch = useDispatch();
+
+  const isAdminPage = (
+    path.indexOf("admin") > -1 
+    || path.indexOf("ground") > -1
+  );
   const token = localStorage.getItem("token");
+  
   useEffect(() => {
     if(token){
       console.log('통신');
@@ -14,7 +20,8 @@ const AuthGuard = ({ children, path }) => {
     }
   }, [token, path]);
 
-  const redirectPath = path.indexOf("admin") > -1 ? "/admin/login" : "/auth/login";
+  const redirectPath = `/${isAdminPage ? "admin" : "auth"}/login`;
+
   const { data, isLoggedIn } = useSelector(state => state.authReducer);
   if (!isLoggedIn && !data) return <Redirect to={redirectPath} />;
   if (!data) return null;

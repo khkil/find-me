@@ -17,9 +17,11 @@ import { getGroupList, registGroup } from '../../../redux/actions/groupActions';
 import { getUserAnswers, registUserAnswers } from '../../../redux/actions/userActions';
 import { resultMap } from './DataRegistPage';
 import { X } from 'react-feather';
-import { AccountBox, LocalPrintshop } from '@material-ui/icons';
+import { AccountBox, CheckBox, LocalPrintshop } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import Loading from '../../../components/common/Loading';
+import Checkbox from '@material-ui/core/Checkbox'
+import { Alert } from '@material-ui/lab';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -73,14 +75,44 @@ const useStyles = makeStyles({
   
 });
 
-const rows = [
-
-];
 
 const ResultTable = ({ ranks, user }) => {
 
   const history = useHistory();
   const classes = useStyles();
+  const [exceptedResults, setExceptedResults] = useState([]);
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+    const result = value;
+    if(exceptedResults.indexOf(value) > -1){
+      setExceptedResults(exceptedResults.filter(exceptedResult => exceptedResult !== result));
+    }else{
+      setExceptedResults([...exceptedResults, result]);
+    }
+  }
+
+  const goPrintPage = () => {
+
+    Object.keys(results).forEach(key => {
+      const result = results[key].filter(value => {
+        const { resultIdx } = value;
+        return exceptedResults.indexOf(resultIdx) === -1;
+      })
+      results[key] = result;
+    })
+    
+    history.push({
+      pathname: "/ground/print",
+      state: {
+        user: user,
+        results: results,
+        maxCount: maxCount,
+        grades: grades
+      }
+    }) 
+  }
+
   let results = new Object();
   const grades = [1,2,3];
   grades.forEach(grade => {
@@ -104,8 +136,6 @@ const ResultTable = ({ ranks, user }) => {
     }
   });
 
-  let filteredResult = results;
-
   return (
     <>
       <Grid container>
@@ -115,11 +145,17 @@ const ResultTable = ({ ranks, user }) => {
             <TableHead>
               <TableRow>
                 <TableCell align="center" colSpan={3}>
+                  <Alert severity="info">체크해제 한 성향은 프린트 페이지에 노출되지 않습니다.</Alert>
+                  <br/>
                   최종순위
                 </TableCell>
               </TableRow>
               <TableRow>
-                {grades.map((grade, index) => <TableCell key={index} align="center">{`${grade}순위`}</TableCell> )}
+                {grades.map((grade, index) => (
+                  <TableCell key={index} align="center">
+                    {`${grade}순위`}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -130,9 +166,14 @@ const ResultTable = ({ ranks, user }) => {
                     const resultIdx = result[x] ? result[x].resultIdx : null;
                     return (
                       <TableCell key={y} align="center">
-                        <Typography variant="h6">
-                        {resultIdx && resultMap[resultIdx].title}  
-                        </Typography>
+                        {resultIdx && 
+                          <>
+                            <Typography variant="h6">
+                              <input type="checkbox" value={resultIdx} onChange={handleChange} checked={exceptedResults.indexOf(resultIdx) === -1}/>
+                              {resultMap[resultIdx].title}  
+                            </Typography>
+                          </>
+                        }
                       </TableCell> 
                     )
                   })}
@@ -158,15 +199,7 @@ const ResultTable = ({ ranks, user }) => {
             color="primary" 
             className={classes.resultButton} 
             fullWidth 
-            onClick={() => { history.push({
-              pathname: "/ground/print",
-              state: {
-                user: user,
-                results: filteredResult,
-                maxCount: maxCount,
-                grades: grades
-              }
-            }) }}
+            onClick={goPrintPage}
           >
             <LocalPrintshop/>
             <Typography variant="h4"> 프린트 하기</Typography>
@@ -368,8 +401,6 @@ const DataDetailPage = ({ history, match }) => {
 
   const getRank = (questions, answers) => {
 
-    console.log("questions",questions);
-    console.log("answers", answers);
     let ranks = {};
     let scoreValues = [];
     const answerMap = getAnswer(answers);
@@ -407,9 +438,6 @@ const DataDetailPage = ({ history, match }) => {
   const questions = getQuestions(data.questions);
   const rank = getRank(questions, answers);
 
-  console.log(rank);
-  
-  
   return (
     <Container maxWidth="lg" className={classes.root}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
