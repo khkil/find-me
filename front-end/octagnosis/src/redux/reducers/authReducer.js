@@ -38,7 +38,7 @@ export default function reducer(state = initialState, action) {
     case types.AUTH_LOGIN_REQUEST:
       return {
         ...state,
-        isLoggedIn: false,
+        error: '',
         loading: true,
       };
 
@@ -48,14 +48,14 @@ export default function reducer(state = initialState, action) {
         ...state,
         data: action.data,
         isLoggedIn: true,
-        loading: false
+        loading: false,
+        error: '',
       };
 
     case types.AUTH_LOGIN_FAILURE:
       return {
         ...state,
         loading: false,
-        isLoggedIn: false,
         error: action.error
       };
 

@@ -1,10 +1,20 @@
 import { AppBar, Button, Grid, Toolbar, Typography } from '@material-ui/core';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
+import * as authActions from "../redux/actions/authActions";
 
 const Ground = ({ children }) => {
 
   const history = useHistory();
+  const dispatch = useDispatch();
+  
+  const logout = () => {
+    
+    if(confirm("로그아웃 하시겠습니까?")){
+      dispatch(authActions.logout());
+    }
+  }
   return (
     <React.Fragment>
 
@@ -24,6 +34,7 @@ const Ground = ({ children }) => {
               </Typography>
             </Button>
             <Grid item xs />
+              <Button size="large" color="inherit" onClick={logout}>로그아웃</Button>
           </Grid>
         </Toolbar>
       </AppBar>

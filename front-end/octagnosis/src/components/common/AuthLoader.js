@@ -6,18 +6,23 @@ import React from 'react';
 
 const AuthLoader = ({ loading }) => {
   const useStyles = makeStyles({
+    root: {
+      textAlign: "center",
+      padding: 5
+    },
     loader: {
       margin: "0 auto",
       position: "relative",
       display: "block",
-      padding: "10px"
     }
   });
   const classes = useStyles();
   
   if(!loading) return null;
   return (
-    <CircularProgress className={classes.center} /> 
+    <div className={classes.root}>
+      <CircularProgress className={classes.center} size={25} /> 
+    </div>
   )
 }
 

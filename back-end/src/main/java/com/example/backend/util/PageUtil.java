@@ -9,8 +9,8 @@ public class PageUtil {
     public static String orderBy(String standard, String order){
 
         if(order != null && !order.isEmpty()){
-            return order + REVERSE_ORDER;
+            return standard + REVERSE_ORDER;
         }
-        return standard + REVERSE_ORDER;
+        return order + REVERSE_ORDER;
     }
 }

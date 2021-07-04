@@ -18,6 +18,9 @@ import {
 import { spacing } from "@material-ui/system";
 import { Alert as MuiAlert } from "@material-ui/lab";
 import { getAuthInfo, login } from "../../redux/actions/authActions";
+import { makeStyles } from "@material-ui/styles";
+import AuthLoader from "../../components/common/AuthLoader";
+import {useCookies} from 'react-cookie';
 
 const Alert = styled(MuiAlert)(spacing);
 
@@ -27,28 +30,67 @@ const Wrapper = styled(Paper)`
   padding: ${(props) => props.theme.spacing(6)}px;
   ${(props) => props.theme.breakpoints.up("md")} {
     padding: ${(props) => props.theme.spacing(10)}px;
+    width: 400px;
   }
 `;
 
-const BigAvatar = styled(Avatar)`
-  width: 92px;
-  height: 92px;
-  text-align: center;
-  margin: 0 auto ${(props) => props.theme.spacing(5)}px;
-`;
+const useStyles = makeStyles
+({
+  loader: {
+    margin: "0 auto",
+    position: "relative",
+    display: "block",
+    padding: "10px"
+  },
+  errorText: {
+    color: '#f44336',
+    fontSize: 13
+  }
+});
 
-function SignIn({ history }) {
+const cookieName = "admin";
 
+const SignIn = () => {
+
+  const [cookies, setCookie, removeCookie] = useCookies(['rememberEmail']);
+  const { loading, error } = useSelector(state => state.authReducer);
+  const [isRemember, setIsRemember] = useState(false);
+
+  const classes = useStyles();
   const dispatch = useDispatch();
-  const [errorMsg, setErrorMsg] = useState('');
 
+  
+
+  const getRememberInfo = () => {
+
+  }
+  
+  const setRememberInfo = (member) => {
+    setCookie(cookieName, member);
+  }
+  //https://gaemi606.tistory.com/entry/React-id%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0-react-cookie
   const handleSubmit = async (e) => {
     const { id, password } = e;
     const credentials = { id: id, password: password, role: 'ROLE_ADMIN' };
-    dispatch(login(credentials));
+    dispatch(login(credentials))
+    .then(({ member }) => {
+      const success = Boolean(member && member != null);
+      if(success){
+        if(isRemember){
+          alert("정보저장");
+          setRememberInfo(cookieName, member);
+        }else{
 
-  
+        }
+        
+      }
+    });
   };
+
+  useEffect(() => {
+    console.log(cookies);
+
+  }, [])
 
   return (
     <Wrapper>
@@ -107,9 +149,17 @@ function SignIn({ history }) {
               onChange={handleChange}
               my={2}
             />
-            <p style={{ color: '#f44336' }}>{errorMsg}</p>
+            <AuthLoader loading={loading}/>
+            {error && <p className={classes.errorText}>{error && error.msg}</p>}
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox 
+                  value="remember" 
+                  color="primary"  
+                  checked={isRemember} 
+                  onChange={e => setIsRemember(!isRemember)}
+                />
+              }
               label="계정정보 저장"
             />
             <Button

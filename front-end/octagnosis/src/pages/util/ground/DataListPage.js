@@ -201,7 +201,7 @@ const DataListPage = ({ history, location }) => {
               <TableCell align="center">기관(학교명)</TableCell>
               <TableCell align="center">나이(학년)</TableCell>
               <TableCell align="center">반</TableCell>
-              <TableCell align="center">등록일</TableCell>
+              <TableCell align="center">시행일</TableCell>
               <TableCell align="center">기능</TableCell>
             </TableRow>
           </TableHead>

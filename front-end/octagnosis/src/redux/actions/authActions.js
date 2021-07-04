@@ -9,8 +9,10 @@ export const login = (credentials) => async dispatch => {
   try{
     const data = await authService.login(credentials);
     dispatch({ type: types.AUTH_LOGIN_SUCCESS, data: data });
+    return data;
   }catch(e){
     dispatch({ type: types.AUTH_LOGIN_FAILURE, error: e });
+    return e;
   }
 } 
 

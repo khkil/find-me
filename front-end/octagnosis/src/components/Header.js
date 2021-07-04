@@ -74,8 +74,8 @@ const Header = () => {
             
             <Grid item xs />
             
-            <Button size="large" color="inherit" onClick={() => {history.push("/member/profile")}}>내 정보</Button>
-            <Button size="large" color="inherit" onClick={logout}>로그아웃</Button>
+              <Button size="large" color="inherit" onClick={() => {history.push("/member/profile")}}>내 정보</Button>
+              <Button size="large" color="inherit" onClick={logout}>로그아웃</Button>
 
             {/* <Grid item>
               <MemberDropdown />
