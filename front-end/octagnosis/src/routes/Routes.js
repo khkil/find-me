@@ -24,6 +24,10 @@ const childRoutes = (Layout, routes) => {
     routes.map(({ component: Component, children, path, auth, hideLayout }, index) => {
       return children ? (
         children.map((element, index) => {
+          const hideLayout = Boolean(element.hideLayout && Boolean(element.hideLayout));
+          if(hideLayout){
+            console.log(element.path);
+          }
           return (
             <Route
               key={index}
@@ -32,12 +36,15 @@ const childRoutes = (Layout, routes) => {
               render={(props) => (
                 auth && Boolean(auth) ? (
                   <AuthGuard path={path}>
-                    <Layout>
-                      <element.component {...props} />
-                    </Layout> 
+                    {hideLayout ? 
+                      <element.component {...props} /> :
+                      <Layout>
+                        <element.component {...props} />
+                      </Layout>
+                    }
                   </AuthGuard> 
                 ) : (
-                  element.hideLayout && Boolean(element.hideLayout) ? 
+                  hideLayout ? 
                   <element.component {...props} /> 
                   :
                   <Layout>
@@ -56,9 +63,11 @@ const childRoutes = (Layout, routes) => {
           render={(props) => (
             auth && Boolean(auth) ? (
               <AuthGuard path={path}>
-                <Layout>
-                  <Component {...props} />
-                </Layout>
+                {hideLayout && Boolean(hideLayout) ? 
+                  <Component {...props} /> : 
+                  <Layout>
+                    <Component {...props} />
+                  </Layout>}
               </AuthGuard>
             ) : (
               hideLayout && Boolean(hideLayout) ?

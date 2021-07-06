@@ -14,7 +14,7 @@ public class User {
     private String userName;
     private String userAge;
     private String userGender;
-    private int userGrade;
+    private String userGrade;
     private String userEtc;
     private String groupIdx;
     private Date cdate;
