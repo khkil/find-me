@@ -20,10 +20,10 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         System.out.println(">>> interceptor.preHandle 호출");
         String token = jwtTokenProvider.resolveToken(request);
         if (token.isEmpty()) {
-            throw new IllegalArgumentException("토큰이 빈 값");
+            throw new IllegalArgumentException("인증정보가 존재하지 않습니다.");
         }
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰");
+            throw new IllegalArgumentException("유효하지 않은 인증정보 입니다.");
         }
         String userPk = jwtTokenProvider.getUserPk(token);
         request.setAttribute("userPk", userPk);

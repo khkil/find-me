@@ -48,27 +48,24 @@ const useStyles = makeStyles
   }
 });
 
-const cookieName = "admin";
 
 const SignIn = () => {
 
-  const [cookies, setCookie, removeCookie] = useCookies(['rememberEmail']);
+  const [cookies, setCookie, removeCookie] = useCookies(["admin_id"]);
   const { loading, error } = useSelector(state => state.authReducer);
   const [isRemember, setIsRemember] = useState(false);
 
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  
-
-  const getRememberInfo = () => {
-
+  const onChangeChkbox = (e) => {
+    const checked = e.target.checked;
+    setIsRemember(checked);
+    if(!checked && cookies["admin_id"]){
+      removeCookie("admin_id");
+    }
   }
   
-  const setRememberInfo = (member) => {
-    setCookie(cookieName, member);
-  }
-  //https://gaemi606.tistory.com/entry/React-id%EC%A0%80%EC%9E%A5%ED%95%98%EA%B8%B0-react-cookie
   const handleSubmit = async (e) => {
     const { id, password } = e;
     const credentials = { id: id, password: password, role: 'ROLE_ADMIN' };
@@ -77,19 +74,16 @@ const SignIn = () => {
       const success = Boolean(member && member != null);
       if(success){
         if(isRemember){
-          alert("정보저장");
-          setRememberInfo(cookieName, member);
-        }else{
-
+          setCookie("admin_id", member.id);
         }
-        
       }
     });
   };
 
   useEffect(() => {
-    console.log(cookies);
-
+    if(cookies.admin_id){
+      setIsRemember(true);
+    }
   }, [])
 
   return (
@@ -100,7 +94,7 @@ const SignIn = () => {
       </Typography>
       <Formik
         initialValues={{
-          id: "",
+          id: cookies.admin_id ? cookies.admin_id : "",
           password: "",
           submit: false,
         }}
@@ -157,10 +151,10 @@ const SignIn = () => {
                   value="remember" 
                   color="primary"  
                   checked={isRemember} 
-                  onChange={e => setIsRemember(!isRemember)}
+                  onChange={onChangeChkbox}
                 />
               }
-              label="계정정보 저장"
+              label="아이디 저장"
             />
             <Button
               type="submit"

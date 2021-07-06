@@ -31,7 +31,7 @@ const Auth = ({ children }) => {
   const { token } = localStorage;
 
   const authReducer = useSelector(state => state.authReducer);
-  const { isLoggedIn, data } = authReducer;
+  const { isLoggedIn, data, error } = authReducer;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -43,7 +43,7 @@ const Auth = ({ children }) => {
   }, []);
 
   if(isLoggedIn && data){
-    const { token, member } = data;
+    const { token, member, error } = data;
     if(token){
       localStorage.setItem("token", data.token);
     };
@@ -51,6 +51,8 @@ const Auth = ({ children }) => {
     //const redirectPath = (role === types.ROLE_ADMIN ? "/admin" : "/");
     const redirectPath = (role === types.ROLE_ADMIN ? "/ground" : "/");
     return redirectPath && <Redirect to={redirectPath}/>;
+  }else if(error){
+    localStorage.removeItem("token");
   }
  
   return (

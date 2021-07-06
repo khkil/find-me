@@ -26,6 +26,7 @@ import DataRegistPage from "../pages/util/ground/DataRegistPage";
 import DataListPage from "../pages/util/ground/DataListPage";
 import DataDetailPage from "../pages/util/ground/DataDetailPage.";
 import DataPrintPage from "../pages/util/ground/DataPrintPage";
+import DataModifyPage from "../pages/util/ground/DataModifyPage";
 
 // Guards
 const AuthGuard = async(() => import("../components/AuthGuard"));
@@ -224,8 +225,13 @@ const groundUtilRoute = {
     },
     {
       path: "/ground/users/:user_idx",
-      name: "지면검사 회원목록",
+      name: "지면검사 회원상세",
       component: DataDetailPage,
+    },
+    {
+      path: "/ground/modify/users/:user_idx",
+      name: "지면검사 회원수정",
+      component: DataModifyPage,
     },
     {
       path: "/ground/print",

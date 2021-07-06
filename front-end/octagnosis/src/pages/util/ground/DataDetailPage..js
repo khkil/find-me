@@ -74,7 +74,12 @@ const useStyles = makeStyles({
   resultButton: {
     margin:"20px",
     minHeight: "100px",
-    
+  },
+  modifyButton: {
+    float: "right",
+    margin: 20,
+    padding: 20,
+    minWidth: "8%"
   }
   
 });
@@ -383,6 +388,10 @@ const DataDetailPage = ({ history, match }) => {
     }
   }
 
+  const goModifyPage = () => {
+    history.push(`/ground/modify/users/${user_idx}`);
+  }
+
   const getQuestions = (questions) => {
   
     let result = new Object();
@@ -469,7 +478,14 @@ const DataDetailPage = ({ history, match }) => {
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
       
         <UserInfo user={user} dataForm={dataForm} setDataForm={setDataForm}/>
-
+        <Button 
+          variant="contained" 
+          color="primary" 
+          className={classes.modifyButton} 
+          onClick={goModifyPage}
+        >
+          <Typography variant="h4"> 수정</Typography>
+        </Button>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="customized table" size="small"> 
             <TableHead>
