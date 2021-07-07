@@ -23,8 +23,8 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
-    private static final String SECRET_KEY = "test";
+    private long tokenValidMilisecond = (1000L * 60 * 60) * 4; // 1 * 4시간만 토큰 유효
+    private static final String SECRET_KEY = "humanx_sercret_key";
     public static final String AUTHORIZATION = "Authorization";
     private static Clock clock = DefaultClock.INSTANCE;
 
