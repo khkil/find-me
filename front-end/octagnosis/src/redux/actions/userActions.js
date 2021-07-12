@@ -13,6 +13,20 @@ export const getUserList = (inspectionIdx, page, params) => async dispatch  => {
     
   }
 }
+
+export const deleteUser = (userIdx) => async dispatch  => {
+  dispatch({ type: types.USER_DELETE_REQUEST });
+  try {
+    await service.deleteUser(userIdx);
+    dispatch({ type: types.USER_DELETE_SUCCESS, data: userIdx });
+
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: types.USER_DELETE_FAILURE, error: e });
+    
+  }
+}
+
 export const getUserAnswers = (userIdx) => async dispatch  => {
   dispatch({ type: types.USER_ANSWER_LIST_REQUEST });
   try {

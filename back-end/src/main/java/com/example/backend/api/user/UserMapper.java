@@ -18,4 +18,5 @@ public interface UserMapper {
     List<Map<String, Object>> getUserAnswers(int userIdx);
     void insertUserInfo(UserResult userResult);
     void insertUserAnswers(int user_idx, int question_idx, int answer_idx);
+    void deleteUser(int userIdx);
 }

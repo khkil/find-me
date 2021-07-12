@@ -16,8 +16,10 @@ public class User {
     private String userGender;
     private String userGrade;
     private String userEtc;
+    private String userDate;
     private String groupIdx;
     private Date cdate;
+    private String delYn;
 
     private Group group;
 

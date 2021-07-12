@@ -34,4 +34,8 @@ public class UserServcice {
     public void insertUserInfo(UserResult userResult){
         userMapper.insertUserInfo(userResult);
     }
+
+    public void deleteUser(int userIdx){
+        userMapper.deleteUser(userIdx);
+    }
 }

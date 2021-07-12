@@ -62,6 +62,35 @@ export default function reducer(state = initialState, actions) {
         error: actions.error
       };
 
+    case types.USER_DELETE_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case types.USER_DELETE_SUCCESS:
+
+      const deletedList = state.data.list.filter(({ userIdx }) => userIdx !== actions.data);
+      console.log("actions.userIdx", actions.data);
+      console.log("deletedList", deletedList);
+      return {
+        ...state,
+        loading: false,
+        data: {
+          ...state.data,
+          list: state.data.list.filter(({ userIdx }) => userIdx !== actions.userIdx)
+        }
+      };
+    case types.USER_DELETE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: actions.error
+      };
+
+
+      
+
     default:
       return state;
   }

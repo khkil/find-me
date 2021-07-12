@@ -13,7 +13,7 @@ public class CommonResponse {
     private boolean success;
     private int code;
     private String msg;
-    private Map<String, Object> data;
+    private Object data;
 
     private enum CommonResult {
         SUCCESS(0, "success"),
@@ -43,7 +43,7 @@ public class CommonResponse {
 
         return result;
     }
-    public static CommonResponse successResult(Map<String, Object> data) {
+    public static CommonResponse successResult(Object data) {
         CommonResponse result = new CommonResponse();
         result.setSuccess(true);
         result.setData(data);

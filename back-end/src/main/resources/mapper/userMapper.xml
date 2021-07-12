@@ -19,6 +19,9 @@
 
         <collection property="group" resultMap="groupMap"></collection>
     </resultMap>
+    <delete id="deleteUser" parameterType="int" >
+        UPDATE user SET del_yn = "Y" WHERE user_idx = #{userIdx};
+    </delete>
 
 
     <select id="getUsers"  resultMap="userMap">
@@ -27,7 +30,8 @@
             LEFT OUTER JOIN
         `group` g
             ON u.group_idx = g.idx
-            WHERE u.inspection_idx = #{inspection_idx}
+            WHERE del_yn = "N"
+            AND u.inspection_idx = #{inspection_idx}
             <if test="param.text != null and param.text != '' ">
                 AND (
                     u.user_name LIKE CONCAT('%',#{param.text},'%')

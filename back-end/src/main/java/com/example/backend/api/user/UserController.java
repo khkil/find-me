@@ -83,4 +83,10 @@ public class UserController {
         userInfo.put("user_idx", userIdx);
         return new ResponseEntity<>(CommonResponse.successResult(userInfo), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{userIdx}")
+    public ResponseEntity deleteUser(@PathVariable int userIdx){
+        userServcice.deleteUser(userIdx);
+        return ResponseEntity.ok(CommonResponse.successResult());
+    }
 }

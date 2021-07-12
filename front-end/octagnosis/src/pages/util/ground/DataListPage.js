@@ -12,7 +12,7 @@ import { Button, Container, Menu, MenuItem, ListItemIcon, IconButton } from '@ma
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserList } from '../../../redux/actions/userActions';
+import { deleteUser, getUserList } from '../../../redux/actions/userActions';
 import Loading from '../../../components/common/Loading';
 import { useHistory } from 'react-router-dom';
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -72,7 +72,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Buttons = ({ userIdx }) => {
+const Buttons = ({ userIdx, history }) => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -87,7 +88,16 @@ const Buttons = ({ userIdx }) => {
     history.push(`${path}/${userIdx}`);
   }
 
-  const history = useHistory();
+  const onDelete = () => {
+    if(confirm("해당 유저를 삭제 하시겠습니까?")){
+      dispatch(deleteUser(userIdx))
+      .then(() => {
+        history.push("/ground")
+      });
+    }
+  }
+
+  
 
   return (
     <>
@@ -106,6 +116,7 @@ const Buttons = ({ userIdx }) => {
         onClose={handleClose}
       >
         <MenuItem onClick={userDetail}>상세정보</MenuItem>
+        <MenuItem onClick={onDelete}>삭제</MenuItem>
         <MenuItem onClick={handleClose}>닫기</MenuItem>
       </Menu>
     </>
@@ -148,24 +159,26 @@ const DataListPage = ({ history, location }) => {
   }
   
   const search = () => {
-    setCurrentPage(1);
+    history.push("/ground/users")
+    /* setCurrentPage(1);
     searchParams.set("page", 1);
     searchParams.set("text", searchText);
     history.push({
       pathname: location.pathname,
       search: searchParams.toString()
-    })
+    }) */
   }
-  
-  const { data, loading } = useSelector(state => state.userReducer);
-  useEffect(() => {
 
+  const { data, loading } = useSelector(state => state.userReducer);
+
+  useEffect(() => {
+    console.log("리렌더링")
     setCurrentPage(page ? parseInt(page) : 1);
     setSearchText(text ? text : "");
     dispatch(getUserList(3, currentPage, query));
-    
-  }, [page, text])
+  }, [page, text, history])
 
+  
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
 
@@ -191,7 +204,6 @@ const DataListPage = ({ history, location }) => {
           )
         }}
       />
-
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
@@ -217,7 +229,7 @@ const DataListPage = ({ history, location }) => {
                 <StyledTableCell align="center">{userEtc}</StyledTableCell>
                 <StyledTableCell align="center">{cdate}</StyledTableCell>
                 <StyledTableCell align="center">
-                  <Buttons userIdx={userIdx}/>
+                  <Buttons userIdx={userIdx} history={history}/>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
