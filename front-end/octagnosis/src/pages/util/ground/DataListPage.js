@@ -8,18 +8,19 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Pagination from '@material-ui/lab/Pagination';
-import { Button, Container, Menu, MenuItem, ListItemIcon, IconButton } from '@material-ui/core';
+import { Button, Container, Menu, MenuItem, ListItemIcon, IconButton, Link, Typography } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUserList } from '../../../redux/actions/userActions';
 import Loading from '../../../components/common/Loading';
-import { useHistory } from 'react-router-dom';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {
  TextField,
 } from "@material-ui/core"
 import { SearchIcon } from '@material-ui/data-grid';
+import { getGroupList } from '../../../redux/actions/groupActions';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -63,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
   searchBar: {
     minWidth: "40%",
   },
+  groupBar: {
+    float: "right"
+  },
   paging: {
     '& > *': {
       marginTop: theme.spacing(2),
@@ -71,6 +75,39 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+const Groups = (selectedGroup, setSelectedGroup) => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const { data } = useSelector(state => state.groupReducer);
+  
+  const onSelect = (groupIdx) => {
+
+  }
+  useEffect(() => {
+    dispatch(getGroupList());
+  }, [])
+  if(!data) return null;
+  return (
+    <Autocomplete
+      className={classes.groupBar}
+      options={data.filter(group => group.name !== null)}
+      getOptionLabel={(group) => group.name}
+      name="group_idx"
+      onChange={(e, v) => { 
+        const groupIdx = (v ? v.idx : "");
+        setSelectedGroup(groupIdx)
+       }}
+      style={{ width: 300 }}
+      renderInput={(params) =>
+        <TextField {...params} 
+          label="기관(학교명)" 
+          variant="outlined" 
+        />
+      }
+    />
+  )
+}
 
 const Buttons = ({ userIdx, history }) => {
   const dispatch = useDispatch();
@@ -92,7 +129,7 @@ const Buttons = ({ userIdx, history }) => {
     if(confirm("해당 유저를 삭제 하시겠습니까?")){
       dispatch(deleteUser(userIdx))
       .then(() => {
-        history.push("/ground")
+        dispatch(getUserList(3, 1, {}));
       });
     }
   }
@@ -133,6 +170,7 @@ const DataListPage = ({ history, location }) => {
   let searchParams = new URLSearchParams(location.search); 
 
   const [searchText, setSearchText] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const goPage = (event, page) => {
@@ -159,24 +197,24 @@ const DataListPage = ({ history, location }) => {
   }
   
   const search = () => {
-    history.push("/ground/users")
-    /* setCurrentPage(1);
+    setCurrentPage(1);
     searchParams.set("page", 1);
     searchParams.set("text", searchText);
+    searchParams.set("group_idx", selectedGroup);
+
     history.push({
       pathname: location.pathname,
       search: searchParams.toString()
-    }) */
+    })
   }
 
   const { data, loading } = useSelector(state => state.userReducer);
 
   useEffect(() => {
-    console.log("리렌더링")
     setCurrentPage(page ? parseInt(page) : 1);
     setSearchText(text ? text : "");
     dispatch(getUserList(3, currentPage, query));
-  }, [page, text, history])
+  }, [page, text, selectedGroup])
 
   
   if(loading) return <Loading/>;
@@ -204,6 +242,7 @@ const DataListPage = ({ history, location }) => {
           )
         }}
       />
+      <Groups selectedGroup={selectedGroup} setSelectedGroup={setSelectedGroup} ></Groups>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
@@ -223,7 +262,13 @@ const DataListPage = ({ history, location }) => {
                 <StyledTableCell component="th" scope="row">
                   {startNum--}
                 </StyledTableCell>
-                <StyledTableCell align="center">{userName}</StyledTableCell>
+                <StyledTableCell align="center">
+                  <Link onClick={() => {history.push(`/ground/users/${userIdx}`)}}>
+                    <Typography variant="h5">
+                      {userName}
+                    </Typography>
+                  </Link>
+                </StyledTableCell>
                 <StyledTableCell align="center">{group && group.name}</StyledTableCell>
                 <StyledTableCell align="center">{userGrade}</StyledTableCell>
                 <StyledTableCell align="center">{userEtc}</StyledTableCell>
