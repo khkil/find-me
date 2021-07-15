@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -220,14 +220,22 @@ const ResultTable = ({ ranks, user }) => {
   );
 }
 
-const UserInfo = ({ dataForm, setDataForm, user }) => {
+const UserInfo = memo(({ user, userInfo, setUserInfo }) => {
 
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { userName, userGrade, userEtc, group, cdate } = user;
+  const { userName, userGrade, userEtc, groupIdx, cdate } = user;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo({
+      ...userInfo,
+      [name]: value
+    })
+  }
   useEffect(() => {
     dispatch(getGroupList());
-  }, [groupReducer])
+  }, [groupReducer]);
 
   const groupReducer = useSelector(state => state.groupReducer);
   const { data, error } = groupReducer;  
@@ -236,23 +244,16 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
   return (
     <Grid item xs={12} className={classes.userInfo}>
       
-      <TextField 
-        label="기관(학교명)" 
-        variant="outlined"
-        value={group && group.name} 
-        readOnly
-      />
-      {/* <Autocomplete
-        options={data.filter(group => group.name !== null)}
+      <Autocomplete
+        name="group_idx"
+        options={data}
         getOptionLabel={(group) => group.name}
-        onChange={(event, value) => { 
-          const { idx } = value;
-          setDataForm({
-            ...dataForm,
-            user_info : {
-              ...dataForm.user_info,
-              group_idx: idx
-            }
+        defaultValue={data.find(group => group.idx === groupIdx)}
+        onChange={(e, v) => { 
+          const value = (v ? v.idx : "");
+          setUserInfo({
+            ...userInfo,
+            "group_idx": value
           })
         }}
         style={{ width: 300 }}
@@ -262,7 +263,7 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
             variant="outlined" 
           />
         }
-      /> */}
+      />
       <Grid container spacing={6, 6}>
         <Grid item xs={6}>
           <TextField 
@@ -271,84 +272,40 @@ const UserInfo = ({ dataForm, setDataForm, user }) => {
             className={classes.input}
             label="나이(학년)"  
             margin="normal"
-            readOnly={true}
-            value={userGrade}
-            onChange={(e) => {
-              const { name, value } = e.target;
-              setDataForm({
-                ...dataForm,
-                user_info : {
-                  ...dataForm.user_info,
-                  [name]: value
-                }
-              })
-            }
-          }/>
+            onChange={handleChange}
+          />
           <TextField 
             name="user_etc"
             className={classes.input}
             label="반" 
             margin="normal"
-            readOnly={true}
             value={userEtc}
-            onChange={(e) => {
-              const { name, value } = e.target;
-              setDataForm({
-                ...dataForm,
-                user_info : {
-                  ...dataForm.user_info,
-                  [name]: value
-                }
-              })
-
-            }}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField 
-              name="user_name" 
-              className={classes.input}
-              label="이름"  
-              margin="normal"
-              readOnly={true}
-              value={userName}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setDataForm({
-                  ...dataForm,
-                  user_info : {
-                    ...dataForm.user_info,
-                    [name]: value
-                  }
-                })
-              }
-            }
+            name="user_name" 
+            className={classes.input}
+            label="이름"  
+            margin="normal"
+            value={userName}
+            onChange={handleChange}
           />
           <TextField 
-              name="user_name" 
-              className={classes.input}
-              label="시행일"  
-              margin="normal"
-              readOnly={true}
-              value={cdate}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setDataForm({
-                  ...dataForm,
-                  user_info : {
-                    ...dataForm.user_info,
-                    [name]: value
-                  }
-                })
-              }
-            }
+            name="user_date" 
+            className={classes.input}
+            label="시행일"  
+            margin="normal"
+            value={cdate}
+            onChange={handleChange}
           />
         </Grid> 
-        
+        {JSON.stringify(userInfo)}
       </Grid>
     </Grid>
   );
-}
+});
 
 
 
@@ -356,17 +313,13 @@ const DataDetailPage = ({ history, match }) => {
 
   const classes = useStyles();
   
-  const [dataForm, setDataForm] = useState({
-    inspection_idx: 3,
-    user_info: {},
-    user_answers: []
-  });
-
   const dispatch = useDispatch();
   const userReducer = useSelector(state => state.userReducer);
   const { user_idx } = match.params;
   const { data, loading } = userReducer;
   const existData = (data && data.questions && data.answers);
+
+  const [userInfo, setUserInfo] = useState({})
 
   useEffect(() => {
     
@@ -377,7 +330,7 @@ const DataDetailPage = ({ history, match }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if(confirm("등록하시겠습니까?")){
-      dispatch(registUserAnswers(dataForm))
+      dispatch(registUserAnswers())
       .then(() => {
         const { data } = userReducer.data;
         if(data){
@@ -408,22 +361,6 @@ const DataDetailPage = ({ history, match }) => {
     return result;
   }
 
-
-  const filteredValue = (questionIdx, answerIdx) => {
-    const { user_answers } = dataForm;
-    const values = user_answers.map(answer => answer.question_idx);
-    const containedIndex = values.indexOf(questionIdx);
-    const filteredAnswers = user_answers.filter((answer, index) => index !== containedIndex);
-
-    setDataForm({
-      ...dataForm,
-      user_answers: [...(containedIndex > -1 ? filteredAnswers : user_answers), {
-        question_idx: questionIdx,
-        answer_idx: answerIdx
-      }]
-    })
-    
-  }
 
   const getAnswer = (answers) => {
     let map = {};
@@ -477,15 +414,7 @@ const DataDetailPage = ({ history, match }) => {
     <Container maxWidth="lg" className={classes.root}>
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
       
-        <UserInfo user={user} dataForm={dataForm} setDataForm={setDataForm}/>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          className={classes.modifyButton} 
-          onClick={goModifyPage}
-        >
-          <Typography variant="h4"> 수정</Typography>
-        </Button>
+        <UserInfo user={user} setUserInfo={setUserInfo} userInfo={userInfo} />
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="customized table" size="small"> 
             <TableHead>
@@ -499,8 +428,6 @@ const DataDetailPage = ({ history, match }) => {
                     </TableCell>
                   )
                 })}
-                
-                
                 <TableCell align="center" width="5%">총점</TableCell>
                 <TableCell align="center" width="7%">성향 순위</TableCell>
               </TableRow>
@@ -530,11 +457,9 @@ const DataDetailPage = ({ history, match }) => {
                             type="number" 
                             InputProps={{ inputProps: { min: 1, max: 5, style: {textAlign: 'center'} } }} 
                             value={answerValue}
-                            readOnly={true}
                             onChange={(e) => {
                               const { question_idx } = value;
                               const answer_idx = e.target.value;
-                              filteredValue(question_idx, answer_idx);
                             }}
                           />
                         </StyledTableCell>

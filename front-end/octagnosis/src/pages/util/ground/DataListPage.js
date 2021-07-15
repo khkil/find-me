@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = (selectedGroup, setSelectedGroup) => {
+const Groups = ({ search, setSelectedGroup }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { data } = useSelector(state => state.groupReducer);
@@ -96,7 +96,7 @@ const Groups = (selectedGroup, setSelectedGroup) => {
       name="group_idx"
       onChange={(e, v) => { 
         const groupIdx = (v ? v.idx : "");
-        setSelectedGroup(groupIdx)
+        setSelectedGroup(groupIdx);
        }}
       style={{ width: 300 }}
       renderInput={(params) =>
@@ -214,9 +214,8 @@ const DataListPage = ({ history, location }) => {
     setCurrentPage(page ? parseInt(page) : 1);
     setSearchText(text ? text : "");
     dispatch(getUserList(3, currentPage, query));
-  }, [page, text, selectedGroup])
+  }, [page, text]);
 
-  
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
 
@@ -242,7 +241,7 @@ const DataListPage = ({ history, location }) => {
           )
         }}
       />
-      <Groups selectedGroup={selectedGroup} setSelectedGroup={setSelectedGroup} ></Groups>
+      <Groups search={search} setSelectedGroup={setSelectedGroup} ></Groups>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
