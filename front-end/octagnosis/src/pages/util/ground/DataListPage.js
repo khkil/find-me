@@ -41,19 +41,6 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-
 const useStyles = makeStyles((theme) => ({
   root : {
     paddingTop: "100px"
@@ -76,13 +63,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = ({ search, setSelectedGroup }) => {
+const Groups = ({ selectGroup, setSelectedGroup, query }) => {
+  
   const dispatch = useDispatch();
   const classes = useStyles();
   const { data } = useSelector(state => state.groupReducer);
+  const { group_idx } = query;
   
-  const onSelect = (groupIdx) => {
-
+  
+  const handleChange = (groupIdx) => {
+    setSelectedGroup(groupIdx);
+    selectGroup(groupIdx);
   }
   useEffect(() => {
     dispatch(getGroupList());
@@ -96,8 +87,9 @@ const Groups = ({ search, setSelectedGroup }) => {
       name="group_idx"
       onChange={(e, v) => { 
         const groupIdx = (v ? v.idx : "");
-        setSelectedGroup(groupIdx);
-       }}
+        handleChange(groupIdx);
+      }}
+      value={data.find(option => option.idx === group_idx)}
       style={{ width: 300 }}
       renderInput={(params) =>
         <TextField {...params} 
@@ -109,7 +101,7 @@ const Groups = ({ search, setSelectedGroup }) => {
   )
 }
 
-const Buttons = ({ userIdx, history }) => {
+const Buttons = ({ userIdx, history, match }) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -133,8 +125,6 @@ const Buttons = ({ userIdx, history }) => {
       });
     }
   }
-
-  
 
   return (
     <>
@@ -189,18 +179,27 @@ const DataListPage = ({ history, location }) => {
 
   const handleKeyDown = (e) => {
     const { key } = e;
-    console.log(key);
     if(key === "Enter"){
       search();
     }
-
   }
-  
   const search = () => {
     setCurrentPage(1);
-    searchParams.set("page", 1);
+    searchParams.delete("page");
     searchParams.set("text", searchText);
     searchParams.set("group_idx", selectedGroup);
+
+    history.push({
+      pathname: location.pathname,
+      search: searchParams.toString()
+    })
+  }
+
+  const selectGroup = (groupIdx) => {
+    setCurrentPage(1);
+    searchParams.delete("text");
+    searchParams.delete("page");
+    searchParams.set("group_idx", groupIdx);
 
     history.push({
       pathname: location.pathname,
@@ -214,7 +213,7 @@ const DataListPage = ({ history, location }) => {
     setCurrentPage(page ? parseInt(page) : 1);
     setSearchText(text ? text : "");
     dispatch(getUserList(3, currentPage, query));
-  }, [page, text]);
+  }, [page, text, selectedGroup]);
 
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
@@ -241,7 +240,7 @@ const DataListPage = ({ history, location }) => {
           )
         }}
       />
-      <Groups search={search} setSelectedGroup={setSelectedGroup} ></Groups>
+      <Groups selectGroup={selectGroup} setSelectedGroup={setSelectedGroup} query={query}></Groups>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>

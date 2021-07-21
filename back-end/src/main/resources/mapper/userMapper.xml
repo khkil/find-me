@@ -38,6 +38,9 @@
                     OR g.name LIKE CONCAT('%',#{param.text},'%')
                 )
             </if>
+        <if test="param.group_idx != null and param.group_idx != '' ">
+            AND g.idx = #{param.group_idx}
+        </if>
 
     </select>
     <select id="getUserDetail" resultMap="userMap">
