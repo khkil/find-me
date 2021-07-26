@@ -1,27 +1,23 @@
-import React, { useEffect, useState, memo } from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import React, { useCallback, useEffect, useState, memo } from 'react';
+import { Box, Button, Chip, Container, Grid, Typography } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
-import { useDispatch, useSelector } from 'react-redux';
-import { getQuestionList } from '../../../redux/actions/questionActions';
-import { columnsTotalWidthSelector } from '@material-ui/data-grid';
-import { Badge, Box, Button, Chip, Container, Grid, Typography } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { getGroupList, registGroup } from '../../../redux/actions/groupActions';
+import { useDispatch, useSelector } from 'react-redux';
+import Loading from '../../../components/common/Loading';
+import { getGroupList } from '../../../redux/actions/groupActions';
 import { getUserAnswers, registUserAnswers } from '../../../redux/actions/userActions';
 import { resultMap } from './DataRegistPage';
-import { X } from 'react-feather';
-import { AccountBox, CheckBox, LocalPrintshop } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
-import Loading from '../../../components/common/Loading';
-import Checkbox from '@material-ui/core/Checkbox'
 import { Alert } from '@material-ui/lab';
+import { AccountBox, CheckBox, LocalPrintshop } from '@material-ui/icons';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -43,7 +39,6 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles({
   root: {
-    maxWidth : "1600px"
   },
   userInfo: {
     padding: "30px"
@@ -84,72 +79,237 @@ const useStyles = makeStyles({
   
 });
 
+const UserForm = React.memo(({ user, setUser }) => {
 
-const ResultTable = ({ ranks, user }) => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const [groupForm, setGroupForm] = useState({ flag: -1});
+  const [showGroupForm, setShowGroupForm] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({...user, [name]: value});
+  }
+
+  useEffect(() => {
+    dispatch(getGroupList());
+  }, [])
+  
+  const groupReducer = useSelector(state => state.groupReducer);
+  if(!groupReducer.data) return null;
+  return (
+
+    <Grid item xs={12}>
+      <Box style={{padding: "20px"}}>
+        <Autocomplete
+          options={groupReducer.data.filter(group => group.name !== null)}
+          getOptionLabel={(group) => group.name}
+          name="group_idx"
+          onChange={(event, value) => {
+            const groupIdx = (value ? value.idx : "");
+            setUser({...user, "group_idx": groupIdx});
+          }}
+          style={{ width: 300 }}
+          renderInput={(params) =>
+            <TextField {...params} 
+              label="기관(학교명)" 
+              variant="outlined" 
+            />
+          }
+        />
+      </Box> 
+      <Grid container spacing={6, 6}>
+        <Grid item xs={6}>
+          <TextField 
+            name="user_grade" 
+            className={classes.input}
+            type="number"
+            label="나이(학년)"  
+            margin="normal"
+            onChange={handleChange}
+          />
+          <TextField 
+            name="user_etc"
+            className={classes.input}
+            label="반" 
+            margin="normal"
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField 
+            name="user_name" 
+            className={classes.input}
+            label="이름"  
+            margin="normal"
+            onChange={handleChange}
+          />
+          <TextField
+            name="cdate" 
+            type="date"
+            className={classes.input}
+            label="시행일"
+            onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </Grid> 
+        
+      </Grid>
+
+    </Grid>
+  )
+})
+
+
+const AnswersForm = React.memo (({ userAnswers, answers, setAnswers, userRank }) => {
+
+  const classes = useStyles();
+
+  const handleChange = useCallback(e => {
+    const answerIdx = e.target.value;
+    const { question_idx } = e.target.dataset;
+    
+    const values = answers.map(answer => answer.question_idx);
+    const index = values.indexOf(question_idx);
+    const answer = {
+      question_idx: question_idx,
+      answer_idx: answerIdx
+    }
+
+    if(index === -1){
+      setAnswers([...answers, answer])
+    }else{
+      const changedAnswers = [...answers.filter((answer, x) => x !== index), answer];
+      //changedAnswers.sort((a, b) => a.question_idx > b.question_idx ? 1 : -1);
+      setAnswers(changedAnswers);
+    }
+  });
+
+  if(!userRank) return null;
+  return (
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="customized table" size="small"> 
+        <TableHead>
+          <TableRow>
+            <TableCell align="center" width="10%">-</TableCell>
+            {Array.from(Array(Object.keys(resultMap).length)).map((v, i) => (
+              <TableCell align="center" width="5%" key={i}>
+                <p style={{fontSize: "10px"}}>
+                  {`${i + 1}번`}
+                </p>
+              </TableCell>  
+            ))}
+            <TableCell align="center" width="6%">총점</TableCell>
+            <TableCell align="center" width="6%">순위</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        {Object.keys(resultMap).map((k, x) => {
+          const answerList = userAnswers.filter(answer => answer.result_idx == k);
+          const { totalScore, rank } = userRank[k];
+          return (
+            <StyledTableRow key={x}>
+              <StyledTableCell align="center" component="th" scope="row">
+                <Chip
+                  size="small"
+                  label={`문항 ${x + 1}  ${resultMap[x + 1].title}`}
+                  color="primary"
+              />
+              </StyledTableCell>
+              {answerList.map(({ question_idx, answer_idx}, y) => (
+                <StyledTableCell align="center" component="th" scope="row" key={y}>
+                  <TextField 
+                    size="medium" 
+                    defaultValue={answer_idx}
+                    InputProps={{ inputProps: { min: 1, max: 5, "data-question_idx": question_idx } }} 
+                    onChange={handleChange}
+                  />
+                </StyledTableCell>
+              ))}
+              <StyledTableCell align="center" component="th" scope="row">
+                <Typography variant="h6" >
+                  {totalScore}
+                </Typography>
+              </StyledTableCell>
+              <StyledTableCell align="center" component="th" scope="row">
+              
+                {rank < 4 ?
+                  <Chip
+                    size="medium"
+                    mr={5}
+                    mb={5}
+                    label={rank}
+                    className={classes[`rank${rank}`]}
+                  /> :
+                  <Typography variant="h6" className={classes[`rank${rank}`]}>
+                    {rank}
+                  </Typography>
+                }
+              </StyledTableCell>
+            </StyledTableRow>
+          )
+        })}
+        </TableBody> 
+      </Table>
+    </TableContainer>
+  )
+})
+
+const PrintForm = memo(({ ranks, user }) => {
 
   const history = useHistory();
   const classes = useStyles();
-  const [exceptedResults, setExceptedResults] = useState([]);
+  const [result, setResult] = useState(ranks)
 
+
+  useEffect(() => {
+    
+    const topRanks = Object.values(ranks).filter(({ rank }) => rank <= 3);
+    const ranking = topRanks.reduce((obj, topRank) => {
+      const { rank, totalScore } = topRank;
+      const value = obj[rank];
+      const values = !value? [topRank] : [...value, topRank];
+      return {
+        ...obj, 
+        [rank] : values
+      }
+    }, {});
+    const maxCount = Object.values(ranking).reduce((a, b) => a.length > b.length ? a.length : b.length);
+    console.log(maxCount);
+    setResult({
+      user: user,
+      maxCount: maxCount,
+      ranking: ranking
+    })
+  }, []);
+
+  
   const handleChange = (e) => {
     const { value } = e.target;
-    const result = value;
-    if(exceptedResults.indexOf(value) > -1){
-      setExceptedResults(exceptedResults.filter(exceptedResult => exceptedResult !== result));
-    }else{
-      setExceptedResults([...exceptedResults, result]);
-    }
+    
   }
 
   const goPrintPage = () => {
 
-    Object.keys(results).forEach(key => {
-      const result = results[key].filter(value => {
-        const { resultIdx } = value;
-        return exceptedResults.indexOf(resultIdx) === -1;
-      })
-      results[key] = result;
-    })
-    
     history.push({
       pathname: "/ground/print",
       state: {
         user: user,
-        results: results,
-        maxCount: maxCount,
+        results: {},
         grades: grades
       }
     }) 
   }
-
-  let results = new Object();
   const grades = [1,2,3];
-  grades.forEach(grade => {
-    let result = [];
-    Object.keys(ranks).forEach(key => {
-      const { ranking }  = ranks[key];
-      ranks[key].resultIdx = key;
-      if(grade === ranking){
-        result = [...result, ranks[key], ];
-      }
-    });
-    results[grade] = result;
-  });
-
-  let maxCount = 0;
-  Object.keys(results).forEach(key => {
-    const count = results[key].length;
-    if(count > maxCount){
-      maxCount = count;
-      return;
-    }
-  });
 
   return (
     <>
       <Grid container>
         <Grid item xs={7}>
         <TableContainer component={Paper}>
+          {JSON.stringify(result)}
           <Table className={classes.resultTable} aria-label="spanning table">
             <TableHead>
               <TableRow>
@@ -168,24 +328,27 @@ const ResultTable = ({ ranks, user }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(Array(maxCount), (e, x) => 
+              {Array.from(Array(result.maxCount), (e, x) => 
                 <TableRow key={x}>
                   {grades.map((grade, y) => {
-                    const result = results[grade];
-                    const resultIdx = result[x] ? result[x].resultIdx : null;
+
+                    /* const { ranking } = result;
+                    console.log(ranking); */
+                    console.log("result", result);
+                    const resultIdx = 1;
                     return (
                       <TableCell key={y} align="center">
                         {resultIdx && 
                           <>
                             <Typography variant="h6">
-                              <input type="checkbox" value={resultIdx} onChange={handleChange} checked={exceptedResults.indexOf(resultIdx) === -1}/>
+                              <input type="checkbox" value={resultIdx} onChange={handleChange} checked={true}/>
                               {resultMap[resultIdx].title}  
                             </Typography>
                           </>
                         }
                       </TableCell> 
                     )
-                  })}
+                  })}  
                 </TableRow>
               )}
             </TableBody>
@@ -218,280 +381,101 @@ const ResultTable = ({ ranks, user }) => {
    
     </>
   );
-}
-
-const UserInfo = memo(({ user, userInfo, setUserInfo }) => {
-
-  const dispatch = useDispatch();
-  const classes = useStyles();
-  const { userName, userGrade, userEtc, groupIdx, cdate } = user;
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo({
-      ...userInfo,
-      [name]: value
-    })
-  }
-  useEffect(() => {
-    dispatch(getGroupList());
-  }, [groupReducer]);
-
-  const groupReducer = useSelector(state => state.groupReducer);
-  const { data, error } = groupReducer;  
-  
-  if(!data) return null;
-  return (
-    <Grid item xs={12} className={classes.userInfo}>
-      
-      <Autocomplete
-        name="group_idx"
-        options={data}
-        getOptionLabel={(group) => group.name}
-        defaultValue={data.find(group => group.idx === groupIdx)}
-        onChange={(e, v) => { 
-          const value = (v ? v.idx : "");
-          setUserInfo({
-            ...userInfo,
-            "group_idx": value
-          })
-        }}
-        style={{ width: 300 }}
-        renderInput={(params) =>
-          <TextField {...params} 
-            label="기관(학교명)" 
-            variant="outlined" 
-          />
-        }
-      />
-      <Grid container spacing={6, 6}>
-        <Grid item xs={6}>
-          <TextField 
-            name="user_grade" 
-            type="number"
-            className={classes.input}
-            label="나이(학년)"  
-            margin="normal"
-            onChange={handleChange}
-          />
-          <TextField 
-            name="user_etc"
-            className={classes.input}
-            label="반" 
-            margin="normal"
-            value={userEtc}
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField 
-            name="user_name" 
-            className={classes.input}
-            label="이름"  
-            margin="normal"
-            value={userName}
-            onChange={handleChange}
-          />
-          <TextField 
-            name="user_date" 
-            className={classes.input}
-            label="시행일"  
-            margin="normal"
-            value={cdate}
-            onChange={handleChange}
-          />
-        </Grid> 
-        {JSON.stringify(userInfo)}
-      </Grid>
-    </Grid>
-  );
-});
+})
 
 
 
 const DataDetailPage = ({ history, match }) => {
 
   const classes = useStyles();
-  
   const dispatch = useDispatch();
+
+  const [answers, setAnswers] = useState([]);
+  const [user, setUser] = useState({});
+  const [rank, setRank] = useState({});
+
   const userReducer = useSelector(state => state.userReducer);
-  const { user_idx } = match.params;
   const { data, loading } = userReducer;
-  const existData = (data && data.questions && data.answers);
 
-  const [userInfo, setUserInfo] = useState({})
+  const getRank = useCallback(userAnswers => {
 
-  useEffect(() => {
-    
-    if(!existData)
-    dispatch(getUserAnswers(user_idx));
-  }, [])
+    console.log("get rank init")
+    let result = {};
+    let allScores = [];
+    Object.keys(resultMap).forEach(key => {
+      const answers = userAnswers.filter(({ result_idx }) => result_idx == key);
+      const totalScore = answers.reduce((acc, { answer_idx }) => acc + answer_idx, 0);
+      if(!allScores.includes(totalScore)){
+        allScores = allScores.concat(totalScore);
+      } 
+      result[key] = {
+        totalScore: totalScore,
+        resultIdx: parseInt(key)
+      };
+    });
+    const sortedScore = allScores.sort((a, b) => b - a);
 
+    Object.keys(result).forEach(key => {
+      const { totalScore } = result[key];
+      result[key].rank = sortedScore.indexOf(totalScore) + 1;
+    })
+
+    return result;
+  });
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    const params = {
+      inspection_idx: 3,
+      user_answers: answers,
+      user_info: user
+    };
+    console.log(params);
     if(confirm("등록하시겠습니까?")){
-      dispatch(registUserAnswers())
-      .then(() => {
-        const { data } = userReducer.data;
-        if(data){
-          const { user_idx } = data;
-          history.push(`/ground/users/${user_idx}`);
-        }
-      });
+      dispatch(registUserAnswers(params, history));
     }
   }
 
-  const goModifyPage = () => {
-    history.push(`/ground/modify/users/${user_idx}`);
-  }
+  useEffect(() => {
+    const { user_idx } = match.params;
+    dispatch(getUserAnswers(user_idx));
+  }, []);
 
-  const getQuestions = (questions) => {
+  useEffect(() => {
+    if(data && data.answers){
+      const rank = getRank(data.answers);
+      setRank(rank);
+    }
+    
+  }, [userReducer])
   
-    let result = new Object();
-    questions.forEach(question => {
-      const key = question.resultIdx;
-      question.answer_idx = "test";
-      if(!result[key]){
-        result[key] = [question];
-      }else{
-        result[key] = [...result[key], question];
-      }
-      
-    });
-    return result;
-  }
-
-
-  const getAnswer = (answers) => {
-    let map = {};
-    answers.forEach(answer => {
-      const { question_idx, answer_idx } = answer;
-      map[question_idx] = answer_idx
-    })
-    return map;
-  }
-
-  const getRank = (questions, answers) => {
-
-    let ranks = {};
-    let scoreValues = [];
-    const answerMap = getAnswer(answers);
-    Object.keys(questions).forEach(key => {
-      const scoreList = questions[key].map(question => {
-        const { questionIdx } = question;
-        const score = answerMap[questionIdx] ? answerMap[questionIdx] : 0;
-        return score;
-      });
-      const totalScore = scoreList.reduce((a, b) => a + b);
-      const info = {
-        totalScore: totalScore,
-      }
-      ranks[key] = info;
-      if(scoreValues.indexOf(totalScore) === -1){
-        scoreValues = [...scoreValues, totalScore];
-      }
-    });
-
-    const sortedValues = scoreValues.sort((a, b) => a - b);
-    Object.keys(ranks).map(x => {
-      let rank = ranks[x];
-      const { totalScore } = rank;
-      rank.ranking = sortedValues.length - sortedValues.indexOf(totalScore);
-      return rank;
-    });
-    return ranks;
-  }
-
-
+  
   if(loading) return <Loading/>;
-  if(!existData) return null;
-
-  const { user, answers } = data;
-  const questions = getQuestions(data.questions);
-  const rank = getRank(questions, answers);
-
+  if(!data || !data.answers) return null;
   return (
-    <Container maxWidth="lg" className={classes.root}>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+    <Container maxWidth="lg">
+      <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
       
-        <UserInfo user={user} setUserInfo={setUserInfo} userInfo={userInfo} />
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="customized table" size="small"> 
-            <TableHead>
-              <TableRow>
-                <TableCell align="center" width="10%">-</TableCell>
-                {Object.keys(questions).map((key, x) => {
-                  const question = questions[key];
-                  return (
-                    <TableCell key={x} align="center" width="5%">
-                      {`${x + 1}번`}
-                    </TableCell>
-                  )
-                })}
-                <TableCell align="center" width="5%">총점</TableCell>
-                <TableCell align="center" width="7%">성향 순위</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.keys(questions).map((key, x) => {
-                
-                const question = questions[key];
-                const { totalScore, ranking } = rank[key];
-                return (
-                  <StyledTableRow key={x}>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      <Chip
-                        size="small"
-                        label={`문항 ${x + 1}  ${resultMap[x + 1].title}`}
-                        color="primary"
-                    />
-                    </StyledTableCell>
-                    {question.map((value, y) => {
-                      
-                      const answer = getAnswer(answers);
-                      const answerValue = answer[value.questionIdx];
-                      return (
-                        <StyledTableCell align="center" component="th" scope="row" key={y}>
-                          <TextField 
-                            size="medium" 
-                            type="number" 
-                            InputProps={{ inputProps: { min: 1, max: 5, style: {textAlign: 'center'} } }} 
-                            value={answerValue}
-                            onChange={(e) => {
-                              const { question_idx } = value;
-                              const answer_idx = e.target.value;
-                            }}
-                          />
-                        </StyledTableCell>
-                      )
-                    })}
-                    <StyledTableCell align="center" component="th" scope="row">
-                      <Typography variant="h6" >
-                        {totalScore}
-                      </Typography>
-                    </StyledTableCell>
-                    <StyledTableCell align="center" component="th" scope="row">
-                    
-                      {ranking < 4 ?
-                        <Chip
-                          size="medium"
-                          mr={5}
-                          mb={5}
-                          label={ranking}
-                          className={classes[`rank${ranking}`]}
-                        /> :
-                        <Typography variant="h6" className={classes[`rank${ranking}`]}>
-                          {ranking}
-                        </Typography>
-                      }
-                    </StyledTableCell>
-                  </StyledTableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <ResultTable ranks={rank} user={user}/>
+      <UserForm user={user} setUser={setUser}/>
+        {Object.keys(rank).length > 0 &&
+        <>
+          <AnswersForm userAnswers={data.answers} answers={answers} setAnswers={setAnswers} userRank={rank} />
+          <Grid container item xs={12} spacing={3}>
+            <Grid item xs={4}/>
+            <Grid item xs={4} style={{textAlign:"center", paddingTop:"50px"}}>
+              <Paper className={classes.paper}>
+
+              <Button variant="contained" color="primary" size="large" type="submit">
+                수정
+              </Button>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}/>
+          </Grid>
+          <PrintForm ranks={rank} user={user}/>
+        </>
+      }
+        {JSON.stringify(user)}
       </form>
     </Container>
   )

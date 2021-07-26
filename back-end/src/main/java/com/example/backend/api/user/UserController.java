@@ -63,7 +63,6 @@ public class UserController {
         result.put("user", user);
         if(user ==  null) throw new ApiException("유저정보가 없습니다");
         result.put("answers", userServcice.getUserAnswers(userIdx));
-        result.put("questions", questionServcice.getQuestionList(user.getInspectionIdx()));
         return ResponseEntity.ok(result);
     }
 

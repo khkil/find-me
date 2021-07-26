@@ -53,7 +53,12 @@
     </select>
 
     <select id="getUserAnswers" resultType="java.util.Map">
-        SELECT * FROM user_answer WHERE user_idx = #{userIdx} ORDER BY question_idx
+        SELECT * FROM
+            user_answer ua
+        LEFT OUTER JOIN question q
+            ON ua.question_idx = q.question_idx
+        WHERE user_idx = #{userIdx}
+        ORDER BY q.question_idx
     </select>
 
     <insert id="insertUserInfo" parameterType="com.example.backend.api.result.UserResult" useGeneratedKeys="true">
