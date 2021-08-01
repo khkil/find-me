@@ -79,12 +79,14 @@ const useStyles = makeStyles({
   
 });
 
-const UserForm = React.memo(({ user, setUser }) => {
+const UserForm = React.memo(({ userInfo, user, setUser }) => {
 
   const dispatch = useDispatch();
   const classes = useStyles();
-  const [groupForm, setGroupForm] = useState({ flag: -1});
-  const [showGroupForm, setShowGroupForm] = useState(false);
+
+  const { data } = useSelector(state => state.groupReducer);
+  const { groupIdx } = userInfo;
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,17 +94,18 @@ const UserForm = React.memo(({ user, setUser }) => {
   }
 
   useEffect(() => {
+    console.log(userInfo);
     dispatch(getGroupList());
   }, [])
   
-  const groupReducer = useSelector(state => state.groupReducer);
-  if(!groupReducer.data) return null;
+  
+  if(!data) return null;
   return (
 
     <Grid item xs={12}>
       <Box style={{padding: "20px"}}>
         <Autocomplete
-          options={groupReducer.data.filter(group => group.name !== null)}
+          options={data.filter(group => group.name !== null)}
           getOptionLabel={(group) => group.name}
           name="group_idx"
           onChange={(event, value) => {
@@ -110,6 +113,7 @@ const UserForm = React.memo(({ user, setUser }) => {
             setUser({...user, "group_idx": groupIdx});
           }}
           style={{ width: 300 }}
+          defaultValue={data.find(({ idx }) => idx == user.groupIdx)}
           renderInput={(params) =>
             <TextField {...params} 
               label="기관(학교명)" 
@@ -155,9 +159,7 @@ const UserForm = React.memo(({ user, setUser }) => {
             }}
           />
         </Grid> 
-        
       </Grid>
-
     </Grid>
   )
 })
@@ -262,13 +264,40 @@ const PrintForm = memo(({ ranks, user }) => {
   const history = useHistory();
   const classes = useStyles();
   const [result, setResult] = useState(ranks)
+  const [exceptedResults, setExceptedResults] = useState([]);
 
+  const grades = [1,2,3];
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+    const resultIdx = parseInt(value);
+    if(exceptedResults.indexOf(resultIdx) > -1){
+      setExceptedResults(exceptedResults.filter(exceptedResult => exceptedResult !== resultIdx));
+    }else{
+      setExceptedResults([...exceptedResults, resultIdx]);
+    } 
+  }
+
+  const goPrintPage = () => {
+    
+    const rank = Object.values(result.ranking).map(value => 
+      value.filter(({ resultIdx }) => exceptedResults.indexOf(resultIdx) === -1)
+    );
+    history.push({
+      pathname: "/ground/print",
+      state: {
+        user: user,
+        rank: rank,
+      }
+    }) 
+  }
+  
 
   useEffect(() => {
     
     const topRanks = Object.values(ranks).filter(({ rank }) => rank <= 3);
     const ranking = topRanks.reduce((obj, topRank) => {
-      const { rank, totalScore } = topRank;
+      const { rank } = topRank;
       const value = obj[rank];
       const values = !value? [topRank] : [...value, topRank];
       return {
@@ -276,8 +305,7 @@ const PrintForm = memo(({ ranks, user }) => {
         [rank] : values
       }
     }, {});
-    const maxCount = Object.values(ranking).reduce((a, b) => a.length > b.length ? a.length : b.length);
-    console.log(maxCount);
+    const maxCount = Math.max(...Object.values(ranking).map(rank => rank.length));
     setResult({
       user: user,
       maxCount: maxCount,
@@ -285,31 +313,14 @@ const PrintForm = memo(({ ranks, user }) => {
     })
   }, []);
 
-  
-  const handleChange = (e) => {
-    const { value } = e.target;
-    
-  }
 
-  const goPrintPage = () => {
-
-    history.push({
-      pathname: "/ground/print",
-      state: {
-        user: user,
-        results: {},
-        grades: grades
-      }
-    }) 
-  }
-  const grades = [1,2,3];
-
+  if(!result.ranking) return null;
   return (
     <>
       <Grid container>
         <Grid item xs={7}>
         <TableContainer component={Paper}>
-          {JSON.stringify(result)}
+          {JSON.stringify(exceptedResults)}
           <Table className={classes.resultTable} aria-label="spanning table">
             <TableHead>
               <TableRow>
@@ -332,17 +343,17 @@ const PrintForm = memo(({ ranks, user }) => {
                 <TableRow key={x}>
                   {grades.map((grade, y) => {
 
-                    /* const { ranking } = result;
-                    console.log(ranking); */
-                    console.log("result", result);
-                    const resultIdx = 1;
+                    const { ranking } = result;
+                    const rank = ranking[grade]; 
+                    const resultIdx = rank[x] && rank[x].resultIdx;
                     return (
                       <TableCell key={y} align="center">
                         {resultIdx && 
                           <>
                             <Typography variant="h6">
-                              <input type="checkbox" value={resultIdx} onChange={handleChange} checked={true}/>
+                              <input type="checkbox" value={resultIdx} onChange={handleChange} checked={exceptedResults.indexOf(resultIdx) === -1}/>
                               {resultMap[resultIdx].title}  
+                              
                             </Typography>
                           </>
                         }
@@ -455,8 +466,7 @@ const DataDetailPage = ({ history, match }) => {
   return (
     <Container maxWidth="lg">
       <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
-      
-      <UserForm user={user} setUser={setUser}/>
+      <UserForm userInfo={data.user} user={user} setUser={setUser}/>
         {Object.keys(rank).length > 0 &&
         <>
           <AnswersForm userAnswers={data.answers} answers={answers} setAnswers={setAnswers} userRank={rank} />
@@ -472,10 +482,9 @@ const DataDetailPage = ({ history, match }) => {
             </Grid>
             <Grid item xs={4}/>
           </Grid>
-          <PrintForm ranks={rank} user={user}/>
+          <PrintForm ranks={rank} user={data.user}/>
         </>
-      }
-        {JSON.stringify(user)}
+        }
       </form>
     </Container>
   )

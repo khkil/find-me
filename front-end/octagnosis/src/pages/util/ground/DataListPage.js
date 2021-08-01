@@ -101,7 +101,7 @@ const Groups = ({ selectGroup, setSelectedGroup, query }) => {
   )
 }
 
-const Buttons = ({ userIdx, history, match }) => {
+const Buttons = ({ userIdx, history, currentPage }) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -121,7 +121,8 @@ const Buttons = ({ userIdx, history, match }) => {
     if(confirm("해당 유저를 삭제 하시겠습니까?")){
       dispatch(deleteUser(userIdx))
       .then(() => {
-        dispatch(getUserList(3, 1, {}));
+        const selPage = 
+        dispatch(getUserList(3, currentPage, {}));
       });
     }
   }
@@ -210,15 +211,16 @@ const DataListPage = ({ history, location }) => {
   const { data, loading } = useSelector(state => state.userReducer);
 
   useEffect(() => {
-    setCurrentPage(page ? parseInt(page) : 1);
+    const selPage = (page ? parseInt(page) : 1);
+    setCurrentPage(selPage);
     setSearchText(text ? text : "");
-    dispatch(getUserList(3, currentPage, query));
+    dispatch(getUserList(3, selPage, query));
   }, [page, text, selectedGroup]);
 
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
 
-  const { list, pages, total, startRow, endRow } = data;
+  const { list, pages, total, startRow } = data;
   let startNum = total - startRow + 1;
   
   return (
@@ -272,7 +274,7 @@ const DataListPage = ({ history, location }) => {
                 <StyledTableCell align="center">{userEtc}</StyledTableCell>
                 <StyledTableCell align="center">{cdate}</StyledTableCell>
                 <StyledTableCell align="center">
-                  <Buttons userIdx={userIdx} history={history}/>
+                  <Buttons userIdx={userIdx} history={history} currentPage={currentPage}/>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

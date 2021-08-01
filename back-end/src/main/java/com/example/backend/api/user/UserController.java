@@ -42,7 +42,7 @@ public class UserController {
     @GetMapping("/inspections/{inspection_idx}/pages/{page}")
     public ResponseEntity getUsersToPages(@PathVariable int inspection_idx, @PathVariable int page, @RequestParam Map<String,Object> param){
         int perPage = 10;
-        String orderBy = PageUtil.orderBy("cdate", String.valueOf(param.get("order")));
+        String orderBy = PageUtil.orderBy("user_idx", String.valueOf(param.get("order")));
         PageHelper.startPage(page, perPage, orderBy);
         List<User> users = userServcice.getUsers(inspection_idx, param);
         PageInfo<User> pageInfo = new PageInfo<>(users);

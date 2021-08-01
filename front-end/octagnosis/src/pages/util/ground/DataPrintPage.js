@@ -9,9 +9,7 @@ const DataPrintPage = ({ match }) => {
   const { state } = location;
   if(!state) return <Redirect to="/ground"/>
 
-  const { results, maxCount, grades, user } = state; 
-
-  console.log(state);
+  const { user, rank } = state; 
 
   return (
     <>
@@ -37,14 +35,15 @@ const DataPrintPage = ({ match }) => {
         <div className="content">
           <p className="name"><strong>{user && user.userName}</strong>님</p>
           <ul>
-            {grades.map(grade => { 
-              const result = results[grade];
+            {Object.keys(rank).map(key => { 
+              const grade = parseInt(key) + 1;
+              const ranks = rank[key];
               return (
                 <li key={grade}>
                   <p className="tit">{`# ${grade}성향`}</p>
                   <ul>
-                  {result.map(value => {
-                    const { resultIdx } = value;
+                  {ranks.map(rank => {
+                    const { resultIdx } = rank;
                     return (
                       <li key={resultIdx}>{resultMap[resultIdx].title}</li>
                     )

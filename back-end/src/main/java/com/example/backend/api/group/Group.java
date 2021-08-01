@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Data
 public class Group {
 
-    private String idx;
+    private int idx;
     private String name;
     private String tel;
     private String address;
