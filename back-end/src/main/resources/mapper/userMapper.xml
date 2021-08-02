@@ -43,15 +43,20 @@
             <if test="user.groupIdx != null and user.groupIdx != '' ">
                 ,group_idx = #{user.groupIdx}
             </if>
+            <if test="user.delYn != null and user.delYn != '' ">
+                ,del_yn = #{user.delYn}
+            </if>
         </set>
         WHERE user_idx = #{userIdx};
 
-        <foreach collection="userAnswerList" item="userAnswer" index="index" >
-            INSERT INTO
-                user_answer
-            VALUES (#{userIdx}, #{userAnswer.questionIdx}, #{userAnswer.answerIdx} )
-                ON DUPLICATE KEY UPDATE answer_idx = #{userAnswer.answerIdx} ;
-        </foreach>
+        <if test="userAnswerList != null and userAnswerList.size > 0 ">
+            <foreach collection="userAnswerList" item="userAnswer" index="index" >
+                INSERT INTO
+                    user_answer
+                VALUES (#{userIdx}, #{userAnswer.questionIdx}, #{userAnswer.answerIdx} )
+                    ON DUPLICATE KEY UPDATE answer_idx = #{userAnswer.answerIdx} ;
+            </foreach>
+        </if>
 
 
     </update>
@@ -63,17 +68,27 @@
             LEFT OUTER JOIN
         `group` g
             ON u.group_idx = g.idx
-            WHERE del_yn = "N"
-            AND u.inspection_idx = #{inspection_idx}
-            <if test="param.text != null and param.text != '' ">
-                AND (
-                    u.user_name LIKE CONCAT('%',#{param.text},'%')
-                    OR g.name LIKE CONCAT('%',#{param.text},'%')
-                )
-            </if>
+            WHERE u.inspection_idx = #{inspection_idx}
+        <if test="param.text != null and param.text != '' ">
+            AND (
+                u.user_name LIKE CONCAT('%',#{param.text},'%')
+                OR g.name LIKE CONCAT('%',#{param.text},'%')
+            )
+        </if>
         <if test="param.group_idx != null and param.group_idx != '' ">
             AND g.idx = #{param.group_idx}
         </if>
+        <if test="param.del_yn != null and param.del_yn != '' ">
+            AND u.del_yn = #{param.del_yn}
+        </if>
+        <choose>
+            <when test = "param.del_yn != null and param.del_yn != '' ">
+            AND u.del_yn = #{param.del_yn}
+            </when>
+            <otherwise>
+            AND u.del_yn = 'N'
+            </otherwise>
+        </choose>
 
     </select>
     <select id="getUserDetail" resultMap="userMap">

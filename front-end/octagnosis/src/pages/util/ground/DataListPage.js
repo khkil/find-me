@@ -8,11 +8,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Pagination from '@material-ui/lab/Pagination';
-import { Button, Container, Menu, MenuItem, ListItemIcon, IconButton, Link, Typography } from '@material-ui/core';
+import { Button, Container, Menu, MenuItem, ListItemIcon, IconButton, Link, Typography, Tabs, Tab } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUser, getUserList } from '../../../redux/actions/userActions';
+import { deleteUser, getUserList, modifyUser } from '../../../redux/actions/userActions';
 import Loading from '../../../components/common/Loading';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -21,6 +21,7 @@ import {
 } from "@material-ui/core"
 import { SearchIcon } from '@material-ui/data-grid';
 import { getGroupList } from '../../../redux/actions/groupActions';
+import { dateFormat } from '../../../utils/util';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -53,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
   },
   groupBar: {
     float: "right"
+  },
+  tab : {
+    marginTop: 20,
+    marginBottom: 20
   },
   paging: {
     '& > *': {
@@ -89,7 +94,7 @@ const Groups = ({ selectGroup, setSelectedGroup, query }) => {
         const groupIdx = (v ? v.idx : "");
         handleChange(groupIdx);
       }}
-      value={data.find(option => option.idx === group_idx)}
+      value={data.find(group => group.idx == group_idx)}
       style={{ width: 300 }}
       renderInput={(params) =>
         <TextField {...params} 
@@ -101,7 +106,7 @@ const Groups = ({ selectGroup, setSelectedGroup, query }) => {
   )
 }
 
-const Buttons = ({ userIdx, history, currentPage }) => {
+const Buttons = ({ userIdx, history, currentPage, value, setValue }) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -121,7 +126,20 @@ const Buttons = ({ userIdx, history, currentPage }) => {
     if(confirm("해당 유저를 삭제 하시겠습니까?")){
       dispatch(deleteUser(userIdx))
       .then(() => {
-        const selPage = 
+        dispatch(getUserList(3, currentPage, {}));
+      });
+    }
+  }
+
+  const onRestore = () => {
+    if(confirm("해당 유저를 복원 하시겠습니까?")){
+      const params = {
+        user: {userIdx: userIdx, delYn: "N"}
+      }
+      dispatch(modifyUser(userIdx, params))
+      .then(() => {
+        setValue(0);
+        history.push("/ground/users");
         dispatch(getUserList(3, currentPage, {}));
       });
     }
@@ -144,7 +162,11 @@ const Buttons = ({ userIdx, history, currentPage }) => {
         onClose={handleClose}
       >
         <MenuItem onClick={userDetail}>상세정보</MenuItem>
-        <MenuItem onClick={onDelete}>삭제</MenuItem>
+        {value === 0 ? 
+          <MenuItem onClick={onDelete}>삭제</MenuItem> :
+          <MenuItem onClick={onRestore}>복원</MenuItem>
+        }
+        
         <MenuItem onClick={handleClose}>닫기</MenuItem>
       </Menu>
     </>
@@ -157,12 +179,19 @@ const DataListPage = ({ history, location }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const query = queryString.parse(location.search);
-  const { page, text } = query;
+  const { page, text, del_yn } = query;
   let searchParams = new URLSearchParams(location.search); 
 
   const [searchText, setSearchText] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [value, setValue] = useState(del_yn && del_yn === "Y" ? 1 : 0);
+
+  const handleChangeTab = (event, newValue) => {
+    const path = '/ground/users'  + (newValue === 1 ? `?del_yn=Y` : '');
+    history.push(path);
+    setValue(newValue);
+  };
 
   const goPage = (event, page) => {
     searchParams.set("page", page);
@@ -215,7 +244,7 @@ const DataListPage = ({ history, location }) => {
     setCurrentPage(selPage);
     setSearchText(text ? text : "");
     dispatch(getUserList(3, selPage, query));
-  }, [page, text, selectedGroup]);
+  }, [page, text, selectedGroup, del_yn]);
 
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
@@ -243,6 +272,19 @@ const DataListPage = ({ history, location }) => {
         }}
       />
       <Groups selectGroup={selectGroup} setSelectedGroup={setSelectedGroup} query={query}></Groups>
+      <Paper square>
+        <Tabs
+          className={classes.tab}
+          value={value}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={handleChangeTab}
+          aria-label="disabled tabs example"
+        >
+          <Tab label="사용 중 유저" />
+          <Tab label="삭제된 유저"/>
+        </Tabs>
+      </Paper>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
@@ -272,9 +314,9 @@ const DataListPage = ({ history, location }) => {
                 <StyledTableCell align="center">{group && group.name}</StyledTableCell>
                 <StyledTableCell align="center">{userGrade}</StyledTableCell>
                 <StyledTableCell align="center">{userEtc}</StyledTableCell>
-                <StyledTableCell align="center">{cdate}</StyledTableCell>
+                <StyledTableCell align="center">{dateFormat(cdate)}</StyledTableCell>
                 <StyledTableCell align="center">
-                  <Buttons userIdx={userIdx} history={history} currentPage={currentPage}/>
+                  <Buttons userIdx={userIdx} history={history} currentPage={currentPage} value={value} setValue={setValue}/>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

@@ -18,7 +18,7 @@ public class User {
     private String userEtc;
     private String userDate;
     private int groupIdx;
-    private Date cdate;
+    private String cdate;
     private String delYn;
 
     private Group group;

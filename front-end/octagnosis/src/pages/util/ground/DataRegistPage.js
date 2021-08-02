@@ -98,7 +98,7 @@ const UserForm = React.memo(({ user, setUser }) => {
     dispatch(registGroup(groupForm))
     .then(() => {
       if(groupReducer.error){
-        alert("등록시 오류 발생")
+        alert("등록시 오류 발생");
       }else{
         alert(`${name} 기관(학교명)이 등록되었습니다`)
         setShowGroupForm(false);
@@ -116,9 +116,11 @@ const UserForm = React.memo(({ user, setUser }) => {
   return (
 
     <Grid item xs={12}>
-      <Box style={{padding: "20px"}}>
-        <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관(학교명)등록"}</Button>
-      </Box> 
+      
+        <Box style={{padding: "20px"}}>
+          {!user.group_idx && <Button variant="contained" color={showGroupForm ? "default" : "primary"} onClick={toggleForm}>{showGroupForm ? "- 등록취소" : "+ 기관(학교명)등록"}</Button>}
+        </Box>
+      
       {showGroupForm ? (
         <Box style={{padding: "20px"}}>
           <TextField label="기관(학교명)명" margin="normal" name="name" onChange={handleChangeGroup} defaultValue={groupForm.name}/><br/>

@@ -18,6 +18,7 @@ import { resultMap } from './DataRegistPage';
 import { useHistory } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { AccountBox, CheckBox, LocalPrintshop } from '@material-ui/icons';
+import { dateFormat } from '../../../utils/util';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -157,7 +158,7 @@ const UserForm = React.memo(({ userInfo, user, setUser }) => {
             className={classes.input}
             label="시행일"
             onChange={handleChange}
-            defaultValue={cdate}
+            defaultValue={dateFormat(cdate)}
             InputLabelProps={{
               shrink: true,
             }}
@@ -407,7 +408,7 @@ const DataDetailPage = ({ history, match }) => {
   const [rank, setRank] = useState({});
 
   const userReducer = useSelector(state => state.userReducer);
-  const { data, loading } = userReducer;
+  const { data, loading, error } = userReducer;
 
   const getRank = useCallback(userAnswers => {
 
@@ -454,11 +455,16 @@ const DataDetailPage = ({ history, match }) => {
   }, []);
 
   useEffect(() => {
+
+    const { user_idx } = match.params;
     if(data && data.answers){
       const rank = getRank(data.answers);
       setRank(rank);
     }else if(data && data.userIdx){
-      dispatch(getUserAnswers(data.userIdx));
+      dispatch(getUserAnswers(user_idx));
+    }else if(error){
+      alert("Server Error");
+      dispatch(getUserAnswers(user_idx));
     }
     
   }, [userReducer])
