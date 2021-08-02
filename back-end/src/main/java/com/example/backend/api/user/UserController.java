@@ -9,6 +9,7 @@ import com.example.backend.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,6 +87,14 @@ public class UserController {
     @DeleteMapping("/{userIdx}")
     public ResponseEntity deleteUser(@PathVariable int userIdx){
         userServcice.deleteUser(userIdx);
+        return ResponseEntity.ok(CommonResponse.successResult());
+    }
+
+    @PutMapping("/{userIdx}")
+    public ResponseEntity modifyUser(@PathVariable int userIdx, @RequestBody UserResult userResult){
+        User user = userResult.getUser();
+        List<UserAnswer> userAnswerList = userResult.getUserAnswerList();
+        userServcice.modifyUser(userIdx, user, userAnswerList);
         return ResponseEntity.ok(CommonResponse.successResult());
     }
 }

@@ -19,9 +19,42 @@
 
         <collection property="group" resultMap="groupMap"></collection>
     </resultMap>
+
     <delete id="deleteUser" parameterType="int" >
         UPDATE user SET del_yn = "Y" WHERE user_idx = #{userIdx};
     </delete>
+
+    <update id="modifyUser" parameterType="map">
+        UPDATE user
+        <set>
+            del_yn = del_yn
+            <if test="user.userName != null and user.userName != '' ">
+                ,user_name = #{user.userName}
+            </if>
+            <if test="user.userGrade != null and user.userGrade != '' ">
+                ,user_grade = #{user.userGrade}
+            </if>
+            <if test="user.userEtc != null and user.userEtc != '' ">
+                ,user_etc = #{user.userEtc}
+            </if>
+            <if test="user.cdate != null and user.cdate != '' ">
+                ,cdate = #{user.cdate}
+            </if>
+            <if test="user.groupIdx != null and user.groupIdx != '' ">
+                ,group_idx = #{user.groupIdx}
+            </if>
+        </set>
+        WHERE user_idx = #{userIdx};
+
+        <foreach collection="userAnswerList" item="userAnswer" index="index" >
+            INSERT INTO
+                user_answer
+            VALUES (#{userIdx}, #{userAnswer.questionIdx}, #{userAnswer.answerIdx} )
+                ON DUPLICATE KEY UPDATE answer_idx = #{userAnswer.answerIdx} ;
+        </foreach>
+
+
+    </update>
 
 
     <select id="getUsers"  resultMap="userMap">
@@ -53,12 +86,12 @@
     </select>
 
     <select id="getUserAnswers" resultType="java.util.Map">
-        SELECT * FROM
-            user_answer ua
-        LEFT OUTER JOIN question q
-            ON ua.question_idx = q.question_idx
-        WHERE user_idx = #{userIdx}
-        ORDER BY q.question_idx
+        SELECT * FROM question q
+            LEFT OUTER JOIN user_answer ua
+                ON ua.question_idx = q.question_idx
+            AND ua.user_idx = #{userIdx}
+            WHERE inspection_idx = (SELECT inspection_idx FROM `user` WHERE user_idx = #{userIdx})
+        ORDER BY q.question_idx;
     </select>
 
     <insert id="insertUserInfo" parameterType="com.example.backend.api.result.UserResult" useGeneratedKeys="true">

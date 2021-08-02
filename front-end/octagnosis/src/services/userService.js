@@ -34,6 +34,22 @@ export const deleteUser = (userIdx) => {
   });
 }
 
+export const modifyUser = (userIdx, params) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(`/api/users/${userIdx}`, params)
+      .then((response) => {
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+        reject(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
 export const getUserAnswers = (userIdx) => {
   return new Promise((resolve, reject) => {
     axios

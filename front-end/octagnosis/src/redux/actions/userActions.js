@@ -27,6 +27,19 @@ export const deleteUser = (userIdx) => async dispatch  => {
   }
 }
 
+export const modifyUser = (userIdx, params) => async dispatch  => {
+  dispatch({ type: types.USER_MODIFY_REQUEST });
+  try {
+    await service.modifyUser(userIdx, params);
+    dispatch({ type: types.USER_MODIFY_SUCCESS, data: { userIdx: userIdx} });
+
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: types.USER_MODIFY_FAILURE, error: e });
+    
+  }
+}
+
 export const getUserAnswers = (userIdx) => async dispatch  => {
   dispatch({ type: types.USER_ANSWER_LIST_REQUEST });
   try {

@@ -38,4 +38,8 @@ public class UserServcice {
     public void deleteUser(int userIdx){
         userMapper.deleteUser(userIdx);
     }
+
+    public void modifyUser(int userIdx, User user, List<UserAnswer> userAnswerList ){
+        userMapper.modifyUser(userIdx, user, userAnswerList);
+    }
 }

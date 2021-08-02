@@ -70,9 +70,6 @@ export default function reducer(state = initialState, actions) {
 
     case types.USER_DELETE_SUCCESS:
 
-      const deletedList = state.data.list.filter(({ userIdx }) => userIdx !== actions.data);
-      console.log("actions.userIdx", actions.data);
-      console.log("deletedList", deletedList);
       return {
         ...state,
         loading: false,
@@ -88,6 +85,24 @@ export default function reducer(state = initialState, actions) {
         error: actions.error
       };
 
+    case types.USER_MODIFY_REQUEST:
+      return {
+        ...initialState,
+        loading: true
+      };
+
+    case types.USER_MODIFY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: actions.data
+      };
+    case types.USER_MODIFY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: actions.error
+      };
 
       
 

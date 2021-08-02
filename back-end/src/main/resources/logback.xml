@@ -13,7 +13,7 @@
 
     <logger name="jdbc" level="OFF"/>
 
-    <logger name="jdbc.sqlonly" level="INFO" additivity="true">
+    <logger name="jdbc.sqlonly" level="INFO" additivity="false" >
         <appender-ref ref="STDOUT" />
     </logger>
 

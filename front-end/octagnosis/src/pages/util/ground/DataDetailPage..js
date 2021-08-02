@@ -13,7 +13,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/common/Loading';
 import { getGroupList } from '../../../redux/actions/groupActions';
-import { getUserAnswers, registUserAnswers } from '../../../redux/actions/userActions';
+import { getUserAnswers, modifyUser, registUserAnswers } from '../../../redux/actions/userActions';
 import { resultMap } from './DataRegistPage';
 import { useHistory } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
@@ -85,7 +85,7 @@ const UserForm = React.memo(({ userInfo, user, setUser }) => {
   const classes = useStyles();
 
   const { data } = useSelector(state => state.groupReducer);
-  const { groupIdx } = userInfo;
+  const { userName, userGrade, userEtc, cdate, groupIdx } = userInfo;
   
 
   const handleChange = (e) => {
@@ -107,13 +107,13 @@ const UserForm = React.memo(({ userInfo, user, setUser }) => {
         <Autocomplete
           options={data.filter(group => group.name !== null)}
           getOptionLabel={(group) => group.name}
-          name="group_idx"
+          name="groupIdx"
           onChange={(event, value) => {
             const groupIdx = (value ? value.idx : "");
-            setUser({...user, "group_idx": groupIdx});
+            setUser({...user, "groupIdx": groupIdx});
           }}
           style={{ width: 300 }}
-          defaultValue={data.find(({ idx }) => idx == user.groupIdx)}
+          defaultValue={data.find(({ idx }) => idx == groupIdx)}
           renderInput={(params) =>
             <TextField {...params} 
               label="기관(학교명)" 
@@ -125,27 +125,30 @@ const UserForm = React.memo(({ userInfo, user, setUser }) => {
       <Grid container spacing={6, 6}>
         <Grid item xs={6}>
           <TextField 
-            name="user_grade" 
+            name="userGrade" 
             className={classes.input}
             type="number"
             label="나이(학년)"  
             margin="normal"
+            defaultValue={userGrade}
             onChange={handleChange}
           />
           <TextField 
-            name="user_etc"
+            name="userEtc"
             className={classes.input}
             label="반" 
             margin="normal"
+            defaultValue={userEtc}
             onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField 
-            name="user_name" 
+            name="userName" 
             className={classes.input}
             label="이름"  
             margin="normal"
+            defaultValue={userName}
             onChange={handleChange}
           />
           <TextField
@@ -154,6 +157,7 @@ const UserForm = React.memo(({ userInfo, user, setUser }) => {
             className={classes.input}
             label="시행일"
             onChange={handleChange}
+            defaultValue={cdate}
             InputLabelProps={{
               shrink: true,
             }}
@@ -173,11 +177,11 @@ const AnswersForm = React.memo (({ userAnswers, answers, setAnswers, userRank })
     const answerIdx = e.target.value;
     const { question_idx } = e.target.dataset;
     
-    const values = answers.map(answer => answer.question_idx);
+    const values = answers.map(answer => answer.questionIdx);
     const index = values.indexOf(question_idx);
     const answer = {
-      question_idx: question_idx,
-      answer_idx: answerIdx
+      questionIdx: question_idx,
+      answerIdx: answerIdx
     }
 
     if(index === -1){
@@ -224,7 +228,7 @@ const AnswersForm = React.memo (({ userAnswers, answers, setAnswers, userRank })
                 <StyledTableCell align="center" component="th" scope="row" key={y}>
                   <TextField 
                     size="medium" 
-                    defaultValue={answer_idx}
+                    defaultValue={answer_idx ? answer_idx : 0}
                     InputProps={{ inputProps: { min: 1, max: 5, "data-question_idx": question_idx } }} 
                     onChange={handleChange}
                   />
@@ -320,7 +324,6 @@ const PrintForm = memo(({ ranks, user }) => {
       <Grid container>
         <Grid item xs={7}>
         <TableContainer component={Paper}>
-          {JSON.stringify(exceptedResults)}
           <Table className={classes.resultTable} aria-label="spanning table">
             <TableHead>
               <TableRow>
@@ -341,10 +344,8 @@ const PrintForm = memo(({ ranks, user }) => {
             <TableBody>
               {Array.from(Array(result.maxCount), (e, x) => 
                 <TableRow key={x}>
-                  {grades.map((grade, y) => {
+                  {Object.values(result.ranking).map((rank, y) => {
 
-                    const { ranking } = result;
-                    const rank = ranking[grade]; 
                     const resultIdx = rank[x] && rank[x].resultIdx;
                     return (
                       <TableCell key={y} align="center">
@@ -402,7 +403,7 @@ const DataDetailPage = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const [answers, setAnswers] = useState([]);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({userIdx: match.params.user_idx});
   const [rank, setRank] = useState({});
 
   const userReducer = useSelector(state => state.userReducer);
@@ -415,7 +416,7 @@ const DataDetailPage = ({ history, match }) => {
     let allScores = [];
     Object.keys(resultMap).forEach(key => {
       const answers = userAnswers.filter(({ result_idx }) => result_idx == key);
-      const totalScore = answers.reduce((acc, { answer_idx }) => acc + answer_idx, 0);
+      const totalScore = answers.reduce((acc, { answer_idx }) => acc + (answer_idx ? answer_idx : 0), 0);
       if(!allScores.includes(totalScore)){
         allScores = allScores.concat(totalScore);
       } 
@@ -436,14 +437,14 @@ const DataDetailPage = ({ history, match }) => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { userIdx } = user;
     const params = {
-      inspection_idx: 3,
-      user_answers: answers,
-      user_info: user
+      userAnswerList: answers,
+      user: user
     };
     console.log(params);
-    if(confirm("등록하시겠습니까?")){
-      dispatch(registUserAnswers(params, history));
+    if(confirm("수정 하시겠습니까?")){
+      dispatch(modifyUser(userIdx, params));
     }
   }
 
@@ -456,12 +457,14 @@ const DataDetailPage = ({ history, match }) => {
     if(data && data.answers){
       const rank = getRank(data.answers);
       setRank(rank);
+    }else if(data && data.userIdx){
+      dispatch(getUserAnswers(data.userIdx));
     }
     
   }, [userReducer])
   
   
-  if(loading) return <Loading/>;
+  if(loading || (!data || !data.answers)) return <Loading/>;
   if(!data || !data.answers) return null;
   return (
     <Container maxWidth="lg">
