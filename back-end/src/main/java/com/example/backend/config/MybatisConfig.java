@@ -1,6 +1,7 @@
 package com.example.backend.config;
 
 import com.example.backend.auth.model.Role;
+import com.example.backend.common.beans.RefreshableSqlSessionFactoryBean;
 import javafx.application.Application;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandler;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 
 @Configuration
 @MapperScan(basePackages = "com.example.backend")
@@ -29,14 +31,23 @@ public class MybatisConfig {
     }
 
     @Bean
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(dataSource);
-        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
-        sqlSessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:config/mybatis-config.xml"));
-        sqlSessionFactoryBean.setTypeHandlers(new TypeHandler[] {
+    public RefreshableSqlSessionFactoryBean RefreshableSqlSessionFactoryBean(DataSource dataSource, ApplicationContext applicationContext) throws IOException {
+        RefreshableSqlSessionFactoryBean factoryBean = new RefreshableSqlSessionFactoryBean();
+        factoryBean.setDataSource(dataSource);
+        factoryBean.setConfigLocation(applicationContext.getResource("classpath:config/mybatis-config.xml"));
+        factoryBean.setMapperLocations(applicationContext.getResources("classpath*:mapper/*.xml"));
+
+        return factoryBean;
+    }
+   /* @Bean
+    public SqlSessionFactory refreshableSqlSessionFactoryBean(DataSource dataSource) throws Exception {
+        RefreshableSqlSessionFactoryBean refreshableSqlSessionFactoryBean = new RefreshableSqlSessionFactoryBean();
+        refreshableSqlSessionFactoryBean.setDataSource(dataSource);
+        refreshableSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+        refreshableSqlSessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:config/mybatis-config.xml"));
+        refreshableSqlSessionFactoryBean.setTypeHandlers(new TypeHandler[] {
             new Role.TypeHandler()
         });
-        return sqlSessionFactoryBean.getObject();
-    }
+        return refreshableSqlSessionFactoryBean.getObject();
+    }*/
 }
