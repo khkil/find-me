@@ -8,19 +8,20 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Pagination from '@material-ui/lab/Pagination';
-import { Button, Container, Menu, MenuItem, ListItemIcon, IconButton, Link, Typography, Tabs, Tab } from '@material-ui/core';
+import { Button, Container, Menu, MenuItem, ListItemIcon, IconButton, Link, Typography, Tabs, Tab, Box } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import queryString from "query-string";
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUserList, modifyUser } from '../../../redux/actions/userActions';
 import Loading from '../../../components/common/Loading';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Select from '@material-ui/core/Select';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import {
  TextField,
 } from "@material-ui/core"
 import { SearchIcon } from '@material-ui/data-grid';
-import { getGroupList } from '../../../redux/actions/groupActions';
+import { getGroupDetail, getGroupList } from '../../../redux/actions/groupActions';
 import { dateFormat } from '../../../utils/util';
 
 
@@ -53,7 +54,11 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "40%",
   },
   groupBar: {
-    float: "right"
+    float: "right",
+    padding: 10
+  },
+  refreshButton: {
+    float: "right",
   },
   tab : {
     marginTop: 20,
@@ -68,41 +73,71 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = ({ selectGroup, setSelectedGroup, query }) => {
+const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, setSelectedGrade, query }) => {
   
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { data } = useSelector(state => state.groupReducer);
+  const { data, selected } = useSelector(state => state.groupReducer);
   const { group_idx } = query;
   
   
-  const handleChange = (groupIdx) => {
+  const changeGroup = (groupIdx) => {
     setSelectedGroup(groupIdx);
     selectGroup(groupIdx);
   }
   useEffect(() => {
     dispatch(getGroupList());
+
+    if(selectedGroup){
+      dispatch(getGroupDetail(selectedGroup));
+    }
+
   }, [])
   if(!data) return null;
   return (
-    <Autocomplete
-      className={classes.groupBar}
-      options={data.filter(group => group.name !== null)}
-      getOptionLabel={(group) => group.name}
-      name="group_idx"
-      onChange={(e, v) => { 
-        const groupIdx = (v ? v.idx : "");
-        handleChange(groupIdx);
-      }}
-      value={data.find(group => group.idx == group_idx)}
-      style={{ width: 300 }}
-      renderInput={(params) =>
-        <TextField {...params} 
-          label="기관(학교명)" 
-          variant="outlined" 
-        />
-      }
-    />
+    <>
+    {
+      (selectedGroup && selected) &&
+      <Autocomplete
+        className={classes.groupBar}
+        options={selected.grades}
+        getOptionLabel={grade => grade.toString()}
+        name="grade"
+        onChange={(e, v) => { 
+          setSelectedGrade(v);
+        }}
+        value={1}
+        
+        style={{ width: 200 }}
+        renderInput={(params) =>
+          <TextField {...params} 
+            label="학년(나이)" 
+            variant="outlined" 
+          />
+        }
+      />
+    }
+      
+      <Autocomplete
+        className={classes.groupBar}
+        options={data.filter(group => group.name !== null)}
+        getOptionLabel={(group) => group.name}
+        name="group_idx"
+        onChange={(e, v) => { 
+          const groupIdx = (v ? v.idx : "");
+          changeGroup(groupIdx);
+        }}
+      
+        value={data.find(group => group.idx == group_idx)}
+        style={{ width: 300 }}
+        renderInput={(params) =>
+          <TextField {...params} 
+            label="기관(학교명)" 
+            variant="outlined" 
+          />
+        }
+      />
+    </>
   )
 }
 
@@ -179,12 +214,13 @@ const DataListPage = ({ history, location }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const query = queryString.parse(location.search);
-  const { page, text, del_yn } = query;
+  const { page, text, del_yn, group_idx, grade } = query;
   let searchParams = new URLSearchParams(location.search); 
 
-  const [searchText, setSearchText] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState(text || "");
+  const [selectedGroup, setSelectedGroup] = useState(Number(group_idx) || "");
+  const [selectedGrade, setSelectedGrade] = useState(Number(grade) || "");
+  const [currentPage, setCurrentPage] = useState(Number(page) || 1);
   const [value, setValue] = useState(del_yn && del_yn === "Y" ? 1 : 0);
 
   const handleChangeTab = (event, newValue) => {
@@ -218,6 +254,7 @@ const DataListPage = ({ history, location }) => {
     searchParams.delete("page");
     searchParams.set("text", searchText);
     searchParams.set("group_idx", selectedGroup);
+    searchParams.set("grade", grade);
 
     history.push({
       pathname: location.pathname,
@@ -227,7 +264,6 @@ const DataListPage = ({ history, location }) => {
 
   const selectGroup = (groupIdx) => {
     setCurrentPage(1);
-    searchParams.delete("text");
     searchParams.delete("page");
     searchParams.set("group_idx", groupIdx);
 
@@ -237,14 +273,16 @@ const DataListPage = ({ history, location }) => {
     })
   }
 
+  const refresh = () => {
+    dispatch(getUserList(3, 1, {}));
+    history.push("/ground/users");
+  }
+
   const { data, loading } = useSelector(state => state.userReducer);
 
   useEffect(() => {
-    const selPage = (page ? parseInt(page) : 1);
-    setCurrentPage(selPage);
-    setSearchText(text ? text : "");
-    dispatch(getUserList(3, selPage, query));
-  }, [page, text, selectedGroup, del_yn]);
+    dispatch(getUserList(3, currentPage, query));
+  }, [page, text, selectedGroup, del_yn, selectedGrade]);
 
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
@@ -255,23 +293,30 @@ const DataListPage = ({ history, location }) => {
   return (
     <Container maxWidth="lg" className={classes.root}>
 
-      <TextField
-        className={classes.searchBar}
-        label="이름, 기관(학교명)명을 입력하세요"
-        value={searchText}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment>
-              <IconButton onClick={search}>
-                <SearchIcon />
-              </IconButton>
-            </InputAdornment>
-          )
-        }}
-      />
-      <Groups selectGroup={selectGroup} setSelectedGroup={setSelectedGroup} query={query}></Groups>
+      <Box display="inline-block">
+        <Button color="primary" variant="contained" className={classes.refreshButton} onClick={refresh}>
+          검색 초기화
+        </Button>
+      </Box>
+      <Box>
+        <TextField
+          className={classes.searchBar}
+          label="이름, 기관(학교명)명을 입력하세요"
+          value={searchText}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment>
+                <IconButton onClick={search}>
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            )
+          }}
+        />
+        <Groups selectGroup={selectGroup} selectedGroup={selectedGroup} setSelectedGroup={setSelectedGroup} selectedGrade={selectedGrade} setSelectedGrade={setSelectedGrade} query={query}></Groups>
+      </Box>
       <Paper square>
         <Tabs
           className={classes.tab}

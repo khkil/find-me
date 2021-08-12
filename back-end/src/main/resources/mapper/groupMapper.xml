@@ -10,4 +10,17 @@
     <select id="getGroupList" resultType="com.example.backend.api.group.Group">
         SELECT * FROM `group`;
     </select>
+
+
+    <resultMap id="groupDetailMap" type="com.example.backend.api.group.Group" autoMapping="true">
+        <id property="idx" column="idx"></id>
+        <collection property="grades" column="idx"  select="getGroupGrades"/>
+    </resultMap>
+    <select id="getGroupDetail" parameterType="int" resultMap="groupDetailMap">
+        SELECT * FROM `group` WHERE idx = #{idx}
+    </select>
+
+    <select id="getGroupGrades" resultType="int">
+        SELECT user_grade FROM USER WHERE group_idx = #{idx} GROUP BY user_grade;
+    </select>
 </mapper>

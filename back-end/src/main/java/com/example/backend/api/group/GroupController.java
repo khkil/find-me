@@ -23,6 +23,12 @@ public class GroupController {
         return new ResponseEntity<>(groupServcice.getGroupList(), HttpStatus.OK);
     }
 
+    @GetMapping("/{idx}")
+    public ResponseEntity getGroupDetail(@PathVariable int idx){
+        return ResponseEntity.ok(groupServcice.getGroupDetail(idx));
+
+    }
+
     @PostMapping
     public ResponseEntity insertGroup(@RequestBody Group group){
 

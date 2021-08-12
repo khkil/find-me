@@ -13,8 +13,6 @@ export const timeFormat = (time) => {
 
 export const dateFormat = (published_at) => {
   const moment = require('moment');
-
-  console.log("1111111");
   const publish_date = moment(published_at).format('YYYY-MM-DD')
   return publish_date;
 }

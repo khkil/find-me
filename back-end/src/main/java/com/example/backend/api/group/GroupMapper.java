@@ -8,6 +8,7 @@ import java.util.List;
 public interface GroupMapper {
 
     List<Group> getGroupList();
+    Group getGroupDetail(int idx);
     void insertGroup(Group group);
 
 }

@@ -1,6 +1,6 @@
 import * as types from "../../constants";
 
-const initialState = { loading: false, data: null, error: null };
+const initialState = { loading: false, data: null, error: null, selected: null };
 
 export default function reducer(state = initialState, actions) {
   switch (actions.type) {
@@ -23,6 +23,24 @@ export default function reducer(state = initialState, actions) {
         loading: false,
         error: actions.error
       };
+
+    case types.GROUP_DETAIL_REQUEST:
+      return {
+        ...state,
+      };
+
+    case types.GROUP_DETAIL_SUCCESS:
+      return {
+        ...state,
+        selected: actions.data
+      };
+    case types.GROUP_DETAIL_FAILURE:
+      return {
+        ...state,
+        error: actions.error
+      };
+
+    
 
     case types.GROUP_REGIST_REQUEST:
       return {
