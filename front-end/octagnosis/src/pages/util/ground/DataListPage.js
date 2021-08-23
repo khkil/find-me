@@ -23,6 +23,7 @@ import {
 import { SearchIcon } from '@material-ui/data-grid';
 import { getGroupDetail, getGroupList } from '../../../redux/actions/groupActions';
 import { dateFormat } from '../../../utils/util';
+import { useHistory } from 'react-router-dom';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -73,40 +74,54 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, setSelectedGrade, query }) => {
+const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, setSelectedGrade, query, searchParams }) => {
   
   const dispatch = useDispatch();
+  const history = useHistory();
   const classes = useStyles();
-  const { data, selected } = useSelector(state => state.groupReducer);
+  const { data } = useSelector(state => state.groupReducer);
   const { group_idx } = query;
   
+
   
   const changeGroup = (groupIdx) => {
+    searchParams.delete("grade");
+    setSelectedGrade("");
     setSelectedGroup(groupIdx);
     selectGroup(groupIdx);
   }
   useEffect(() => {
     dispatch(getGroupList());
-
-    if(selectedGroup){
-      dispatch(getGroupDetail(selectedGroup));
-    }
+    
 
   }, [])
   if(!data) return null;
+  console.log(data);
+  
   return (
     <>
     {
-      (selectedGroup && selected) &&
+      (Array.from(group_idx && data ? data.find(group => group.idx == group_idx).grades : []).length > 0) &&
       <Autocomplete
         className={classes.groupBar}
-        options={selected.grades}
+        options={Array.from(group_idx && data ? data.find(group => group.idx == group_idx).grades : [])}
         getOptionLabel={grade => grade.toString()}
         name="grade"
-        onChange={(e, v) => { 
-          setSelectedGrade(v);
+        onChange={(e, value) => { 
+          if(value){
+            searchParams.set("grade", value);
+          }else{
+            searchParams.delete("grade");
+          }
+          
+          history.push({
+            pathname: location.pathname,
+            search: searchParams.toString()
+          })
+          
+          setSelectedGrade(value);
         }}
-        value={1}
+        value={selectedGrade}
         
         style={{ width: 200 }}
         renderInput={(params) =>
@@ -116,7 +131,7 @@ const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, s
           />
         }
       />
-    }
+      }
       
       <Autocomplete
         className={classes.groupBar}
@@ -126,6 +141,7 @@ const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, s
         onChange={(e, v) => { 
           const groupIdx = (v ? v.idx : "");
           changeGroup(groupIdx);
+          
         }}
       
         value={data.find(group => group.idx == group_idx)}
@@ -254,7 +270,7 @@ const DataListPage = ({ history, location }) => {
     searchParams.delete("page");
     searchParams.set("text", searchText);
     searchParams.set("group_idx", selectedGroup);
-    searchParams.set("grade", grade);
+    searchParams.set("grade", selectedGrade);
 
     history.push({
       pathname: location.pathname,
@@ -315,7 +331,7 @@ const DataListPage = ({ history, location }) => {
             )
           }}
         />
-        <Groups selectGroup={selectGroup} selectedGroup={selectedGroup} setSelectedGroup={setSelectedGroup} selectedGrade={selectedGrade} setSelectedGrade={setSelectedGrade} query={query}></Groups>
+        <Groups selectGroup={selectGroup} selectedGroup={selectedGroup} setSelectedGroup={setSelectedGroup} selectedGrade={selectedGrade} setSelectedGrade={setSelectedGrade} query={query} searchParams={searchParams}></Groups>
       </Box>
       <Paper square>
         <Tabs

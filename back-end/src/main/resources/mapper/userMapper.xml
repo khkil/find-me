@@ -78,6 +78,9 @@
         <if test="param.group_idx != null and param.group_idx != '' ">
             AND g.idx = #{param.group_idx}
         </if>
+        <if test="param.grade != null and param.grade != '' ">
+            AND u.user_grade = #{param.grade}
+        </if>
         <if test="param.del_yn != null and param.del_yn != '' ">
             AND u.del_yn = #{param.del_yn}
         </if>
