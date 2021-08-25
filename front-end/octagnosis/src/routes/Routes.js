@@ -92,7 +92,6 @@ const Routes = () => (
       {childRoutes(InspectionLayout, inspectionRoutes)}
       {childRoutes(AuthLayout, authLayoutRoutes)}
       {childRoutes(GroundLayout, groundUtilRoutes)}
-
       {childRoutes(DashboardLayout, dashboardLayoutRoutes)}
       {childRoutes(DashboardLayout, protectedRoutes)}
       {childRoutes(DashboardLayout, presentationLayoutRoutes)}

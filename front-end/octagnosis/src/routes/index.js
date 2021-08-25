@@ -1,4 +1,5 @@
 import React from "react";
+import * as Icon from "@material-ui/icons";
 import async from "../components/Async";
 
 
@@ -28,6 +29,7 @@ import DataDetailPage from "../pages/util/ground/DataDetailPage.";
 import DataPrintPage from "../pages/util/ground/DataPrintPage";
 import DataModifyPage from "../pages/util/ground/DataModifyPage";
 
+
 // Guards
 const AuthGuard = async(() => import("../components/AuthGuard"));
 // Auth components
@@ -44,6 +46,8 @@ const Page500 = async(() => import("../pages/auth/Page500"));
 const AdminMemberList = async(() => import("../pages/admin/member/AdminMemberList"))
 const AdminMemberDetail = async(() => import("../pages/admin/member/AdminMemberDetail"))
 
+//admin > group
+const AdminGroupList = async(() => import("../pages/admin/group/AdminGroupList"))
 // Member components
 const MemberProfile = async(() => import("../pages/member/Profile"));
 
@@ -131,8 +135,16 @@ const ProtectedPage = async(() => import("../pages/protected/ProtectedPage"));
 const InspectionSelectPage = async(() => import("../pages/inspection/InspectionSelectPage"));
 const LoginPage = async(() => import("../pages/inspection/Login"));
 
-const adminInpectionRoutes = {
+const groundInspectionRoute = {
   header: "검사 관리",
+  id: "지면검사 관리",
+  path: "/ground",
+  icon: <Icon.FeaturedPlayList />,
+  component: Chartjs,
+  children: null,
+};
+
+const adminInpectionRoute = {
   id: "사고력 검사",
   path: "/admin/inspections",
   icon: <Circle />,
@@ -151,7 +163,9 @@ const adminInpectionRoutes = {
   
 }
 
-const adminMemberRoutes = {
+
+
+const adminMemberRoute = {
   id: "회원",
   path: "/admin/members",
   header: "회원 관리",
@@ -164,20 +178,34 @@ const adminMemberRoutes = {
       name: "회원 목록",
       component: AdminMemberList,
     },
-    
-   
+    {
+      path: "/admin/members/:idx",
+      name: "회원 상세",
+      component: AdminMemberDetail,
+    }
   ],
   component: null,
 }
 
-const adminMemberDetailRoute = {
-  id: "회원",
-  path: "/admin/members/:idx",
-  header: "회원 상세",
+const adminGroupRoute = {
+  id: "기관",
+  path: "/admin/groups",
+  icon: <PieChart />,
   containsHome: true,
   auth: true,
-  component: AdminMemberDetail
-
+  children: [
+    {
+      path: "/admin/groups",
+      name: "기관 목록",
+      component: AdminGroupList,
+    },
+    {
+      path: "/admin/groups/:idx",
+      name: "기관 상세",
+      component: AdminMemberList,
+    },
+  ],
+  component: null,
 }
 
 const inspectionRoute = {
@@ -710,9 +738,9 @@ export const inspectionRoutes = [
 ]
 
 export const dashboardLayoutRoutes = [
-  adminInpectionRoutes,
-  adminMemberRoutes,
-  adminMemberDetailRoute,
+  adminInpectionRoute,
+  adminMemberRoute,
+  adminGroupRoute,
   dashboardsRoutes,
   pagesRoutes,
   projectsRoutes,
@@ -741,9 +769,11 @@ export const protectedRoutes = [protectedPageRoutes, profileRoutes];
 
 // Routes visible in the sidebar
 export const sidebarRoutes = [
-  adminInpectionRoutes,
+  groundInspectionRoute,
+  adminInpectionRoute,
   dashboardsRoutes,
-  adminMemberRoutes,
+  adminMemberRoute,
+  adminGroupRoute,
   pagesRoutes,
   projectsRoutes,
   orderRoutes,

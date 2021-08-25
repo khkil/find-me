@@ -49,7 +49,7 @@ const Auth = ({ children }) => {
     };
     const { role } = (member ? member : data);
     //const redirectPath = (role === types.ROLE_ADMIN ? "/admin" : "/");
-    const redirectPath = (role === types.ROLE_ADMIN ? "/ground" : "/");
+    const redirectPath = (role === types.ROLE_ADMIN ? "/admin" : "/");
     return redirectPath && <Redirect to={redirectPath}/>;
   }else if(error){
     localStorage.removeItem("token");

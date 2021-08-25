@@ -64,7 +64,7 @@
 
     <select id="getUsers"  resultMap="userMap">
         SELECT  * FROM
-        user u
+        `user` u
             LEFT OUTER JOIN
         `group` g
             ON u.group_idx = g.idx
@@ -96,7 +96,7 @@
     </select>
     <select id="getUserDetail" resultMap="userMap">
         SELECT  * FROM
-        user u
+        `user` u
             LEFT OUTER JOIN
         `group` g
             ON u.group_idx = g.idx

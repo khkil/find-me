@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { rgba } from "polished";
-import { NavLink, withRouter } from "react-router-dom";
+import { NavLink, useHistory, withRouter } from "react-router-dom";
 import { darken } from "polished";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "../vendor/perfect-scrollbar.css";
@@ -271,6 +271,11 @@ const SidebarCategory = ({
 };
 
 const SidebarLink = ({ name, to, badge, icon }) => {
+  const history = useHistory();
+  const goPage = (e) => {
+    e.preventDefault();
+    history.push(to);
+  }
   return (
     <Link
       button
@@ -278,6 +283,7 @@ const SidebarLink = ({ name, to, badge, icon }) => {
       component={NavLink}
       exact
       to={to}
+      onClick={goPage}
       activeClassName="active"
     >
       <LinkText>{name}</LinkText>
@@ -287,9 +293,7 @@ const SidebarLink = ({ name, to, badge, icon }) => {
 };
 
 const Sidebar = ({ classes, staticContext, location, ...rest }) => {
-  useEffect(() => {
-    
-  }, [])
+  
   const { data } = useSelector(state => state.authReducer);
   const initOpenRoutes = () => {
     /* Open collapse element that matches current url */
@@ -327,8 +331,15 @@ const Sidebar = ({ classes, staticContext, location, ...rest }) => {
       Object.assign({}, openRoutes, { [index]: !openRoutes[index] })
     );
   };
- // if (!data) return null;
- // const { member_name } = data;
+  const isStaticPath = useCallback((path) => path.indexOf(":") === -1);
+  // if (!data) return null;
+  // const { member_name } = data;
+
+
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <Drawer variant="permanent" {...rest}>
       <NavLink to="/">
@@ -361,6 +372,7 @@ const Sidebar = ({ classes, staticContext, location, ...rest }) => {
                       unmountOnExit
                     >
                       {category.children.map((route, index) => (
+                        isStaticPath(route.path) &&
                         <SidebarLink
                           key={index}
                           name={route.name}

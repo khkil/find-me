@@ -21,6 +21,6 @@
     </select>
 
     <select id="getGroupGrades" resultType="int">
-        SELECT user_grade FROM USER WHERE group_idx = #{idx} GROUP BY user_grade;
+        SELECT user_grade FROM `user` WHERE group_idx = #{idx} GROUP BY user_grade;
     </select>
 </mapper>

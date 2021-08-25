@@ -26,6 +26,7 @@ import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { getMemberDetail } from "../../../redux/actions/memberActions";
 import { updateMember } from "../../../services/memberService";
+import MenuBar from "../../../components/MenuBar";
 
 const Divider = styled(MuiDivider)(spacing);
 
@@ -202,7 +203,7 @@ const validationSchema = Yup.object().shape({
   );
 }
  */
-function AdminMemberDetail({ match }) {
+const AdminMemberDetail = ({ match }) => {
   const dispatch = useDispatch();
   const { idx } = match.params;
   const { data } = useSelector(state => state.dataReducer);
@@ -232,17 +233,7 @@ function AdminMemberDetail({ match }) {
   return ( 
     <React.Fragment>
       <Helmet title="Formik" />
-      <Typography variant="h3" gutterBottom display="inline">
-        회원 상세
-      </Typography>
-
-      <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-        <Typography>회원 관리</Typography>
-        <Link component={NavLink} exact to="/admin/members">
-          회원 목록
-        </Link>
-        <Typography>회원 상세</Typography>
-      </Breadcrumbs>
+      <MenuBar match={match}/>
 
       <Divider my={6} />
 

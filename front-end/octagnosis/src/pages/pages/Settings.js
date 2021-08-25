@@ -50,7 +50,7 @@ const BigAvatar = styled(Avatar)`
 
 function Private() {
   const { data } = useSelector(state => state.authReducer);
-  const { id, idx, username } = data.principal;
+  const { id, idx, username } = data;
   
   return (
     <Card mb={6}>

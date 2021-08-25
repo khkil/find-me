@@ -298,7 +298,7 @@ const DataListPage = ({ history, location }) => {
 
   useEffect(() => {
     dispatch(getUserList(3, currentPage, query));
-  }, [page, text, selectedGroup, del_yn, selectedGrade]);
+  }, [location]);
 
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;

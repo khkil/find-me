@@ -30,10 +30,11 @@ const Ground = ({ children }) => {
           <Grid container alignItems="center">
             <Button color="inherit" onClick={() => { history.push("/ground")}}>
               <Typography variant="h3">
-                지면검사 관리 페이지
+                지면검사 관리 시스템
               </Typography>
             </Button>
             <Grid item xs />
+              <Button size="large" color="inherit" onClick={() => { history.push("/admin") }}>관리자 홈</Button>
               <Button size="large" color="inherit" onClick={logout}>로그아웃</Button>
           </Grid>
         </Toolbar>

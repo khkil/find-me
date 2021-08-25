@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled, { withTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { Search as SearchIcon } from "react-feather";
@@ -24,7 +24,7 @@ import { sidebarRoutes as routes } from "../routes/index";
 import { Autocomplete } from "@material-ui/lab";
 
 const AppBar = styled(MuiAppBar)`
-  background: ${(props) => props.theme.header.background};
+  background-color: ${(props) => props.theme.header.background};
   color: ${(props) => props.theme.header.color};
 `;
 
@@ -76,12 +76,9 @@ const Input = styled(InputBase)`
   }
 `;
 
-
 const AppBarComponent = ({ onDrawerToggle, history }) => {
 
-  const [menus, setMenus] = useState([]);
-  const [inputs, setInputs] = useState('');
-  const moveMenu = (menu) => {
+  const moveMenu = useCallback((menu) => {
     if(menu && menu != null){
       const { path, name } = menu;
       if(path){
@@ -90,18 +87,36 @@ const AppBarComponent = ({ onDrawerToggle, history }) => {
         });
       }
     }
-     
-  }
-  useEffect(() => {
-    let results = [];
+  });
+
+  const menus = useCallback (() => {
+    const isValid = (path) => path && path.indexOf(":")  === -1;
+    let result = [];
     routes.forEach(route => {
-      const children = route.children;
-      if(children){
-        results = [...results, ...children];
+      const { id, path, children } = route;
+      
+      
+      
+      if(children && Array.isArray(children)){
+        children.forEach(child => {
+          if(isValid(child.path)){
+            result.push({ path: child.path, title: child.name})
+          }
+        })
+      }else{
+        if(isValid(path)){
+          result.push({ path: path, title: id})
+        }
       }
-    });
-    setMenus([...results]);
+      
+    })
+    return result;
+  });
+
+  useEffect(() => {
+  
   }, [])
+
 
   return (
     <React.Fragment>
@@ -122,8 +137,8 @@ const AppBarComponent = ({ onDrawerToggle, history }) => {
             <Grid item xs>
                 
             <Autocomplete
-              options={menus}
-              getOptionLabel={() => {alert("1")}}
+              options={menus()}
+              getOptionLabel={menu => menu.title}
               onChange={(event, value) => moveMenu(value)}
               renderInput={(params) => <TextField {...params} label="메뉴 검색" variant="outlined" />}
            />

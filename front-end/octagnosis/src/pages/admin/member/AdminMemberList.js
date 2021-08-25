@@ -42,6 +42,7 @@ import { spacing } from "@material-ui/system";
 import DropDownMenu from "../../../components/common/DropDownMenu"
 import { useDispatch, useSelector } from "react-redux";
 import { getMemberList } from "../../../redux/actions/memberActions";
+import MenuBar from "../../../components/MenuBar";
 const Divider = styled(MuiDivider)(spacing);
 
 const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
@@ -92,7 +93,7 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const AdminMemberList = (props) => {
+const AdminMemberList = () => {
   
   const dispatch = useDispatch();
   const members = useSelector(state => state.dataReducer);
@@ -108,18 +109,7 @@ const AdminMemberList = (props) => {
       <Helmet title="회원 목록" />
 
       <Grid justify="space-between" container spacing={10}>
-        <Grid item>
-          <Typography variant="h3" gutterBottom display="inline">
-            회원목록
-          </Typography>
-
-          <Breadcrumbs aria-label="Breadcrumb" mt={2}>
-            <Typography>회원 관리</Typography>
-            <Link component={NavLink} exact to="/admin/members">
-              회원 목록
-            </Link>
-          </Breadcrumbs>
-        </Grid>
+        <MenuBar/>
         <Grid item>
           <div>
             <Button variant="contained" color="primary">
