@@ -15,7 +15,7 @@ import {
 import createTheme from "./theme";
 import Routes from "./routes/Routes";
 import { getAuthInfo } from "./redux/actions/authActions";
-
+import './App.css';
 const jss = create({
   ...jssPreset(),
   insertionPoint: document.getElementById("jss-insertion-point"),

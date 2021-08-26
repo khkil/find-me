@@ -152,7 +152,7 @@ function Settings() {
       <Helmet title="Settings" />
 
       <Typography variant="h3" gutterBottom display="inline">
-        내 정보
+        내 정보asd
       </Typography>
 
 

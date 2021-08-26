@@ -2,10 +2,13 @@ import axios from "../utils/axios";
 
 axios.defaults.headers.common['Authorization'] = localStorage.getItem("token");
 
-export const getMemberList =() => {
+export const getMemberList = (params) => {
+  console.log("params", params);
   return new Promise((resolve, reject) => {
     axios
-      .get(`/api/admin/members`)
+      .get(`/api/admin/members`, {
+        params: params,
+      })
       .then((response) => {
         if (response.status === 200) {
           resolve(response.data);

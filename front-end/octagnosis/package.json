@@ -53,6 +53,7 @@
     "react-dragula": "1.1.17",
     "react-feather": "2.0.9",
     "react-helmet": "6.1.0",
+    "react-js-pagination": "^3.0.3",
     "react-jvectormap": "0.0.16",
     "react-material-ui-form-validator": "^2.1.4",
     "react-perfect-scrollbar": "1.5.8",

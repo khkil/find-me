@@ -166,21 +166,22 @@ const adminInpectionRoute = {
 
 
 const adminMemberRoute = {
-  id: "회원",
+  id: "유저",
   path: "/admin/members",
   header: "회원 관리",
+  group: "회원 관리",
   icon: <PieChart />,
   containsHome: true,
   auth: true,
   children: [
     {
       path: "/admin/members",
-      name: "회원 목록",
+      name: "유저 목록",
       component: AdminMemberList,
     },
     {
       path: "/admin/members/:idx",
-      name: "회원 상세",
+      name: "유저 상세",
       component: AdminMemberDetail,
     }
   ],
@@ -190,6 +191,7 @@ const adminMemberRoute = {
 const adminGroupRoute = {
   id: "기관",
   path: "/admin/groups",
+  group: "회원 관리",
   icon: <PieChart />,
   containsHome: true,
   auth: true,

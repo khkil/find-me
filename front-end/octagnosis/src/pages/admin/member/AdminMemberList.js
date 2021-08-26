@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components/macro";
 import { NavLink } from "react-router-dom";
 
@@ -37,12 +37,14 @@ import {
   FilterList as FilterListIcon,
   RemoveRedEye as RemoveRedEyeIcon,
 } from "@material-ui/icons";
-
+import queryString from "query-string";
+import Paging from "../../../components/common/Paging";
 import { spacing } from "@material-ui/system";
 import DropDownMenu from "../../../components/common/DropDownMenu"
 import { useDispatch, useSelector } from "react-redux";
 import { getMemberList } from "../../../redux/actions/memberActions";
 import MenuBar from "../../../components/MenuBar";
+import { getMemberDetail } from "../../../services/memberService";
 const Divider = styled(MuiDivider)(spacing);
 
 const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
@@ -93,36 +95,63 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const AdminMemberList = () => {
+const AdminMemberList = ({ match, history, location }) => {
   
   const dispatch = useDispatch();
-  const members = useSelector(state => state.dataReducer);
-  const { data } = members;
-  useEffect(() => {
-    dispatch(getMemberList());
-  }, []);
+  const memberReducer = useSelector(state => state.memberReducer);
+  const query = queryString.parse(location.search);
+  const firstUpdate = useRef(true);
+  const [searchParam, setSearchParam] = useState(query);
+  const { response } = memberReducer;
 
+  const goPage = (page) => {
+    setSearchParam({
+      ...searchParam,
+      pageNum: page
+    });
+
+    
+  }
+  useEffect(() => {
+    console.log(history);
+    dispatch(getMemberList(searchParam));
+  }, [location, location.search]);
+
+
+  useEffect(() => {
+    if(firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    history.push({
+      pathname: "/admin/members",
+      search: "?" + new URLSearchParams(searchParam).toString()
+    })
+  }, [searchParam]);
+
+
+
+  console.log(response);
   
-  if(!data || !data.memberList) return null;
+  
   return (
     <React.Fragment>
       <Helmet title="회원 목록" />
 
+      {/* <MenuBar match={match}/> */}
+
       <Grid justify="space-between" container spacing={10}>
-        <MenuBar/>
+        <MenuBar match={match}/>
         <Grid item>
-          <div>
-            <Button variant="contained" color="primary">
-              <AddIcon />
-              회원 추가
-            </Button>
-          </div>
+          <Button variant="contained" color="primary">
+            <AddIcon />
+            New Order
+          </Button>
         </Grid>
       </Grid>
-
       <Divider my={6} />
-
       <Grid container spacing={6}>
+      {(response && Boolean(response.success)) &&
         <Grid item xs={12}>
           <Paper>
             {/* <Toolbar>
@@ -144,11 +173,20 @@ const AdminMemberList = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.memberList.map((member, index) => (
+                {response.data.list.map((member, index) => (
 
                   <StyledTableRow key={index}>
                     <StyledTableCell align="center">{member.name}</StyledTableCell>
-                    <StyledTableCell align="center">{member.id}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Link 
+                        component="button" 
+                        onClick={e => {
+                          e.preventDefault;
+                          history.push(`/admin/members/${member.idx}`);
+                        }}>
+                        {member.id}
+                      </Link>
+                    </StyledTableCell>
                     <StyledTableCell align="center">{member.email}</StyledTableCell>
                     <StyledTableCell align="center">{member.phone}</StyledTableCell>
                     <StyledTableCell align="center">{member.cdate}</StyledTableCell>
@@ -163,8 +201,13 @@ const AdminMemberList = () => {
 
             </Table>
           </Paper>
-
+          <Paging 
+            page={searchParam.pageNum ? Number(searchParam.pageNum) : 1} 
+            goPage={goPage} 
+            pageInfo={response.data}
+          />
         </Grid>
+      }
       </Grid>
     </React.Fragment>
   );

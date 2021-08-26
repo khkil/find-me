@@ -81,7 +81,7 @@ const Profile = ({ history }) => {
       <Helmet title="Profile" />
 
       <Typography variant="h3" gutterBottom display="inline">
-        내 정보
+        내 정보da
       </Typography>
 
       <Divider my={6} />

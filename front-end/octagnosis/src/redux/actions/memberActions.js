@@ -1,15 +1,15 @@
 import * as types from "../../constants";
 import * as memberService from "../../services/memberService";
 
-export const getMemberList = () => async dispatch  => {
-  dispatch({ type: types.DATA_REQUEST });
+export const getMemberList = (params) => async dispatch  => {
+  dispatch({ type: types.MEMBER_LIST_REQUEST });
   try {
-    const data = await memberService.getMemberList();
-    dispatch({ type: types.DATA_SUCCESS, data: {memberList : data} });
+    const data = await memberService.getMemberList(params);
+    dispatch({ type: types.MEMBER_LIST_SUCCESS, data: data });
 
   } catch (e) {
     console.error(e);
-    dispatch({ type: types.DATA_FAILURE, error: e });
+    dispatch({ type: types.MEMBER_LIST_FAILURE, error: e });
     
   } 
 }
@@ -18,7 +18,7 @@ export const getMemberDetail = (idx) => async dispatch  => {
   dispatch({ type: types.DATA_REQUEST });
   try {
     const data = await memberService.getMemberDetail(idx);
-    dispatch({ type: types.DATA_SUCCESS, data: {memberDetail: data} });
+    dispatch({ type: types.DATA_SUCCESS, data: data });
 
   } catch (e) {
     console.error(e);
@@ -39,6 +39,6 @@ export const updateMember = (idx, member) => async dispatch  => {
     dispatch({ type: types.MEMBER_UPDATE_FAILURE, error: e });
     
   } finally{
-    dispatch({ type: types.MEMBER_UPDATE_RESET });
+    dispatch({ type: types.MEMBER_RESET });
   }
 }

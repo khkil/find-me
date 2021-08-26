@@ -92,7 +92,7 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const AdminGroupList = ({ match }) => {
+const SkeletonPage = ({ match }) => {
   
   const dispatch = useDispatch();
 
@@ -120,14 +120,7 @@ const AdminGroupList = ({ match }) => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Paper>
-            <Toolbar>
-              <ToolbarTitle>
-              <Typography variant="h6" id="tableTitle">
-                회원
-              </Typography>
-              </ToolbarTitle>
-            </Toolbar> 
-           
+       
           </Paper>
 
         </Grid>
@@ -136,4 +129,4 @@ const AdminGroupList = ({ match }) => {
   );
 }
 
-export default AdminGroupList;
+export default SkeletonPage;

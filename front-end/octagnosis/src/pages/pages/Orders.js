@@ -38,6 +38,7 @@ import {
 } from "@material-ui/icons";
 
 import { spacing } from "@material-ui/system";
+import MenuBar from "../../components/MenuBar";
 
 const Divider = styled(MuiDivider)(spacing);
 
@@ -397,7 +398,8 @@ function OrderList() {
       <Helmet title="Orders" />
 
       <Grid justify="space-between" container spacing={24}>
-        <Grid item>
+        <MenuBar/>
+        {/* <Grid item>
           <Typography variant="h3" gutterBottom display="inline">
             Orders
           </Typography>
@@ -411,7 +413,7 @@ function OrderList() {
             </Link>
             <Typography>Orders</Typography>
           </Breadcrumbs>
-        </Grid>
+        </Grid> */}
         <Grid item>
           <div>
             <Button variant="contained" color="primary">
