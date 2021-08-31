@@ -13,8 +13,8 @@ public class InspectionServcice {
     @Autowired
     InspectionMapper inspectionMapper;
 
-    public List<Inspection> getInspectionList(){
-        return inspectionMapper.getInspectionList();
+    public List<Inspection> getInspectionList(Inspection inspection){
+        return inspectionMapper.getInspectionList(inspection);
     }
 
     public Inspection getInspectionDetail(int idx){

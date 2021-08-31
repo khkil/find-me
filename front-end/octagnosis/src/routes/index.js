@@ -46,6 +46,10 @@ const Page500 = async(() => import("../pages/auth/Page500"));
 const AdminMemberList = async(() => import("../pages/admin/member/AdminMemberList"))
 const AdminMemberDetail = async(() => import("../pages/admin/member/AdminMemberDetail"))
 
+//admin > question
+const AdminQuestionListPage = async(() => import("../pages/admin/question/AdminQuestionListPage"));
+const AdminQuestionDetailPage = async(() => import("../pages/admin/question/AdminQuestionDetailPage"));
+
 //admin > group
 const AdminGroupList = async(() => import("../pages/admin/group/AdminGroupList"))
 // Member components
@@ -144,27 +148,6 @@ const groundInspectionRoute = {
   children: null,
 };
 
-const adminInpectionRoute = {
-  id: "사고력 검사",
-  path: "/admin/inspections",
-  icon: <Circle />,
-  containsHome: true,
-  auth: true,
-  children: [
-    {
-      path: "/admin/inspections/:idx/questions",
-      name: "문항관리",
-      component: Default,
-    },
-   
-  ],
-  component: null,
-
-  
-}
-
-
-
 const adminMemberRoute = {
   id: "유저",
   path: "/admin/members",
@@ -186,6 +169,30 @@ const adminMemberRoute = {
     }
   ],
   component: null,
+}
+
+
+const adminQuestionRoute = {
+  id: "문항 관리",
+  path: "/admin/questions",
+  group: "검사 관리",
+  icon: <PieChart />,
+  containsHome: true,
+  auth: true,
+  children: [
+    {
+      path: "/admin/questions/octagnosis",
+      name: "옥타그노시스",
+      component: AdminQuestionListPage,
+    },
+    {
+      path: "/admin/questions/free",
+      name: "무료 검사",
+      component: AdminQuestionListPage,
+    }
+  ],
+  component: null,
+
 }
 
 const adminGroupRoute = {
@@ -739,27 +746,6 @@ export const inspectionRoutes = [
   memberRoutes
 ]
 
-export const dashboardLayoutRoutes = [
-  adminInpectionRoute,
-  adminMemberRoute,
-  adminGroupRoute,
-  dashboardsRoutes,
-  pagesRoutes,
-  projectsRoutes,
-  orderRoutes,
-  invoiceRoutes,
-  tasksRoutes,
-  calendarRoutes,
-  componentsRoutes,
-  chartRoutes,
-  formsRoutes,
-  tablesRoutes,
-  iconsRoutes,
-  mapsRoutes,
-  documentationRoutes,
-  changelogRoutes,
-];
-
 // Routes using the Auth layout
 export const authLayoutRoutes = [authRoutes];
 
@@ -772,7 +758,7 @@ export const protectedRoutes = [protectedPageRoutes, profileRoutes];
 // Routes visible in the sidebar
 export const sidebarRoutes = [
   groundInspectionRoute,
-  adminInpectionRoute,
+  adminQuestionRoute,
   dashboardsRoutes,
   adminMemberRoute,
   adminGroupRoute,
@@ -791,6 +777,8 @@ export const sidebarRoutes = [
   documentationRoutes,
   changelogRoutes,
 ];
+
+export const dashboardLayoutRoutes = sidebarRoutes;
 
 export const groundUtilRoutes = [
   groundUtilRoute

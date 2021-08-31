@@ -3,7 +3,6 @@ import axios from "../utils/axios";
 axios.defaults.headers.common['Authorization'] = localStorage.getItem("token");
 
 export const getMemberList = (params) => {
-  console.log("params", params);
   return new Promise((resolve, reject) => {
     axios
       .get(`/api/admin/members`, {

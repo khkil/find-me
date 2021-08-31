@@ -7,7 +7,7 @@ import java.util.List;
 @Repository
 public interface InspectionMapper {
 
-    List<Inspection> getInspectionList();
+    List<Inspection> getInspectionList(Inspection inspection);
     Inspection getInspectionDetail(int idx);
 
 }

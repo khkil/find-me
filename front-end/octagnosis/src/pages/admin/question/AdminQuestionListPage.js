@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { NavLink } from "react-router-dom";
 
@@ -16,6 +16,7 @@ import {
   IconButton,
   Link,
   Paper as MuiPaper,
+  Tab,
   Table,
   TableBody,
   TableCell,
@@ -24,6 +25,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Tabs,
   Toolbar,
   Tooltip,
   Typography,
@@ -43,6 +45,7 @@ import DropDownMenu from "../../../components/common/DropDownMenu"
 import { useDispatch, useSelector } from "react-redux";
 import { getMemberList } from "../../../redux/actions/memberActions";
 import MenuBar from "../../../components/MenuBar";
+import { getInspectionList } from "../../../redux/actions/inspectionActions";
 const Divider = styled(MuiDivider)(spacing);
 
 
@@ -91,40 +94,93 @@ const StyledTableRow = withStyles((theme) => ({
     },
   },
 }))(TableRow);
-
-const SkeletonPage = ({ match }) => {
-  
-  const dispatch = useDispatch();
-
+const InpectionList = ({ payYn }) => {
+  const { response } = useSelector(state => state.inspectionReducer);
   useEffect(() => {
+    
   }, []);
 
-  
+  if(!response) return null;
+  return (
+    <div>
+        <Tabs
+          value={0}
+          indicatorColor="primary"
+          textColor="primary"
+          aria-label="disabled tabs example"
+        >
+          {response.data.map(({ inspectionName }) => 
+            <Tab label={inspectionName} />  
+          )}
+          
+        </Tabs>
+    </div>
+  )
+}
+const AdminQuestionListPage = ({ match }) => {
+
+  const dispatch = useDispatch();
+
+  const [inspection, setInspection] = useState(1);
+  const [result, setResult] = useState(1);
+  const payYn = match.path.includes("free") ? "N" : "Y";
+
+  const changeResult = (event, value) => {
+    setResult(value);
+  };
+
+  useEffect(() => {
+    const params = {
+      payYn: payYn
+    }
+    dispatch(getInspectionList(params));
+  }, []);
+
+
   return (
     <React.Fragment>
       <Helmet title="회원 목록" />
 
       <Grid justify="space-between" container spacing={10}>
-        <MenuBar match={match}/>
-        <Grid item>
+        <MenuBar match={match} />
+        {/* <Grid item>
           <Button variant="contained" color="primary">
             <AddIcon />
             New Order
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Divider my={6} />
-
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
+      <InpectionList payYn={payYn} />
+      <Divider my={1} />
+      <Grid container spacing={1}>
+        <Grid item xs={1}>
           <Paper>
-       
+            <Tabs
+              value={result}
+              onChange={changeResult}
+              indicatorColor="primary"
+              textColor="primary"
+              orientation="vertical"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+            <Tab
+              label={"Node "}
+            />
+          </Tabs>
           </Paper>
-
+        </Grid>
+        <Grid item xs={9}>
+          <Paper>
+            asdad
+          </Paper>
         </Grid>
       </Grid>
+
+     
     </React.Fragment>
   );
 }
 
-export default SkeletonPage;
+export default AdminQuestionListPage;

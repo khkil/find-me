@@ -6,6 +6,12 @@
         <setting name="useGeneratedKeys" value="true" />
         <setting name="mapUnderscoreToCamelCase" value="true" />
     </settings>
+    <typeAliases>
+
+        <typeAlias alias="inspection" type="com.example.backend.api.inspection.Inspection"/>
+
+    </typeAliases>
+
 
 </configuration>
 

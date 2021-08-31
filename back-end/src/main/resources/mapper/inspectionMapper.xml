@@ -4,8 +4,11 @@
 
 <mapper namespace="com.example.backend.api.inspection.InspectionMapper">
 
-    <select id="getInspectionList" resultType="com.example.backend.api.inspection.Inspection">
+    <select id="getInspectionList" resultType="com.example.backend.api.inspection.Inspection" parameterType="inspection">
         SELECT * FROM inspection
+        <where>
+            <if test="payYn != null and payYn != ''">AND pay_yn = #{payYn} </if>
+        </where>
     </select>
 
     <select id="getInspectionDetail" resultType="com.example.backend.api.inspection.Inspection">
