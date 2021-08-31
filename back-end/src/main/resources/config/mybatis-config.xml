@@ -9,6 +9,8 @@
     <typeAliases>
 
         <typeAlias alias="inspection" type="com.example.backend.api.inspection.Inspection"/>
+        <typeAlias alias="question" type="com.example.backend.api.question.Question"/>
+        <typeAlias alias="result" type="com.example.backend.api.result.Result"/>
 
     </typeAliases>
 

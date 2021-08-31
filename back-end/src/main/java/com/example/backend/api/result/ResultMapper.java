@@ -9,5 +9,6 @@ import java.util.Map;
 public interface ResultMapper {
 
     List<Result> getResults(Map<String, Object> params);
+    List<Result> getResultsWithQuestions(Result result);
 
 }

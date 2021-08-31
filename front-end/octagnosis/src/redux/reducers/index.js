@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import inspectionReducer from "./inspectionReducer"
+import resultReducer from "./resultReducer"
 import dataReducer from "./dataReducer"
 import themeReducer from "./themeReducer";
 import authReducer from "./authReducer";
@@ -10,6 +11,7 @@ import userReducer from "./userReducer";
 
 export const rootReducer = combineReducers({
   inspectionReducer,
+  resultReducer,
   dataReducer,
   themeReducer,
   authReducer,

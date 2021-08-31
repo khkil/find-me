@@ -1,6 +1,9 @@
 package com.example.backend.api.result;
 
+import com.example.backend.api.question.Question;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class Result {
@@ -19,5 +22,7 @@ public class Result {
 
     private Result goodResult;
     private Result badResult;
+
+    private List<Question> questionList;
 
 }

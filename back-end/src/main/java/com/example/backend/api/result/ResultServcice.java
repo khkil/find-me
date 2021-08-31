@@ -17,5 +17,8 @@ public class ResultServcice {
     public List<Result> getResults(Map<String, Object> params){
         return resultMapper.getResults(params);
     }
+    public List<Result> getResultsWithQuestions(Result result){
+        return resultMapper.getResultsWithQuestions(result);
+    }
 
 }
