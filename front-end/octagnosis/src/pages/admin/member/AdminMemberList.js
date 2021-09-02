@@ -27,7 +27,10 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  Menu,
+  MenuItem
 } from "@material-ui/core";
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 import { green, orange } from "@material-ui/core/colors";
 
@@ -95,14 +98,26 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const AdminMemberList = ({ match, history, location }) => {
+const AdminMemberList = ({ location, match, history }) => {
   
   const dispatch = useDispatch();
   const memberReducer = useSelector(state => state.memberReducer);
+  const { response } = memberReducer;
+
   const query = queryString.parse(location.search);
   const firstUpdate = useRef(true);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [searchParam, setSearchParam] = useState(query);
-  const { response } = memberReducer;
+  
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const goPage = (page) => {
     setSearchParam({
@@ -114,8 +129,8 @@ const AdminMemberList = ({ match, history, location }) => {
   }
   useEffect(() => {
     console.log(history);
-    dispatch(getMemberList(searchParam));
-  }, [location, location.search]);
+    dispatch(getMemberList(query));
+  }, [location]);
 
 
   useEffect(() => {
@@ -191,7 +206,19 @@ const AdminMemberList = ({ match, history, location }) => {
                     <StyledTableCell align="center">{member.phone}</StyledTableCell>
                     <StyledTableCell align="center">{member.cdate}</StyledTableCell>
                     <StyledTableCell align="center">
-                      <DropDownMenu idx={member.idx}/>
+                      <Button onClick={handleClick}>
+                        <MoreHorizIcon/>
+                      </Button>
+                      <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={handleClose}>삭제</MenuItem>
+                        <MenuItem onClick={handleClose}>닫기</MenuItem>
+                      </Menu>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -202,7 +229,7 @@ const AdminMemberList = ({ match, history, location }) => {
             </Table>
           </Paper>
           <Paging 
-            page={searchParam.pageNum ? Number(searchParam.pageNum) : 1} 
+            page={query.pageNum ? Number(query.pageNum) : 1} 
             goPage={goPage} 
             pageInfo={response.data}
           />

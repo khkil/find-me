@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 export default function DropDownMenu({ idx }) {
 
@@ -25,14 +25,8 @@ export default function DropDownMenu({ idx }) {
 
   return (
     <>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        onClick={handleClick}
-      >
-        메뉴
+      <Button onClick={handleClick}>
+        <MoreHorizIcon/>
       </Button>
       <Menu
         id="simple-menu"

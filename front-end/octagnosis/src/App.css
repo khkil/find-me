@@ -94,7 +94,12 @@ ul.pagination li a:hover, ul.pagination li a.active {
   color: #337ab7;
 }
 
-
+.taC {
+  text-align: center;
+}
+.light_border {
+  border: 1px solid #cccc;  
+}
 /*react-bootstarp*/
 .nav-link  {
   cursor: pointer;
