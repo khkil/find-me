@@ -13,13 +13,18 @@ import {
   Divider as MuiDivider,
   Fab,
   Grid,
+  IconButton,
+  List,
   ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
   makeStyles,
   Paper,
   TableCell,
   TableRow,
+  Typography,
 } from "@material-ui/core";
-import { DragHandle, Delete } from "@material-ui/icons";
+import { DragHandle, Delete, Assignment } from "@material-ui/icons";
 
 import { spacing } from "@material-ui/system";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +49,6 @@ const useStyles = makeStyles({
   },
   question: {
     background: "white",
-    margin: 5,
     borderRadius: "40px",
     border: "1px solid #cccc"
   }
@@ -53,20 +57,38 @@ const Question = memo(({ question, index }) => {
   const classes = useStyles();
   const { questionIdx, questionNumber, questionText } = question; 
   return (
-    <Draggable key={questionIdx} draggableId={`question_${questionIdx}`} index={index}>
-      {(provided, snapshot) => (
-        <ListItem
-          className={classes.question}
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <DragHandle/>
-          {`${questionNumber}. ${questionText}`}
-          <Delete className={classes.deleteIcon} fontSize={"default"}/>
-        </ListItem>
-        )}
-    </Draggable>
+    <List>
+        
+      <Draggable key={questionIdx} draggableId={`question_${questionIdx}`} index={index}>
+        
+        {(provided, snapshot) => (
+
+          <ListItem
+            className={classes.question}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            <DragHandle/>
+            <ListItemText primary={<Typography variant="h6">{questionNumber}. {questionText}</Typography>}/>
+            <IconButton edge="end" aria-label="delete" children={<Assignment color="secondary"/>}/>
+            <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>}/>
+            
+          </ListItem>
+          
+          /* <ListItem
+            className={classes.question}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            <DragHandle/>
+            {`${questionNumber}. ${questionText}`}
+            <Delete className={classes.deleteIcon} fontSize={"default"}/>
+          </ListItem> */
+          )}
+      </Draggable>
+    </List>
 
   )
 }
@@ -76,6 +98,7 @@ const Question = memo(({ question, index }) => {
 const QuestionList = memo(({ results, selectedResult}) => {
   //https://codesandbox.io/s/zqwz5n5p9x?file=/src/index.js:1575-1582
   const initialQuestions = useMemo(() => results[selectedResult] && results[selectedResult].questionList ? results[selectedResult].questionList.sort((a, b) => a.questionIdx - b.questionIdx) : []);
+  const minNumber = useMemo(() => Math.min(...initialQuestions.map(({ questionNumber }) => Number(questionNumber))));
   const [questionOrders, setQuestionOrders] = useState(initialQuestions);
 
   const onDragEnd = (e) => {
@@ -86,9 +109,11 @@ const QuestionList = memo(({ results, selectedResult}) => {
   }
   const reOrder = (list, startIndex, endIndex) => {
     const [removed] = list.splice(startIndex, 1);
+    
+    console.log(minNumber);
     list.splice(endIndex, 0, removed);
     
-    const result = list.map((obj,index) => ({...obj, questionNumber : index + 1}));
+    const result = list.map((obj,index) => ({...obj, questionNumber : minNumber + index }));
     return result;
   }
   
@@ -120,7 +145,6 @@ const QuestionList = memo(({ results, selectedResult}) => {
             </div>
           )}
         </Droppable>
-        {JSON.stringify(questionOrders)}
       </DragDropContext>
     </Grid>
   )
