@@ -22,6 +22,7 @@ public class AdminMemberController {
 
 
     @Autowired
+
     MemberService memberService;
 
     @GetMapping

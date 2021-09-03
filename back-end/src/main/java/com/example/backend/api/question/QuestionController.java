@@ -15,7 +15,7 @@ import java.util.List;
 public class QuestionController {
 
     @Autowired
-    QuestionServcice questionServcice;
+    QuestionService questionServcice;
 
     @GetMapping
     public ResponseEntity<List> getAllQuestionList (@PathVariable int idx){

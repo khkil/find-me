@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class QuestionServcice {
+public class QuestionService {
 
     @Autowired
     QuestionMapper questionMapper;
@@ -21,5 +21,13 @@ public class QuestionServcice {
     }
     public List<String> getPageInfo(int inspection_idx, int page){
         return questionMapper.getPageInfo(inspection_idx, page);
+    }
+
+    public void deleteQuestion(int questionIdx){
+        questionMapper.deleteQuestion(questionIdx);
+    }
+
+    public void updateQuestion(int questionIdx, Question question){
+        questionMapper.updateQuestion(questionIdx, question);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.backend.api.user;
 
-import com.example.backend.api.question.QuestionServcice;
+import com.example.backend.api.question.QuestionService;
 import com.example.backend.common.exception.ApiException;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;
@@ -9,7 +9,6 @@ import com.example.backend.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,7 @@ public class UserController {
     UserServcice userServcice;
 
     @Autowired
-    QuestionServcice questionServcice;
+    QuestionService questionServcice;
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;

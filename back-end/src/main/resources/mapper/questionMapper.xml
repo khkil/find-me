@@ -3,9 +3,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.backend.api.question.QuestionMapper">
-
     <select id="getQuestionList" resultMap="ResultMap">
-        SELECT * FROM question WHERE inspection_idx = #{idx}
+        SELECT * FROM question WHERE inspection_idx = #{idx} AND del_yn = 'N'
         ORDER BY inspection_idx, question_page, question_number;
     </select>
 
@@ -20,11 +19,23 @@
 		SELECT * FROM answer WHERE question_idx = #{question_idx};
 	</select>
     <select id="getPageInfo" resultMap="ResultMap">
-        SELECT * from question WHERE question_page = #{page} AND inspection_idx = #{inspection_idx};
+        SELECT * from question WHERE question_page = #{page}  AND inspection_idx = #{inspection_idx} AND del_yn = 'N';
     </select>
     <select id="getQuestionInfo">
 
 
     </select>
+
+    <update id="deleteQuestion" parameterType="int">
+        UPDATE question SET del_yn = 'Y' WHERE question_idx = #{questionIdx}
+    </update>
+    <update id="updateQuestion">
+        UPDATE question
+        <set>
+            <if test="question.questionText != null and question.questionText != ''"> question_text = #{question.questionText},</if>
+            <if test="question.delYn != null and question.delYn != ''"> del_yn = #{question.delYn},</if>
+        </set>
+        WHERE question_idx = #{questionIdx};
+    </update>
 
 </mapper>

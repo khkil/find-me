@@ -12,4 +12,7 @@ public interface QuestionMapper {
     //List<?> getQuestionInfo(int inspectionIdx);
     List<String> getPageInfo(@Param("inspection_idx") int inspection_idx, @Param("page") int page);
 
+    void deleteQuestion(int questionIdx);
+    void updateQuestion(@Param("questionIdx") int questionIdx, @Param("question") Question question);
+
 }

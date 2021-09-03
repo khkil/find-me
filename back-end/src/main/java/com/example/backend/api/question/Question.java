@@ -14,6 +14,7 @@ public class Question {
     private int questionPage;
     private int questionNumber;
     private String questionText;
+    private String delYn;
 
     private List<Answer> answers;
 
