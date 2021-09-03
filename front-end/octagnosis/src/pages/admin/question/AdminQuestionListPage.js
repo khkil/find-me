@@ -23,6 +23,8 @@ import {
   TableCell,
   TableRow,
   Typography,
+  Checkbox,
+  FormControlLabel
 } from "@material-ui/core";
 import { DragHandle, Delete, Assignment } from "@material-ui/icons";
 
@@ -37,6 +39,8 @@ import Loader from "../../../components/Loader";
 import { getResultList } from "../../../redux/actions/resultActions";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AddIcon } from "@material-ui/data-grid";
+import { deleteQuestion } from "../../../services/questionService";
+import AlertDialog from "../../../components/common/AlertDialog";
 
 const Divider = styled(MuiDivider)(spacing);
 const useStyles = makeStyles({
@@ -47,17 +51,47 @@ const useStyles = makeStyles({
     cursor: "pointer",
     float: "right"
   },
+  questionList: {
+    paddingTop: 4,
+    paddingBottom: 0,
+  },
   question: {
+    paddingTop: 0,
+    paddingBottom: 0,
     background: "white",
     borderRadius: "40px",
     border: "1px solid #cccc"
   }
 });
-const Question = memo(({ question, index }) => {
+const Question = memo(({ question, questionOrders, setQuestionOrders, index }) => {
   const classes = useStyles();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showRestoreDialog, setShowRestoreDialog] = useState(false);
+
   const { questionIdx, questionNumber, questionText } = question; 
+
+  const onDelete = (questionIdx) => {
+    
+    deleteQuestion(questionIdx)
+    .then(() => {
+      const questions = questionOrders.filter(question => question.questionIdx !== questionIdx);
+      setQuestionOrders(questions);
+      setShowDeleteDialog(false);
+      
+    }).catch(e => {
+      console.error(e);
+      alert("server error");
+    });
+  }
   return (
     <List>
+      <AlertDialog 
+        title={"해당 문항을 삭제 하시겠습니까?"}
+        desc={"삭제 후 복원 가능합니다"}
+        open={showDeleteDialog} 
+        setOpen={setShowDeleteDialog} 
+        callback={() => { onDelete(questionIdx) }}
+      />
         
       <Draggable key={questionIdx} draggableId={`question_${questionIdx}`} index={index}>
         
@@ -72,21 +106,9 @@ const Question = memo(({ question, index }) => {
             <DragHandle/>
             <ListItemText primary={<Typography variant="h6">{questionNumber}. {questionText}</Typography>}/>
             <IconButton edge="end" aria-label="delete" children={<Assignment color="secondary"/>}/>
-            <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>}/>
-            
+            <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>} onClick={() => { setShowDeleteDialog(true) }}/>
           </ListItem>
-          
-          /* <ListItem
-            className={classes.question}
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-          >
-            <DragHandle/>
-            {`${questionNumber}. ${questionText}`}
-            <Delete className={classes.deleteIcon} fontSize={"default"}/>
-          </ListItem> */
-          )}
+        )}
       </Draggable>
     </List>
 
@@ -103,18 +125,14 @@ const QuestionList = memo(({ results, selectedResult}) => {
 
   const onDragEnd = (e) => {
     const { destination, source } = e;
-
     const orderedList = reOrder(questionOrders, source.index, destination.index);
     setQuestionOrders(orderedList);
   }
+
   const reOrder = (list, startIndex, endIndex) => {
     const [removed] = list.splice(startIndex, 1);
-    
-    console.log(minNumber);
     list.splice(endIndex, 0, removed);
-    
-    const result = list.map((obj,index) => ({...obj, questionNumber : minNumber + index }));
-    return result;
+    return list.map((obj,index) => ({...obj, questionNumber : minNumber + index }));
   }
   
   useEffect(() => {
@@ -124,7 +142,12 @@ const QuestionList = memo(({ results, selectedResult}) => {
   return (
     <Grid>
       <Grid justify="space-between" container spacing={24}>
-        <Grid item/>
+        <Grid item>
+        <FormControlLabel
+            control={<Checkbox name="gilad" />}
+            label="삭제 된 문항 포함"
+          />
+        </Grid>
         <Grid item>
           <Fab color="primary" aria-label="add">
             <AddIcon />
@@ -139,7 +162,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
               ref={provided.innerRef}
             >
               {questionOrders.map((question, index) => (
-                <Question question={question} key={index} index={index}/>
+                <Question question={question} questionOrders={questionOrders} setQuestionOrders={setQuestionOrders} key={index} index={index}/>
               ))}
               {provided.placeholder}
             </div>
