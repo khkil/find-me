@@ -8,5 +8,6 @@ import lombok.Getter;
 public class GCSVo {
     private String bucketName;
     private String downloadFileName;
+    private String UploadFileName;
     private String localFileLocation;
 }
