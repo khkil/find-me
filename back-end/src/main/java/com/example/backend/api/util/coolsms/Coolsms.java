@@ -1,6 +1,5 @@
-package com.example.backend.api.auth.coolsms;
+package com.example.backend.api.util.coolsms;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

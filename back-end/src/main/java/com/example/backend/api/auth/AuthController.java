@@ -1,10 +1,9 @@
 package com.example.backend.api.auth;
 
-import com.example.backend.api.auth.coolsms.Coolsms;
-import com.example.backend.api.auth.coolsms.CoolsmsService;
+import com.example.backend.api.util.coolsms.Coolsms;
+import com.example.backend.api.util.coolsms.CoolsmsService;
 import com.example.backend.api.member.Member;
 import com.example.backend.api.member.MemberService;
-import com.example.backend.api.user.User;
 import com.example.backend.common.exception.ApiException;
 import com.example.backend.config.secutiry.JwtTokenProvider;
 import com.example.backend.common.CommonResponse;

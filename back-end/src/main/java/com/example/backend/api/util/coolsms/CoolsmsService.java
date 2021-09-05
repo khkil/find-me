@@ -1,4 +1,4 @@
-package com.example.backend.api.auth.coolsms;
+package com.example.backend.api.util.coolsms;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
