@@ -42,7 +42,6 @@
 		SELECT * FROM question
         WHERE inspection_idx = #{inspectionIdx}
         AND result_idx = #{resultIdx}
-        AND del_yn = "N";
 	</select>
     <select id="getResultsWithQuestions" resultMap="groupDetailMap">
         SELECT inspection_idx, result_idx, result_name FROM result WHERE inspection_idx = #{inspectionIdx}

@@ -26,7 +26,7 @@ import {
   Checkbox,
   FormControlLabel
 } from "@material-ui/core";
-import { DragHandle, Delete, Assignment } from "@material-ui/icons";
+import { DragHandle, Delete, Assignment, RestoreFromTrash } from "@material-ui/icons";
 
 import { spacing } from "@material-ui/system";
 import { useDispatch, useSelector } from "react-redux";
@@ -64,7 +64,7 @@ const useStyles = makeStyles({
     border: "1px solid #cccc"
   }
 });
-const Question = memo(({ question, questionOrders, setQuestionOrders, index }) => {
+const Question = memo(({ question, questionOrders, setQuestionOrders, index, delYn }) => {
   const classes = useStyles();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
@@ -75,7 +75,8 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index }) =
     
     deleteQuestion(questionIdx)
     .then(() => {
-      const questions = questionOrders.filter(question => question.questionIdx !== questionIdx);
+      //const questions = questionOrders.filter(question => question.questionIdx !== questionIdx);
+      const questions = questionOrders.map(question => question.questionIdx === questionIdx ? {...question, delYn : "Y" } : question);
       setQuestionOrders(questions);
       setShowDeleteDialog(false);
       
@@ -93,6 +94,12 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index }) =
         setOpen={setShowDeleteDialog} 
         callback={() => { onDelete(questionIdx) }}
       />
+     {/*  <AlertDialog 
+        title={"해당 문항을 복원 하시겠습니까?"}
+        open={setShowRestoreDialog} 
+        setOpen={showRestoreDialog} 
+        callback={() => { onDelete(questionIdx) }}
+      /> */}
         
       <Draggable key={questionIdx} draggableId={`question_${questionIdx}`} index={index}>
         
@@ -105,9 +112,18 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index }) =
             {...provided.dragHandleProps}
           >
             <DragHandle/>
-            <ListItemText primary={<Typography variant="h6">{questionNumber}. {questionText}</Typography>}/>
-            <IconButton edge="end" aria-label="delete" children={<Assignment color="secondary"/>}/>
-            <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>} onClick={() => { setShowDeleteDialog(true) }}/>
+            <ListItemText primary={<Typography variant="h6">{questionNumber}. {questionText} {delYn}</Typography>}/>
+            {"N" === delYn ? 
+              <>
+                <IconButton edge="end" aria-label="delete" children={<Assignment color="secondary"/>}/>
+                <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>} onClick={() => { setShowDeleteDialog(true) }}/> 
+              </> : 
+              <>
+                <IconButton edge="end" aria-label="delete" children={<RestoreFromTrash color="secondary"/>}/>
+              </>
+
+            }
+            
           </ListItem>
         )}
       </Draggable>
@@ -119,10 +135,17 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index }) =
 )
 
 const QuestionList = memo(({ results, selectedResult}) => {
-  //https://codesandbox.io/s/zqwz5n5p9x?file=/src/index.js:1575-1582
+
   const initialQuestions = useMemo(() => results[selectedResult] && results[selectedResult].questionList ? results[selectedResult].questionList.sort((a, b) => a.questionIdx - b.questionIdx) : []);
   const minNumber = useMemo(() => Math.min(...initialQuestions.map(({ questionNumber }) => Number(questionNumber))));
+  
   const [questionOrders, setQuestionOrders] = useState(initialQuestions);
+  const [deleted, setDeleted] = useState(false);
+  
+  const handleDeleted = (e) => {
+    const { checked } = e.target;
+    setDeleted(checked);
+  }
 
   const onDragEnd = (e) => {
     const { destination, source } = e;
@@ -135,14 +158,13 @@ const QuestionList = memo(({ results, selectedResult}) => {
     list.splice(endIndex, 0, removed);
     return list.map((obj,index) => ({...obj, questionNumber : minNumber + index }));
   }
-  
+
   useEffect(() => {
     setQuestionOrders(initialQuestions);
+    setDeleted(false);
   }, [selectedResult]);
 
-
-
-
+  
 
   const [file, setFile] = useState({});
 
@@ -153,8 +175,10 @@ const QuestionList = memo(({ results, selectedResult}) => {
   const upload = (e) => {
     e.preventDefault();
     fileUpload(file)
-    .then(response => {
-      console.log(response);
+    .then(({ success, data }) => {
+      if(success){
+        //callback
+      }
     });
   }
 
@@ -163,7 +187,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
       <Grid justify="space-between" container spacing={24}>
         <Grid item>
         <FormControlLabel
-            control={<Checkbox name="gilad" />}
+            control={<Checkbox name="gilad" checked={deleted} onChange={handleDeleted}/>}
             label="삭제 된 문항 포함"
           />
           <form onSubmit={upload}>
@@ -185,8 +209,8 @@ const QuestionList = memo(({ results, selectedResult}) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {questionOrders.map((question, index) => (
-                <Question question={question} questionOrders={questionOrders} setQuestionOrders={setQuestionOrders} key={index} index={index}/>
+              {questionOrders.filter(question => deleted ? question : question.delYn === "N").map((question, index) => (
+                <Question question={question} questionOrders={questionOrders} setQuestionOrders={setQuestionOrders} key={index} index={index} delYn={question.delYn}/>
               ))}
               {provided.placeholder}
             </div>
