@@ -112,7 +112,6 @@ export function validateSms(number) {
 }
 
 export function findId(credentials, type){
-  console.log(credentials);
   return new Promise((resolve, reject) => {
     axios
       .get(`/api/auth/find-id/${type}`, {

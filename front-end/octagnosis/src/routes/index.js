@@ -182,7 +182,7 @@ const adminQuestionRoute = {
   children: [
     {
       path: "/admin/questions/octagnosis",
-      name: "옥타그노시스",
+      name: "유료 검사",
       component: AdminQuestionListPage,
     },
     {

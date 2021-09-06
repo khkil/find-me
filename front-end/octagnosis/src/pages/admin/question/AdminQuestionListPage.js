@@ -41,6 +41,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AddIcon } from "@material-ui/data-grid";
 import { deleteQuestion } from "../../../services/questionService";
 import AlertDialog from "../../../components/common/AlertDialog";
+import { fileUpload } from "../../../services/fileService";
 
 const Divider = styled(MuiDivider)(spacing);
 const useStyles = makeStyles({
@@ -139,6 +140,24 @@ const QuestionList = memo(({ results, selectedResult}) => {
     setQuestionOrders(initialQuestions);
   }, [selectedResult]);
 
+
+
+
+
+  const [file, setFile] = useState({});
+
+  const fileChange  = (e) => {
+    const { files } = e.target;
+    setFile(files[0]);
+  }
+  const upload = (e) => {
+    e.preventDefault();
+    fileUpload(file)
+    .then(response => {
+      console.log(response);
+    });
+  }
+
   return (
     <Grid>
       <Grid justify="space-between" container spacing={24}>
@@ -147,6 +166,11 @@ const QuestionList = memo(({ results, selectedResult}) => {
             control={<Checkbox name="gilad" />}
             label="삭제 된 문항 포함"
           />
+          <form onSubmit={upload}>
+
+            <input type="file" name="file" onChange={fileChange}/>
+            <input type="submit" name="업로드"/>
+          </form>
         </Grid>
         <Grid item>
           <Fab color="primary" aria-label="add">
