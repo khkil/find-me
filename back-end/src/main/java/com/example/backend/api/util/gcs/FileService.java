@@ -17,27 +17,23 @@ import java.nio.file.Paths;
 public class FileService {
 
     @Autowired
-    Storage storage;
-
-    @Autowired
     GoogleCloudStorageBean googleCloudStorageBean;
 
-    public Blob downloadFileFromGCS(DownloadReq downloadReq) throws IOException {
-        Blob blob = storage.get(downloadReq.getBucketName(), downloadReq.getDownloadFileName());
-        blob.downloadTo(Paths.get(downloadReq.getLocalFileLocation()));
-        return blob;
+    public File downloadFileFromGCS(DownloadReq downloadReq) {
+
+        Blob blob = googleCloudStorageBean.downloadInfo(downloadReq);
+        String fileName = downloadReq.getDownloadFileName();
+        String fileUrl = blob.getMediaLink();
+        return new File(fileName, fileUrl);
     }
 
     public File uploadFileFromGCS(MultipartFile multipartFile){
 
-        BlobInfo blobInfo = googleCloudStorageBean.upload(multipartFile);
-        String filePath = blobInfo.getMediaLink();
+        BlobInfo blobInfo = googleCloudStorageBean.uploadInfo(multipartFile);
         String fileName = multipartFile.getName();
+        String fileUrl = blobInfo.getMediaLink();
 
-        return new File(fileName, filePath);
-
-
-
+        return new File(fileName, fileUrl);
     }
 
 
