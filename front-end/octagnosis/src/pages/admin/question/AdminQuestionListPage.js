@@ -39,9 +39,10 @@ import Loader from "../../../components/Loader";
 import { getResultList } from "../../../redux/actions/resultActions";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AddIcon } from "@material-ui/data-grid";
-import { deleteQuestion } from "../../../services/questionService";
+import { deleteQuestion, updateQuestion } from "../../../services/questionService";
 import AlertDialog from "../../../components/common/AlertDialog";
 import { fileUpload } from "../../../services/fileService";
+import AdminQuestionDetail from "./AdminQuestionDetail";
 
 const Divider = styled(MuiDivider)(spacing);
 const useStyles = makeStyles({
@@ -64,7 +65,7 @@ const useStyles = makeStyles({
     border: "1px solid #cccc"
   }
 });
-const Question = memo(({ question, questionOrders, setQuestionOrders, index, delYn }) => {
+const Question = memo(({ question, questionOrders, setQuestionOrders, index }) => {
   const classes = useStyles();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
@@ -85,6 +86,20 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index, del
       alert("server error");
     });
   }
+
+  const onRestore = (questionIdx) => {
+    const param = { delYn : "N"};
+    updateQuestion(questionIdx, param)
+    .then(() => {
+      const questions = questionOrders.map(question => question.questionIdx === questionIdx ? {...question, ...param } : question);
+      setQuestionOrders(questions);
+      setShowRestoreDialog(false);
+      
+    }).catch(e => {
+      console.error(e);
+      alert("server error");
+    });
+  }
   return (
     <List>
       <AlertDialog 
@@ -94,12 +109,12 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index, del
         setOpen={setShowDeleteDialog} 
         callback={() => { onDelete(questionIdx) }}
       />
-     {/*  <AlertDialog 
+      <AlertDialog 
         title={"해당 문항을 복원 하시겠습니까?"}
-        open={setShowRestoreDialog} 
-        setOpen={showRestoreDialog} 
-        callback={() => { onDelete(questionIdx) }}
-      /> */}
+        open={showRestoreDialog} 
+        setOpen={setShowRestoreDialog} 
+        callback={() => { onRestore(questionIdx) }}
+      />
         
       <Draggable key={questionIdx} draggableId={`question_${questionIdx}`} index={index}>
         
@@ -112,14 +127,14 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index, del
             {...provided.dragHandleProps}
           >
             <DragHandle/>
-            <ListItemText primary={<Typography variant="h6">{questionNumber}. {questionText} {delYn}</Typography>}/>
-            {"N" === delYn ? 
+            <ListItemText primary={<Typography variant="h6">{questionNumber}. {questionText} </Typography>}/>
+            {"N" === question.delYn ? 
               <>
                 <IconButton edge="end" aria-label="delete" children={<Assignment color="secondary"/>}/>
                 <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>} onClick={() => { setShowDeleteDialog(true) }}/> 
               </> : 
               <>
-                <IconButton edge="end" aria-label="delete" children={<RestoreFromTrash color="secondary"/>}/>
+                <IconButton edge="end" aria-label="delete" children={<RestoreFromTrash color="secondary" onClick={() => { setShowRestoreDialog(true) }}/>}/>
               </>
 
             }
@@ -141,6 +156,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
   
   const [questionOrders, setQuestionOrders] = useState(initialQuestions);
   const [deleted, setDeleted] = useState(false);
+  const selectedQuestionState = useState(0);
   
   const handleDeleted = (e) => {
     const { checked } = e.target;
@@ -183,6 +199,8 @@ const QuestionList = memo(({ results, selectedResult}) => {
   }
 
   return (
+    <>
+    <AdminQuestionDetail/>
     <Grid>
       <Grid justify="space-between" container spacing={24}>
         <Grid item>
@@ -210,7 +228,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
               ref={provided.innerRef}
             >
               {questionOrders.filter(question => deleted ? question : question.delYn === "N").map((question, index) => (
-                <Question question={question} questionOrders={questionOrders} setQuestionOrders={setQuestionOrders} key={index} index={index} delYn={question.delYn}/>
+                <Question question={question} questionOrders={questionOrders} setQuestionOrders={setQuestionOrders} key={index} index={index} selectedQuestionState={selectedQuestionState}/>
               ))}
               {provided.placeholder}
             </div>
@@ -218,6 +236,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
         </Droppable>
       </DragDropContext>
     </Grid>
+    </>
   )
 })
 const ResultList = ({ selectedInspection }) => {

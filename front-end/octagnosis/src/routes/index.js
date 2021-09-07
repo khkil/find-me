@@ -48,7 +48,6 @@ const AdminMemberDetail = async(() => import("../pages/admin/member/AdminMemberD
 
 //admin > question
 const AdminQuestionListPage = async(() => import("../pages/admin/question/AdminQuestionListPage"));
-const AdminQuestionDetailPage = async(() => import("../pages/admin/question/AdminQuestionDetailPage"));
 
 //admin > group
 const AdminGroupList = async(() => import("../pages/admin/group/AdminGroupList"))
