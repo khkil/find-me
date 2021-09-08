@@ -1,4 +1,4 @@
-package com.example.backend.common.beans;
+package com.example.backend.util;
 
 import com.example.backend.api.util.gcs.model.DownloadReq;
 import com.google.cloud.storage.Blob;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 @Component
-public class GoogleCloudStorageBean {
+public class GoogleCloudStorage {
 
     private final String BUCKET_NAME = "careercompany";
 
