@@ -15,7 +15,7 @@ public class InspectionController {
     InspectionServcice inspectionServcice;
 
     @GetMapping
-    public ResponseEntity<List> getInspectionList(Inspection inspection) throws  Exception{
+    public ResponseEntity<List> getInspectionList(Inspection inspection){
 
         return new ResponseEntity<>(inspectionServcice.getInspectionList(inspection), HttpStatus.OK);
     }

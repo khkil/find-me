@@ -345,6 +345,9 @@ const DataListPage = ({ history, location }) => {
           <Tab label="사용 중 유저" />
           <Tab label="삭제된 유저"/>
         </Tabs>
+        <Button color="primary" variant="contained" className={classes.refreshButton} >
+          통계 엑셀 다운
+        </Button>
       </Paper>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
