@@ -3,6 +3,7 @@ package com.example.backend.api.result.statistics;
 import com.example.backend.api.question.Question;
 import com.example.backend.api.result.Result;
 import com.example.backend.util.GroundUtil;
+import com.example.backend.util.JSONUtil;
 import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,34 +38,60 @@ public class StatisticsService {
             if(!statisticsResult.has(key)){
                 JSONObject obj = new JSONObject();
                 JSONArray results = new JSONArray();
-                List<Integer> grades = new ArrayList<>();
                 results.put(result);
-                grades.add(statistics.getResultScore());
 
                 obj.put("userName", statistics.getUserName());
+                obj.put("groupName", statistics.getGroupName());
+                obj.put("userGrade", statistics.getUserGrade());
+                obj.put("userEtc", statistics.getUserEtc());
                 obj.put("results", results);
-                obj.put("grades", grades);
                 statisticsResult.put(key, obj);
 
 
             }else{
                 JSONObject obj = statisticsResult.getJSONObject(key);
                 obj.getJSONArray("results").put(result);
-                obj.getJSONArray("grades").put(statistics.getResultScore());
 
             }
 
         }
 
         Iterator<String> iter = statisticsResult.keys();
+        int lowestGrade = 3;
         while(iter.hasNext()){
             String key = iter.next();
             JSONObject value = statisticsResult.getJSONObject(key);
-            JSONArray grades = value.getJSONArray("grades");
-            List<Integer> grades1 = new Gson().fromJson(grades.toString(), List.class);
+            JSONArray results = value.getJSONArray("results");
 
-            grades1.sort(Comparator.naturalOrder());
-            System.out.println(grades1);
+            JSONArray grades = JSONUtil.SortJsonArray(results, "score");
+            //1,2,3위 순위 구하기
+
+            /*for(int i=0; i<results.length(); i++){
+                JSONObject result = results.getJSONObject(i);
+                if(grades.length() < lowestGrade){
+                    grades.put(result);
+                }else{
+
+                }
+
+
+                int resultScore = result.getInt("score");
+
+                System.out.println(grades);
+            }*/
+
+
+
+            /*System.out.println("results");
+            System.out.println(results);
+
+            System.out.println("grade");
+            System.out.println(grades);
+            System.out.println();*/
+
+            System.out.println("grades" + grades);
+            System.out.println("results" +  results);
+            value.put("grades", grades);
         }
         return statisticsResult;
     }

@@ -16,7 +16,7 @@ import org.json.JSONObject;
 public class ExcelGenerator {
 
     public static ByteArrayInputStream customersToExcel(JSONObject data) throws IOException {
-        String[] userColumns = {"이름", "학년", "반"};
+        String[] userColumns = {"이름", "기관", "학년", "반"};
 
         Workbook workbook = new XSSFWorkbook();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -74,13 +74,16 @@ public class ExcelGenerator {
             Row row = sheet.createRow(rowIdx++);
 
             Cell cell = row.createCell(cellIdx++);
-            cell.setCellValue(value.getString("userName"));
+            cell.setCellValue(value.optString("userName"));
 
             cell = row.createCell(cellIdx++);
-            cell.setCellValue("학년");
+            cell.setCellValue(value.optString("groupName"));
 
             cell = row.createCell(cellIdx++);
-            cell.setCellValue("반");
+            cell.setCellValue(value.optString("userGrade"));
+
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue(value.optString("userEtc"));
 
             JSONArray results = value.getJSONArray("results");
 
@@ -90,6 +93,23 @@ public class ExcelGenerator {
                 cell.setCellValue(result.getInt("score"));
             }
 
+            JSONArray grades = value.getJSONArray("grades");
+
+            cellIdx = 19;
+
+            for(int i : gradeColumns) {
+                int currentIndex = i - 1;
+                JSONObject grade = grades.optJSONObject(currentIndex);
+                cell = row.createCell(cellIdx++);
+
+                //System.out.println("grades : " + grade);
+                if(grade != null){
+                    cell.setCellValue(grade.optString("name"));
+                }
+
+
+
+            }
 
         }
 
