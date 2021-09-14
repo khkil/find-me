@@ -16,9 +16,10 @@ public class AdminQuestionController {
     @Autowired
     QuestionService questionService;
 
-    @PutMapping
-    public ResponseEntity updateQuestions(@RequestBody List<Question> questions){
-        return ResponseEntity.ok(questions);
+    @GetMapping("/{questionIdx}")
+    public ResponseEntity updateQuestions(@PathVariable int questionIdx){
+        Question question = questionService.getQuestionDetail(questionIdx);
+        return ResponseEntity.ok(question);
     }
 
     @DeleteMapping("/{questionIdx}")

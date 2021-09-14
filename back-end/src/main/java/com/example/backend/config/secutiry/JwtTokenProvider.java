@@ -1,21 +1,16 @@
 package com.example.backend.config.secutiry;
 
 
-import com.example.backend.auth.model.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +18,7 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    private long tokenValidMilisecond = (1000L * 60 * 60) * 4; // 1 * 4시간만 토큰 유효
+    private long tokenValidMilliseconds = (1000L * 60 * 60) * 24; // 1 * 24시간만 토큰 유효
     private static final String SECRET_KEY = "humanx_sercret_key";
     public static final String AUTHORIZATION = "Authorization";
     private static Clock clock = DefaultClock.INSTANCE;
@@ -31,7 +26,7 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     public String createToken(String userPk, List<String> roles) {
-        return createToken(userPk, roles, tokenValidMilisecond);
+        return createToken(userPk, roles, tokenValidMilliseconds);
     };
 
     public String createToken(String userPk, List<String> roles, long expiredTime) {

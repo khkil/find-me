@@ -19,6 +19,10 @@ public class QuestionService {
     public List<?> getQuestionInfo(int inspectionIdx){
         return questionMapper.getQuestionList(inspectionIdx);
     }
+
+    public  Question getQuestionDetail(int questionIdx){
+        return questionMapper.getQuestionDetail(questionIdx);
+    }
     public List<String> getPageInfo(int inspection_idx, int page){
         return questionMapper.getPageInfo(inspection_idx, page);
     }

@@ -9,9 +9,8 @@ import java.util.List;
 public interface QuestionMapper {
 
     List<Question> getQuestionList(int idx);
-    //List<?> getQuestionInfo(int inspectionIdx);
     List<String> getPageInfo(@Param("inspection_idx") int inspection_idx, @Param("page") int page);
-
+    Question getQuestionDetail(int questionIdx);
     void deleteQuestion(int questionIdx);
     void updateQuestion(@Param("questionIdx") int questionIdx, @Param("question") Question question);
 
