@@ -15,8 +15,6 @@ const AuthGuard = ({ children, path }) => {
   const token = localStorage.getItem("token");
   
   useEffect(() => {
-    console.log("auth guard");
-    console.log("isAdminPage", isAdminPage);
     if(token){
       dispatch(getAuthInfo());
     }

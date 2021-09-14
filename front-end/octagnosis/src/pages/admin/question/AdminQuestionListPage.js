@@ -65,7 +65,7 @@ const useStyles = makeStyles({
     border: "1px solid #cccc"
   }
 });
-const Question = memo(({ question, questionOrders, setQuestionOrders, index }) => {
+const Question = memo(({ question, questionOrders, setQuestionOrders, setSelectedQuestionIdx, index }) => {
   const classes = useStyles();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
@@ -130,7 +130,7 @@ const Question = memo(({ question, questionOrders, setQuestionOrders, index }) =
             <ListItemText primary={<Typography variant="h6">{questionNumber}. {questionText} </Typography>}/>
             {"N" === question.delYn ? 
               <>
-                <IconButton edge="end" aria-label="delete" children={<Assignment color="secondary"/>}/>
+                <IconButton edge="end" aria-label="delete" children={<Assignment color="secondary"/>} onClick={() => { setSelectedQuestionIdx(questionIdx) }}/>
                 <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>} onClick={() => { setShowDeleteDialog(true) }}/> 
               </> : 
               <>
@@ -156,7 +156,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
   
   const [questionOrders, setQuestionOrders] = useState(initialQuestions);
   const [deleted, setDeleted] = useState(false);
-  const selectedQuestionState = useState(0);
+  const [selectedQuestionIdx, setSelectedQuestionIdx] = useState(0);
   
   const handleDeleted = (e) => {
     const { checked } = e.target;
@@ -200,7 +200,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
 
   return (
     <>
-    <AdminQuestionDetail/>
+    <AdminQuestionDetail selectedQuestionIdx={selectedQuestionIdx} setSelectedQuestionIdx={setSelectedQuestionIdx}/>
     <Grid>
       <Grid justify="space-between" container spacing={24}>
         <Grid item>
@@ -228,7 +228,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
               ref={provided.innerRef}
             >
               {questionOrders.filter(question => deleted ? question : question.delYn === "N").map((question, index) => (
-                <Question question={question} questionOrders={questionOrders} setQuestionOrders={setQuestionOrders} key={index} index={index} selectedQuestionState={selectedQuestionState}/>
+                <Question question={question} questionOrders={questionOrders} setQuestionOrders={setQuestionOrders} setSelectedQuestionIdx={setSelectedQuestionIdx} key={index} index={index} />
               ))}
               {provided.placeholder}
             </div>
