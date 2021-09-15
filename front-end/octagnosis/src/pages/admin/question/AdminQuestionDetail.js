@@ -19,6 +19,19 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  answer: {
+    maxWidth: "200px",
+
+  },
+  dropzone: {
+    minHeight: "200px"
+  },
+  preview: {
+    padding: "0px",
+    margin: "0 auto",
+    marginTop: "15px",
+    
+  }
 }));
 
 const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => {
@@ -69,10 +82,17 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
                   <Typography variant="h6" gutterBottom>
                     답변
                   </Typography>
-                  <Grid container spacing={1}>
+                  <Grid container spacing={2} xs={'auto'}>
                   {question.answers.map((answer, index) => (
-                    <Grid item xs>
-                      <DropzoneArea filesLimit={1} dropzoneText={"tge"} maxWidth={"100"}/>
+                    <Grid item xs spacing={2} className={classes.answer}>
+                      <DropzoneArea 
+                        filesLimit={1}
+                        dropzoneText={""} 
+                        dropzoneClass={classes.dropzone}
+                        previewGridClasses={{
+                          item: classes.preview,
+                      }}
+                      />
                       <TextField
                         label="텍스트"
                         id="outlined-margin-dense"

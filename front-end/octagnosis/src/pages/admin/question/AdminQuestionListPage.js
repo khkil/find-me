@@ -202,7 +202,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
     <>
     <AdminQuestionDetail selectedQuestionIdx={selectedQuestionIdx} setSelectedQuestionIdx={setSelectedQuestionIdx}/>
     <Grid>
-      <Grid justify="space-between" container spacing={24}>
+      <Grid justify="space-between" container spacing={10}>
         <Grid item>
         <FormControlLabel
             control={<Checkbox name="gilad" checked={deleted} onChange={handleDeleted}/>}
