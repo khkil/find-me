@@ -38,16 +38,37 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
 
   const classes = useStyles();
   const open = useMemo(() => selectedQuestionIdx > 0);
+
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState({});
+  const [updatedQuestion, setUpdatedQuestion] = useState({});
 
+  const changeAnswers = (answerIdx, e) => {
 
-  const handleClose = () => {
+    const { name, value } = e.target;
+    const inintialAnswers = updatedQuestion.answers ? updatedQuestion.answers : [];
+    const answer = inintialAnswers.find(answer => answer.answerIdx === answerIdx);
+     
+    const answers = Boolean(answer) ? [...inintialAnswers.filter(answer => answer.answerIdx !== answerIdx), { ...answer, [name]: value} ] : [...inintialAnswers, { answerIdx: answerIdx, [name]: value }];
+
+      setUpdatedQuestion({
+        ...updatedQuestion,
+        answers: answers
+      })
+  }
+
+  useEffect(() => { 
+    
+  }, [updatedQuestion])
+
+  const handleClose = () => {3
     setSelectedQuestionIdx(0)
   };
 
   useEffect(() => {
+    console.log("selectedQuestionIdx", selectedQuestionIdx);
     if(open){
+      setUpdatedQuestion({ questionIdx: selectedQuestionIdx });
       setLoading(true);
       getQuestionDetail(selectedQuestionIdx)
       .then(response => {
@@ -83,30 +104,34 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
                     답변
                   </Typography>
                   <Grid container spacing={2} xs={'auto'}>
-                  {question.answers.map((answer, index) => (
-                    <Grid item xs spacing={2} className={classes.answer}>
-                      <DropzoneArea 
+                  {question.answers.map(({ answerIdx, answerText, answerScore }, index) => (
+                    <Grid key={answerIdx} item xs spacing={2} className={classes.answer}>
+                      {/* <DropzoneArea 
                         filesLimit={1}
                         dropzoneText={""} 
                         dropzoneClass={classes.dropzone}
+                        style={{padding:"0px"}}
                         previewGridClasses={{
                           item: classes.preview,
                       }}
-                      />
+                      /> */}
                       <TextField
                         label="텍스트"
-                        id="outlined-margin-dense"
-                        value="Default Value"
+                        name="answerText"
+                        defaultValue={answerText}
                         className={classes.textField}
+                        onChange={(e) => changeAnswers(answerIdx, e)}
                         helperText="Some important text"
                         margin="dense"
                         variant="outlined"
                       />
                       <TextField
                         label="배점"
-                        id="outlined-margin-dense"
-                        defaultValue="Default Value"
+                        type="number"
+                        name="answerScore"
+                        defaultValue={answerScore}
                         className={classes.textField}
+                        onChange={(e) => changeAnswers(answerIdx, e)}
                         helperText="Some important text"
                         margin="dense"
                         variant="outlined"
@@ -118,6 +143,7 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
                 <Box display="flex" justifyContent="center" m={1} p={1}>
                   <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
                 </Box>
+                <Box>{JSON.stringify(updatedQuestion)}</Box>
               </div>
             }
           

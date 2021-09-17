@@ -157,6 +157,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
   const [questionOrders, setQuestionOrders] = useState(initialQuestions);
   const [deleted, setDeleted] = useState(false);
   const [selectedQuestionIdx, setSelectedQuestionIdx] = useState(0);
+  const [updatedQuestion, setupdatedQuestion] = useState({});
   
   const handleDeleted = (e) => {
     const { checked } = e.target;
@@ -200,7 +201,12 @@ const QuestionList = memo(({ results, selectedResult}) => {
 
   return (
     <>
-    <AdminQuestionDetail selectedQuestionIdx={selectedQuestionIdx} setSelectedQuestionIdx={setSelectedQuestionIdx}/>
+    <AdminQuestionDetail 
+      selectedQuestionIdx={selectedQuestionIdx} 
+      setSelectedQuestionIdx={setSelectedQuestionIdx}
+      updatedQuestion={updatedQuestion}
+      setupdatedQuestion={setupdatedQuestion}
+    />
     <Grid>
       <Grid justify="space-between" container spacing={10}>
         <Grid item>
