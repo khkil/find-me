@@ -7,7 +7,7 @@ public class Answer {
 
     private int answerIdx;
     private int questionIdx;
-    private int answerText;
+    private String answerText;
     private int answerScore;
 
 }

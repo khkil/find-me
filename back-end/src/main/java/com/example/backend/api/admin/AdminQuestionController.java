@@ -1,5 +1,6 @@
 package com.example.backend.api.admin;
 
+import com.example.backend.api.answer.Answer;
 import com.example.backend.api.question.Question;
 import com.example.backend.api.question.QuestionService;
 import com.example.backend.common.CommonResponse;
@@ -31,6 +32,10 @@ public class AdminQuestionController {
     @PutMapping("/{questionIdx}")
     public ResponseEntity updateQuestion(@PathVariable int questionIdx, @RequestBody Question question){
         questionService.updateQuestion(questionIdx, question);
+        List<Answer> answers = question.getAnswers();
+        if(answers != null && answers.size() > 0){
+            questionService.updateAnswers(question.getAnswers());
+        }
         return ResponseEntity.ok(CommonResponse.successResult());
     }
 }

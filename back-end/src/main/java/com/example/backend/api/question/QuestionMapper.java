@@ -1,5 +1,6 @@
 package com.example.backend.api.question;
 
+import com.example.backend.api.answer.Answer;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +14,6 @@ public interface QuestionMapper {
     Question getQuestionDetail(int questionIdx);
     void deleteQuestion(int questionIdx);
     void updateQuestion(@Param("questionIdx") int questionIdx, @Param("question") Question question);
+    void updateAnswers(List<Answer> answers);
 
 }

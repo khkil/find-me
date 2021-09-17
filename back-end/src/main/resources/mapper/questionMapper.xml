@@ -33,12 +33,24 @@
         UPDATE question SET del_yn = 'Y' WHERE question_idx = #{questionIdx}
     </update>
     <update id="updateQuestion">
-        UPDATE question
-        <set>
-            <if test="question.questionText != null and question.questionText != ''"> question_text = #{question.questionText},</if>
-            <if test="question.delYn != null and question.delYn != ''"> del_yn = #{question.delYn},</if>
-        </set>
+        UPDATE question SET
+            question_text = IFNULL(#{question.questionText}, question_text)
+            ,del_yn = IFNULL(#{question.delYn}, del_yn)
         WHERE question_idx = #{questionIdx};
+    </update>
+
+    <update id="updateAnswers" >
+
+        <foreach collection="answers" item="answer" index="index">
+
+            UPDATE answer SET
+                answer_text = IFNULL(#{answer.answerText}, answer_text)
+                ,answer_score = IFNULL(#{answer.answerScore}, answer_score)
+            WHERE
+                answer_idx = #{answer.answerIdx};
+
+        </foreach>
+
     </update>
 
 </mapper>
