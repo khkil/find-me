@@ -1,6 +1,7 @@
 package com.example.backend.api.question;
 
 import com.example.backend.api.answer.Answer;
+import com.example.backend.util.enumerator.QuestionType;
 import lombok.Data;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class Question {
     private int questionNumber;
     private String questionText;
     private String delYn;
+    private QuestionType questionType;
 
     private List<Answer> answers;
 

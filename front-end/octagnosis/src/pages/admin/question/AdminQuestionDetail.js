@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Typography, RadioGroup, Radio, FormControlLabel, Divider } from '@material-ui/core';
 import { DropzoneArea, DropzoneDialog } from "material-ui-dropzone";
 import { getQuestionDetail } from '../../../services/questionService';
 import Loader from '../../../components/Loader';
@@ -41,6 +41,49 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const Answer = memo(({ answer, changeAnswer }) => {
+  const classes = useStyles();
+  const { answerIdx, answerText, answerScore } = answer;
+  return (
+    <Grid  key={answerIdx} item xs className={classes.answer}>
+      <DropzoneArea 
+        filesLimit={1}
+        dropzoneText={""} 
+        style={{padding:"0px"}}
+        getPreviewIcon={(file) => {
+          if (file.file.type.split('/')[0] === 'image')
+            return (
+              <img role="presentation" src="https://storage.googleapis.com/careercompany/1.jpg"/>
+            );
+        }}
+        previewGridClasses={{
+          item: classes.preview,
+        }}
+      />
+      <TextField
+        label="답변명"
+        name="answerText"
+        defaultValue={answerText}
+        className={classes.textField}
+        onChange={(e) => changeAnswer(answerIdx, e)}
+        margin="dense"
+        variant="outlined"
+      />
+      <TextField
+        label="배점"
+        type="number"
+        name="answerScore"
+        defaultValue={answerScore}
+        className={classes.textField}
+        onChange={(e) => changeAnswer(answerIdx, e)}
+        margin="dense"
+        variant="outlined"
+      />
+    </Grid>
+  )
+
+});
+
 const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => {
 
   const classes = useStyles();
@@ -48,38 +91,50 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
 
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState({});
-  const [updatedQuestion, setUpdatedQuestion] = useState({});
 
-  const changeAnswers = (answerIdx, e) => {
+  const changeQuestion = (e) => {
+    const { name, value } = e.target;
+    setQuestion({
+      ...question,
+      [name]: value
+    })
+  }
+
+  const changeAnswer = (answerIdx, e) => {
 
     const { name, value } = e.target;
-    const inintialAnswers = updatedQuestion.answers ? updatedQuestion.answers : [];
-    const answer = inintialAnswers.find(answer => answer.answerIdx === answerIdx);
-     
-    const answers = Boolean(answer) ? [...inintialAnswers.filter(answer => answer.answerIdx !== answerIdx), { ...answer, [name]: value} ] : [...inintialAnswers, { answerIdx: answerIdx, [name]: value }];
+    let { answers } = question;
+    
+    const index = answers.map(answer => answer.answerIdx).indexOf(answerIdx);
+    answers.splice(index, 1, { ...answers[index], [name] : value });
 
-      setUpdatedQuestion({
-        ...updatedQuestion,
-        answers: answers
-      })
+    setQuestion({
+      ...question,
+      answers: answers
+    });
   }
 
   useEffect(() => { 
     
-  }, [updatedQuestion])
+  }, [question])
 
-  const onClose = () => {3
+  const onClose = () => {
     setSelectedQuestionIdx(0)
   };
 
   useEffect(() => {
     console.log("selectedQuestionIdx", selectedQuestionIdx);
     if(open){
-      setUpdatedQuestion({ questionIdx: selectedQuestionIdx });
+      setQuestion({ questionIdx: selectedQuestionIdx });
       setLoading(true);
       getQuestionDetail(selectedQuestionIdx)
       .then(response => {
         setQuestion(response);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error(error);
+        alert("server error");
         setLoading(false);
       })
     }
@@ -87,73 +142,53 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
   }, [selectedQuestionIdx])
   if(!question.questionIdx) return null;
   return (
-    <div>
-      <Dialog open={open} maxWidth={"xl"} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-        {loading ? 
-          <Loader/> : 
-          <>
-            <DialogTitle >
-              <Typography variant="h6">{question.questionText}</Typography>
-              <IconButton aria-label="close" className={classes.closeButton} onClick={onClose} children={<CloseIcon />} />
-            </DialogTitle>
-            <DialogContent dividers>
-              <Box>
-                
-              </Box>
-              <Box>
-                <DialogContentText id="alert-dialog-description">
-                  <Typography variant="h6" gutterBottom>
-                    답변
-                  </Typography>
-                  <Grid container spacing={2} xs={'auto'}>
-                  {question.answers.map(({ answerIdx, answerText, answerScore }, index) => (
-                    <Grid key={answerIdx} item xs spacing={2} className={classes.answer}>
+    <Dialog open={open} maxWidth={"xl"} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      {!loading &&
+        <>
+          <DialogTitle >
+            <Typography variant="h4" component="div">{`${question.questionNumber}. ${question.questionText}`}</Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={onClose} children={<CloseIcon />} />
+          </DialogTitle>
+          <DialogContent dividers>
+            
 
-                      <DropzoneArea 
-                        filesLimit={1}
-                        dropzoneText={""} 
-                        dropzoneClass={classes.dropzone}
-                        style={{padding:"0px"}}
-                        previewGridClasses={{
-                          item: classes.preview,
-                      }}
-                      />
-                      <TextField
-                        label="텍스트"
-                        name="answerText"
-                        defaultValue={answerText}
-                        className={classes.textField}
-                        onChange={(e) => changeAnswers(answerIdx, e)}
-                        helperText="Some important text"
-                        margin="dense"
-                        variant="outlined"
-                      />
-                      <TextField
-                        label="배점"
-                        type="number"
-                        name="answerScore"
-                        defaultValue={answerScore}
-                        className={classes.textField}
-                        onChange={(e) => changeAnswers(answerIdx, e)}
-                        helperText="Some important text"
-                        margin="dense"
-                        variant="outlined"
-                      />
-                    </Grid>
-                  ))}
-                  </Grid>
-                </DialogContentText>
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" variant="contained">수정</Button>
-            </DialogActions>
-          </>
-        
-        }
-        
-      </Dialog>
-    </div>
+            <Box mb={6}>
+              <Typography variant="h6" gutterBottom component="div">- 문항</Typography>
+
+              <RadioGroup row aria-label="position" name="questionType" defaultValue={question.questionType === "TEXT" ? "0" : "1"} onChange={changeQuestion}>
+                <FormControlLabel value="0" control={<Radio color="primary" />} label="텍스트형" />
+                <FormControlLabel value="1" control={<Radio color="primary" />} label="이미지형" />
+              </RadioGroup>
+              <TextField
+                fullWidth
+                label="문항명"
+                name="questionText"
+                defaultValue={question.questionText}
+                margin="dense"
+                variant="outlined"
+              />
+            </Box>
+            <Box>
+              <Typography variant="h6" gutterBottom component="div">- 답변</Typography>
+              <RadioGroup row aria-label="position" name="position" defaultValue="top">
+                <FormControlLabel value="text" control={<Radio color="primary" />} label="텍스트형" />
+                <FormControlLabel value="image" control={<Radio color="primary" />} label="이미지형" />
+              </RadioGroup>
+              <Grid container >
+                
+                {question.answers.map((answer, index) => (
+                  <Answer key={index} answer={answer} changeAnswer={changeAnswer}/>
+                ))}
+              </Grid>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" variant="contained">수정</Button>
+          </DialogActions>
+          {JSON.stringify(question)}
+        </>
+      }
+    </Dialog>
 
   );
 }

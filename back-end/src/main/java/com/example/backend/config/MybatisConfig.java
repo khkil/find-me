@@ -1,18 +1,15 @@
 package com.example.backend.config;
 
-import com.example.backend.auth.model.Role;
 import com.example.backend.common.beans.RefreshableSqlSessionFactoryBean;
-import javafx.application.Application;
+import com.example.backend.util.enumerator.QuestionType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandler;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -36,6 +33,9 @@ public class MybatisConfig {
         factoryBean.setDataSource(dataSource);
         factoryBean.setConfigLocation(applicationContext.getResource("classpath:config/mybatis-config.xml"));
         factoryBean.setMapperLocations(applicationContext.getResources("classpath*:mapper/*.xml"));
+        factoryBean.setTypeHandlers(new TypeHandler[] {
+                new QuestionType.TypeHandler()
+        });
 
         return factoryBean;
     }

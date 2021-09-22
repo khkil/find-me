@@ -2,7 +2,6 @@ package com.example.backend.auth.model;
 
 import com.example.backend.common.handler.RoleEnum;
 import com.example.backend.common.handler.RoleEnumTypeHandler;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.ibatis.type.MappedTypes;
 
