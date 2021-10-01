@@ -187,6 +187,7 @@ const QuestionList = memo(({ results, selectedResult}) => {
 
   const fileChange  = (e) => {
     const { files } = e.target;
+    console.log(files[0]);
     setFile(files[0]);
   }
   const upload = (e) => {

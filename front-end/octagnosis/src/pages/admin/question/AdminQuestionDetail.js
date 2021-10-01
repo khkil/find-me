@@ -48,8 +48,7 @@ const Answer = memo(({ answer, changeAnswer }) => {
     <Grid  key={answerIdx} item xs className={classes.answer}>
       <DropzoneArea 
         filesLimit={1}
-        dropzoneText={""} 
-        style={{padding:"0px"}}
+        onChange={(e) => { console.log(e) }}
         getPreviewIcon={(file) => {
           if (file.file.type.split('/')[0] === 'image')
             return (
