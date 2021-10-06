@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.example.backend.api.user.User;
+import com.example.backend.api.user.UserAnswer;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
@@ -15,7 +17,7 @@ import org.json.JSONObject;
 
 public class ExcelGenerator {
 
-    public static ByteArrayInputStream customersToExcel(JSONObject data) throws IOException {
+    public static ByteArrayInputStream groundStatisticsExcel(JSONObject data) throws IOException {
         String[] userColumns = {"이름", "기관", "학년", "반"};
 
         Workbook workbook = new XSSFWorkbook();
@@ -106,16 +108,68 @@ public class ExcelGenerator {
                 if(grade != null){
                     cell.setCellValue(grade.optString("name"));
                 }
-
-
-
             }
-
         }
-
         workbook.write(out);
         return new ByteArrayInputStream(out.toByteArray());
 
         //http://localhost:8088/api/admin/ground/excel/statistics?inspectionIdx=3
+    }
+
+
+
+    public static ByteArrayInputStream groundPersonalStatisticsExcel(User user) throws IOException {
+        String[] userColumns = {"이름", "기관명", "학년(나이)", "반", "시행일"};
+
+        Workbook workbook = new XSSFWorkbook();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Sheet sheet = workbook.createSheet("ttt");
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setColor(IndexedColors.BLUE.getIndex());
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+
+
+        int rowIdx = 0;
+        int cellIdx = 0;
+
+        Row row = null;
+        Cell cell = null;
+
+        for (int i = 0; i < userColumns.length; i++) {
+            //"이름", "기관명", "학년(나이)", "반", "시행일"
+            String cellValue =
+                    i == 0 ? user.getUserName()
+                    : i == 1 ? (user.getGroup() != null ? user.getGroup().getName() : "")
+                    : i == 2 ? user.getUserGrade()
+                    : i == 3 ? user.getUserEtc()
+                    : i == 4 ? user.getCdate()
+                    : "";
+            cellIdx = 0;
+            row = sheet.createRow(rowIdx++);
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue(userColumns[i]);
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue(cellValue);
+
+        }
+
+        List<UserAnswer> answers = user.getUserAnswers();
+
+        System.out.println(answers);
+
+
+
+
+
+
+        workbook.write(out);
+        return new ByteArrayInputStream(out.toByteArray());
+
     }
 }

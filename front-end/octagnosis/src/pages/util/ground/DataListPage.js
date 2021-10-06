@@ -24,6 +24,7 @@ import { SearchIcon } from '@material-ui/data-grid';
 import { getGroupDetail, getGroupList } from '../../../redux/actions/groupActions';
 import { dateFormat } from '../../../utils/util';
 import { useHistory } from 'react-router-dom';
+import { Delete, Close, FormatAlignLeft } from "@material-ui/icons";
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -74,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, setSelectedGrade, query, searchParams }) => {
+const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectGrade, selectedGrade, setSelectedGrade, query, searchParams }) => {
   
   const dispatch = useDispatch();
   const history = useHistory();
@@ -108,18 +109,7 @@ const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, s
         getOptionLabel={grade => grade.toString()}
         name="grade"
         onChange={(e, value) => { 
-          if(value){
-            searchParams.set("grade", value);
-          }else{
-            searchParams.delete("grade");
-          }
-          
-          history.push({
-            pathname: location.pathname,
-            search: searchParams.toString()
-          })
-          
-          setSelectedGrade(value);
+          selectGrade(value)
         }}
         value={selectedGrade}
         
@@ -157,7 +147,7 @@ const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectedGrade, s
   )
 }
 
-const Buttons = ({ userIdx, history, currentPage, value, setValue }) => {
+const Buttons = ({ userIdx, history, currentPage, value, setValue, downPersonalExcel }) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => {
@@ -214,11 +204,12 @@ const Buttons = ({ userIdx, history, currentPage, value, setValue }) => {
       >
         <MenuItem onClick={userDetail}>상세정보</MenuItem>
         {value === 0 ? 
-          <MenuItem onClick={onDelete}>삭제</MenuItem> :
+          <MenuItem onClick={onDelete}><Delete />삭제</MenuItem> :
           <MenuItem onClick={onRestore}>복원</MenuItem>
         }
         
-        <MenuItem onClick={handleClose}>닫기</MenuItem>
+        <MenuItem onClick={() => { downPersonalExcel(userIdx) }}><FormatAlignLeft/>엑셀 다운</MenuItem>
+        <MenuItem onClick={handleClose}><Close/>닫기</MenuItem>
       </Menu>
     </>
   )
@@ -240,9 +231,17 @@ const DataListPage = ({ history, location }) => {
   const [value, setValue] = useState(del_yn && del_yn === "Y" ? 1 : 0);
 
   const handleChangeTab = (event, newValue) => {
-    const path = '/ground/users'  + (newValue === 1 ? `?del_yn=Y` : '');
-    history.push(path);
     setValue(newValue);
+    if(newValue === 1){
+      searchParams.set("del_yn", "Y");
+    }else{
+      searchParams.delete("del_yn");
+    }
+    history.push({
+      pathname: location.pathname,
+      search: searchParams.toString()
+    });
+    dispatch(getUserList(3, 1, searchParams));
   };
 
   const goPage = (event, page) => {
@@ -252,6 +251,7 @@ const DataListPage = ({ history, location }) => {
       search: searchParams.toString()
     })
     setCurrentPage(page);
+    dispatch(getUserList(3, page, searchParams));
   };
 
   const handleChange = (e) => {
@@ -275,30 +275,59 @@ const DataListPage = ({ history, location }) => {
     history.push({
       pathname: location.pathname,
       search: searchParams.toString()
-    })
+    });
+    dispatch(getUserList(3, 1, searchParams));
   }
 
   const selectGroup = (groupIdx) => {
     setCurrentPage(1);
     searchParams.delete("page");
-    searchParams.set("group_idx", groupIdx);
+    if(groupIdx){
+      searchParams.set("group_idx", groupIdx);
+    }else{
+      searchParams.delete("group_idx");
+    }
+    
 
     history.push({
       pathname: location.pathname,
       search: searchParams.toString()
-    })
+    });
+    dispatch(getUserList(3, 1, searchParams));
+  }
+
+  const selectGrade = (grade) => {
+    setCurrentPage(1);
+    setSelectedGrade(grade)
+    searchParams.delete("page");
+    if(grade){
+      searchParams.set("grade", grade);
+    }else{
+      searchParams.delete("grade");
+    }
+    history.push({
+      pathname: location.pathname,
+      search: searchParams.toString()
+    });
+    dispatch(getUserList(3, 1, searchParams));
   }
 
   const refresh = () => {
-    dispatch(getUserList(3, 1, {}));
     history.push("/ground/users");
+    dispatch(getUserList(3, 1, {}));
+  }
+
+
+  const downPersonalExcel = (userIdx) => {
+    const downloadLink = `http://localhost:8088/api/admin/ground/excel/statistics/users/${userIdx}`;
+    window.open(downloadLink); 
   }
 
   const { data, loading } = useSelector(state => state.userReducer);
 
   useEffect(() => {
     dispatch(getUserList(3, currentPage, query));
-  }, []);
+  }, [history]);
 
   if(loading) return <Loading/>;
   if(!data || !data.list) return null;
@@ -308,7 +337,6 @@ const DataListPage = ({ history, location }) => {
   
   return (
     <Container maxWidth="lg" className={classes.root}>
-
       <Box display="inline-block">
         <Button color="primary" variant="contained" className={classes.refreshButton} onClick={refresh}>
           검색 초기화
@@ -331,7 +359,16 @@ const DataListPage = ({ history, location }) => {
             )
           }}
         />
-        <Groups selectGroup={selectGroup} selectedGroup={selectedGroup} setSelectedGroup={setSelectedGroup} selectedGrade={selectedGrade} setSelectedGrade={setSelectedGrade} query={query} searchParams={searchParams}></Groups>
+        <Groups 
+          selectGroup={selectGroup} 
+          selectedGroup={selectedGroup} 
+          setSelectedGroup={setSelectedGroup} 
+          selectedGrade={selectedGrade} 
+          setSelectedGrade={setSelectedGrade} 
+          selectGrade={selectGrade} 
+          query={query} 
+          searchParams={searchParams}>
+        </Groups>
       </Box>
       <Paper square>
         <Tabs
@@ -345,9 +382,9 @@ const DataListPage = ({ history, location }) => {
           <Tab label="사용 중 유저" />
           <Tab label="삭제된 유저"/>
         </Tabs>
-        <Button color="primary" variant="contained" className={classes.refreshButton} >
+        {/* <Button color="primary" variant="contained" className={classes.refreshButton} >
           통계 엑셀 다운
-        </Button>
+        </Button> */}
       </Paper>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
@@ -380,7 +417,7 @@ const DataListPage = ({ history, location }) => {
                 <StyledTableCell align="center">{userEtc}</StyledTableCell>
                 <StyledTableCell align="center">{dateFormat(cdate)}</StyledTableCell>
                 <StyledTableCell align="center">
-                  <Buttons userIdx={userIdx} history={history} currentPage={currentPage} value={value} setValue={setValue}/>
+                  <Buttons userIdx={userIdx} history={history} currentPage={currentPage} value={value} setValue={setValue} downPersonalExcel={downPersonalExcel}/>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
