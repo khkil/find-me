@@ -12,6 +12,7 @@
         <typeAlias alias="question" type="com.example.backend.api.question.Question"/>
         <typeAlias alias="result" type="com.example.backend.api.result.Result"/>
         <typeAlias alias="user" type="com.example.backend.api.user.User"/>
+        <typeAlias alias="userAnswer" type="com.example.backend.api.user.UserAnswer"/>
         <typeAlias alias="group" type="com.example.backend.api.group.Group"/>
         <typeAlias alias="statistics" type="com.example.backend.api.result.statistics.Statistics"/>
 

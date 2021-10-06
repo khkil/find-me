@@ -18,7 +18,11 @@
         <result column="cdate" property="cdate"></result>
 
         <collection property="group" resultMap="groupMap"></collection>
+        <collection property="userAnswers" column="user_idx" select="getUserAnswer"/>
     </resultMap>
+    <select id="getUserAnswer" resultType="userAnswer" >
+		SELECT * FROM user_answer WHERE user_idx = #{userIdx} ORDER BY question_idx;
+	</select>
 
     <delete id="deleteUser" parameterType="int" >
         UPDATE user SET del_yn = "Y" WHERE user_idx = #{userIdx};
@@ -140,7 +144,5 @@
     <insert id="insertUserAnswers" parameterType="int">
             INSERT INTO user_answer(user_idx, question_idx, answer_idx) VALUES (#{user_idx}, #{question_idx}, #{answer_idx} )
     </insert>
-
-
 
 </mapper>

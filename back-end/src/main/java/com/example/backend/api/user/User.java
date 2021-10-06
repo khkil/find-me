@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 public class User {
@@ -22,5 +23,6 @@ public class User {
     private String delYn;
 
     private Group group;
+    private List<UserAnswer> userAnswers;
 
 }
