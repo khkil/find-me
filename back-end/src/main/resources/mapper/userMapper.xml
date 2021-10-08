@@ -18,11 +18,17 @@
         <result column="cdate" property="cdate"></result>
 
         <collection property="group" resultMap="groupMap"></collection>
-        <collection property="userAnswers" column="user_idx" select="getUserAnswer"/>
     </resultMap>
-    <select id="getUserAnswer" resultType="userAnswer" >
-		SELECT * FROM user_answer WHERE user_idx = #{userIdx} ORDER BY question_idx;
-	</select>
+
+    <resultMap id="questionMap" type="question">
+        <result column="question_idx" property="questionIdx"/>
+        <result column="result_idx" property="resultIdx"/>
+    </resultMap>
+    <resultMap id="userDetailAnswerMap" type="userAnswer">
+        <result column="question_idx" property="questionIdx"/>
+        <result column="answer_idx" property="answerIdx"/>
+        <collection property="question" resultMap="questionMap"/>
+    </resultMap>
 
     <delete id="deleteUser" parameterType="int" >
         UPDATE user SET del_yn = "Y" WHERE user_idx = #{userIdx};
@@ -114,6 +120,13 @@
             AND ua.user_idx = #{userIdx}
             WHERE inspection_idx = (SELECT inspection_idx FROM `user` WHERE user_idx = #{userIdx})
         ORDER BY q.question_idx;
+    </select>
+    <select id="getUserDetailAnswerList" resultMap="userDetailAnswerMap">
+    SELECT * FROM user_answer ua
+    LEFT OUTER JOIN question q
+        ON ua.question_idx = q.question_idx
+    WHERE user_idx = #{userIdx}
+    ORDER BY q.result_idx, q.question_idx
     </select>
 
     <insert id="insertUserInfo" parameterType="com.example.backend.api.result.UserResult" useGeneratedKeys="true">

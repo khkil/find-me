@@ -23,6 +23,5 @@ public class User {
     private String delYn;
 
     private Group group;
-    private List<UserAnswer> userAnswers;
 
 }

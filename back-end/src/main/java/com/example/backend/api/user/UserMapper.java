@@ -17,6 +17,7 @@ public interface UserMapper {
     List<User> getUsers(int inspection_idx, @Param("param") Map<String, Object> param);
     User getUserDetail(int userIdx);
     List<Map<String, Object>> getUserAnswers(int userIdx);
+    List<UserAnswer> getUserDetailAnswerList(int userIdx);
     void insertUserInfo(UserResult userResult);
     void insertUserAnswers(int user_idx, int question_idx, int answer_idx);
     void deleteUser(int userIdx);

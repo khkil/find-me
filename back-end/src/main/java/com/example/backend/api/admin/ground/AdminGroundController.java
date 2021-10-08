@@ -5,6 +5,7 @@ import com.example.backend.api.user.User;
 import com.example.backend.api.user.UserAnswer;
 import com.example.backend.api.user.UserServcice;
 import com.example.backend.util.ExcelGenerator;
+import com.github.pagehelper.PageHelper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -44,12 +45,12 @@ public class AdminGroundController {
     public ResponseEntity downPrivateStatisticsExcel(@PathVariable int userIdx) throws IOException {
 
         User user = userServcice.getUserDetail(userIdx);
-        List<Map<String, Object>> answers = userServcice.getUserAnswers(userIdx);
-        ByteArrayInputStream in = ExcelGenerator.groundPersonalStatisticsExcel(user);
+        List<UserAnswer> userAnswers = userServcice.getUserDetailAnswers(userIdx);
+        ByteArrayInputStream in = ExcelGenerator.groundPersonalStatisticsExcel(user, userAnswers);
         HttpHeaders headers = new HttpHeaders();
         String fileName = URLEncoder.encode(user.getUserName() + "_문항", "UTF-8").replaceAll("\\+", "%20");
         headers.add("Content-Type", "application/octet-stream");
-        headers.add("Content-Disposition", "attachment; filename="+ fileName +"xlsx");
+        headers.add("Content-Disposition", "attachment; filename="+ fileName +".xlsx");
 
         return ResponseEntity.ok().headers(headers).body(new InputStreamResource(in));
 

@@ -3,10 +3,12 @@ package com.example.backend.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.example.backend.api.question.Question;
 import com.example.backend.api.user.User;
 import com.example.backend.api.user.UserAnswer;
 import org.apache.poi.ss.usermodel.*;
@@ -118,7 +120,7 @@ public class ExcelGenerator {
 
 
 
-    public static ByteArrayInputStream groundPersonalStatisticsExcel(User user) throws IOException {
+    public static ByteArrayInputStream groundPersonalStatisticsExcel(User user, List<UserAnswer> userAnswers) throws IOException {
         String[] userColumns = {"이름", "기관명", "학년(나이)", "반", "시행일"};
 
         Workbook workbook = new XSSFWorkbook();
@@ -159,14 +161,115 @@ public class ExcelGenerator {
 
         }
 
-        List<UserAnswer> answers = user.getUserAnswers();
 
-        System.out.println(answers);
+        JSONObject answerMap = new JSONObject();
+        for(UserAnswer userAnswer : userAnswers){
+            Question question = userAnswer.getQuestion();
+            int resultIdx = question.getResultIdx();
+            int answerIdx = userAnswer.getAnswerIdx();
+
+            String key = "result_" + resultIdx;
+            answerMap.accumulate(key, answerIdx);
+        }
 
 
 
+        int maxCount = 0;
+        Map<String, Object> rankMap = new HashMap<>();
+        for(String key : answerMap.keySet()){
+            Map<String, Object> map = new HashMap<>();
+            int totalCount = 0;
+            JSONArray answers = answerMap.getJSONArray(key);
+            if(maxCount < answers.length()){
+                maxCount = answers.length();
+            }
+
+            for(Object o : answers ){
+                int answer = (Integer)o;
+                totalCount += answer;
+            }
+
+            map.put("totalCount", totalCount);
+            rankMap.put(key, map);
+        }
 
 
+        for(String key : rankMap.keySet()){
+            int rank = GroundUtil.resultMap.size();
+            Map<String, Object> map = (Map<String, Object>) rankMap.get(key);
+            int totalCount = (Integer) map.get("totalCount");
+
+            System.out.println("-----------------------------total------------------");
+            for(String key1 : rankMap.keySet()){
+                Map<String, Object> map1 = (Map<String, Object>) rankMap.get(key1);
+                int totalCount1 = (Integer) map1.get("totalCount");
+
+                System.out.println("totalCount : " + totalCount);
+                System.out.println("totalCount1 : " + totalCount1);
+
+
+                if(totalCount > totalCount1 && totalCount != totalCount1){
+                    rank -= 1;
+                    continue;
+                }
+
+                System.out.println("rank : "+ rank);
+
+
+            }
+            map.put("rank", rank);
+
+            rankMap.replace(key, map);
+
+        }
+
+        row = sheet.createRow(rowIdx++);
+        cellIdx = 2;
+        for(int i = 0; i < maxCount; i++){
+
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue((i + 1) + "문항");
+        }
+
+        cell = row.createCell(cellIdx++);
+        cell.setCellValue("총점");
+
+        cell = row.createCell(cellIdx++);
+        cell.setCellValue("순위");
+
+
+
+        for(Integer key : GroundUtil.resultMap.keySet()){
+            cellIdx = 0;
+            String resultKey =  "result_" + key;
+            int number = rowIdx - userColumns.length;
+
+            row = sheet.createRow(rowIdx++);
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue(number + "문항");
+
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue(GroundUtil.resultMap.get(key));
+            cell.setCellStyle(headerCellStyle);
+
+
+            JSONArray answers = answerMap.getJSONArray(resultKey);
+
+            for(Object o : answers){
+                int answer = (Integer)o;
+                cell = row.createCell(cellIdx++);
+                cell.setCellValue(answer);
+            }
+
+            Map<String, Object> map = (Map<String, Object>) rankMap.get(resultKey);
+
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue(map.get("totalCount").toString());
+            cell = row.createCell(cellIdx++);
+            cell.setCellValue(map.get("rank").toString());
+
+
+        }
 
         workbook.write(out);
         return new ByteArrayInputStream(out.toByteArray());

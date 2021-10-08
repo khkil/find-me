@@ -26,6 +26,9 @@ public class UserServcice {
     public List<Map<String, Object>> getUserAnswers(int userIdx){
         return userMapper.getUserAnswers(userIdx);
     };
+    public List<UserAnswer> getUserDetailAnswers(int userIdx){
+        return userMapper.getUserDetailAnswerList(userIdx);
+    };
 
     public void insertUserAnswers(int user_idx, int question_idx, int answer_idx){
         userMapper.insertUserAnswers(user_idx, question_idx, answer_idx);

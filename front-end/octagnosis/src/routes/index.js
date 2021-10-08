@@ -138,6 +138,8 @@ const ProtectedPage = async(() => import("../pages/protected/ProtectedPage"));
 const InspectionSelectPage = async(() => import("../pages/inspection/InspectionSelectPage"));
 const LoginPage = async(() => import("../pages/inspection/Login"));
 
+const TestPage = async(() => import("../pages/util/TestPage"));
+
 const groundInspectionRoute = {
   header: "검사 관리",
   id: "지면검사 관리",
@@ -739,6 +741,14 @@ const protectedPageRoutes = {
   children: null,
 };
 
+const testRoute = {
+  id: "test",
+  path: "/test",
+  component: TestPage,
+  children: null,
+
+}
+
 
 export const inspectionRoutes = [
   inspectionRoute,
@@ -746,7 +756,7 @@ export const inspectionRoutes = [
 ]
 
 // Routes using the Auth layout
-export const authLayoutRoutes = [authRoutes];
+export const authLayoutRoutes = [authRoutes, testRoute];
 
 // Routes using the Presentation layout
 export const presentationLayoutRoutes = [landingRoutes];
