@@ -25,6 +25,7 @@ import { getGroupDetail, getGroupList } from '../../../redux/actions/groupAction
 import { dateFormat } from '../../../utils/util';
 import { useHistory } from 'react-router-dom';
 import { Delete, Close, FormatAlignLeft } from "@material-ui/icons";
+import { downPrivateStatisticsExcel } from '../../../services/excelService';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -319,8 +320,7 @@ const DataListPage = ({ history, location }) => {
 
 
   const downPersonalExcel = (userIdx) => {
-    const downloadLink = `http://localhost:8088/api/admin/ground/excel/statistics/users/${userIdx}`;
-    window.open(downloadLink); 
+    downPrivateStatisticsExcel(userIdx);
   }
 
   const { data, loading } = useSelector(state => state.userReducer);

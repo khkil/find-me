@@ -3,10 +3,7 @@ package com.example.backend.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.example.backend.api.question.Question;
 import com.example.backend.api.user.User;
@@ -128,6 +125,10 @@ public class ExcelGenerator {
 
         Sheet sheet = workbook.createSheet("ttt");
 
+
+        Font boldFont = workbook.createFont();
+        boldFont.setBold(true);
+
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
         headerFont.setColor(IndexedColors.BLUE.getIndex());
@@ -156,6 +157,7 @@ public class ExcelGenerator {
             row = sheet.createRow(rowIdx++);
             cell = row.createCell(cellIdx++);
             cell.setCellValue(userColumns[i]);
+            cell.setCellStyle(headerCellStyle);
             cell = row.createCell(cellIdx++);
             cell.setCellValue(cellValue);
 
@@ -174,6 +176,7 @@ public class ExcelGenerator {
 
 
 
+        List<Integer> countList = new ArrayList<>();
         int maxCount = 0;
         Map<String, Object> rankMap = new HashMap<>();
         for(String key : answerMap.keySet()){
@@ -190,37 +193,25 @@ public class ExcelGenerator {
             }
 
             map.put("totalCount", totalCount);
+            if(!countList.contains(totalCount)){
+                countList.add(totalCount);
+            }
             rankMap.put(key, map);
         }
 
 
         for(String key : rankMap.keySet()){
-            int rank = GroundUtil.resultMap.size();
+            int rank = 0;
             Map<String, Object> map = (Map<String, Object>) rankMap.get(key);
             int totalCount = (Integer) map.get("totalCount");
 
-            System.out.println("-----------------------------total------------------");
-            for(String key1 : rankMap.keySet()){
-                Map<String, Object> map1 = (Map<String, Object>) rankMap.get(key1);
-                int totalCount1 = (Integer) map1.get("totalCount");
-
-                System.out.println("totalCount : " + totalCount);
-                System.out.println("totalCount1 : " + totalCount1);
-
-
-                if(totalCount > totalCount1 && totalCount != totalCount1){
-                    rank -= 1;
-                    continue;
+            for(int count : countList){
+                if(count >= totalCount){
+                    rank++;
                 }
-
-                System.out.println("rank : "+ rank);
-
-
             }
             map.put("rank", rank);
-
             rankMap.replace(key, map);
-
         }
 
         row = sheet.createRow(rowIdx++);
@@ -238,6 +229,14 @@ public class ExcelGenerator {
         cell.setCellValue("순위");
 
 
+        Font questionFont = boldFont;
+        questionFont.setBold(true);
+        CellStyle questionCellStyle = workbook.createCellStyle();
+        questionCellStyle.setFont(questionFont);
+
+        CellStyle resultCellStyle = workbook.createCellStyle();
+        resultCellStyle.setFont(boldFont);
+
 
         for(Integer key : GroundUtil.resultMap.keySet()){
             cellIdx = 0;
@@ -249,8 +248,9 @@ public class ExcelGenerator {
             cell.setCellValue(number + "문항");
 
             cell = row.createCell(cellIdx++);
+            cell.setCellStyle(questionCellStyle);
             cell.setCellValue(GroundUtil.resultMap.get(key));
-            cell.setCellStyle(headerCellStyle);
+
 
 
             JSONArray answers = answerMap.getJSONArray(resultKey);
@@ -264,8 +264,11 @@ public class ExcelGenerator {
             Map<String, Object> map = (Map<String, Object>) rankMap.get(resultKey);
 
             cell = row.createCell(cellIdx++);
+            cell.setCellStyle(resultCellStyle);
             cell.setCellValue(map.get("totalCount").toString());
+
             cell = row.createCell(cellIdx++);
+            cell.setCellStyle(resultCellStyle);
             cell.setCellValue(map.get("rank").toString());
 
 
