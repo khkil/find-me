@@ -1,13 +1,14 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Typography, RadioGroup, Radio, FormControlLabel, Divider } from '@material-ui/core';
-import { DropzoneArea, DropzoneDialog } from "material-ui-dropzone";
+import { DropzoneAreaBase, DropzoneDialog } from "material-ui-dropzone";
 import { getQuestionDetail } from '../../../services/questionService';
 import Loader from '../../../components/Loader';
 import { CloseIcon } from '@material-ui/data-grid';
+import { fileUpload } from '../../../services/fileService';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   answer: {
     maxWidth: "200px",
+    padding: 5
 
   },
   dropzone: {
@@ -43,22 +45,30 @@ const useStyles = makeStyles((theme) => ({
 
 const Answer = memo(({ answer, changeAnswer }) => {
   const classes = useStyles();
-  const { answerIdx, answerText, answerScore } = answer;
+  const { answerIdx, answerText, answerScore, filePath } = answer;
+  const files = JSON.parse(filePath);
+
+  const uploadFile = useCallback(files => {
+    const { file } = files[0];
+    console.log(file);
+    fileUpload(file);
+  })
   return (
     <Grid  key={answerIdx} item xs className={classes.answer}>
-      <DropzoneArea 
-        filesLimit={1}
-        onChange={(e) => { console.log(e) }}
-        getPreviewIcon={(file) => {
-          if (file.file.type.split('/')[0] === 'image')
-            return (
-              <img role="presentation" src="https://storage.googleapis.com/careercompany/1.jpg"/>
-            );
-        }}
-        previewGridClasses={{
-          item: classes.preview,
-        }}
-      />
+      {!filePath ? 
+        <DropzoneAreaBase 
+          filesLimit={1}
+          onChange={() => { console.log(e) }}
+          onAdd={uploadFile}
+          previewGridClasses={{
+            item: classes.preview,
+          }}
+        /> :
+        <>
+          {JSON.stringify(files[0])}
+        </>
+          
+      }
       <TextField
         label="답변명"
         name="answerText"
@@ -180,11 +190,12 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
                 ))}
               </Grid>
             </Box>
+            {JSON.stringify(question)}
           </DialogContent>
           <DialogActions>
             <Button color="primary" variant="contained">수정</Button>
           </DialogActions>
-          {JSON.stringify(question)}
+          
         </>
       }
     </Dialog>
