@@ -8,7 +8,6 @@ import memberReducer from "./memberReducer";
 import smsReducer from "./smsReducer";
 import groupReducer from "./groupReducer";
 import userReducer from "./userReducer";
-import excelReducer from "./excelReducer";
 
 export const rootReducer = combineReducers({
   inspectionReducer,
@@ -20,5 +19,4 @@ export const rootReducer = combineReducers({
   smsReducer,
   groupReducer,
   userReducer,
-  excelReducer
 });

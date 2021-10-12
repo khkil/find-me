@@ -25,7 +25,8 @@ import { getGroupDetail, getGroupList } from '../../../redux/actions/groupAction
 import { dateFormat } from '../../../utils/util';
 import { useHistory } from 'react-router-dom';
 import { Delete, Close, FormatAlignLeft } from "@material-ui/icons";
-import { downPrivateStatisticsExcel } from '../../../services/excelService';
+import Loader from "../../../components/Loader";
+import { downExcel, requestPrivateStatisticsExcel } from '../../../services/excelService';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -76,15 +77,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectGrade, selectedGrade, setSelectedGrade, query, searchParams }) => {
+const Groups = ({ selectGroup, setSelectedGroup, selectGrade, selectedGrade, setSelectedGrade, query, searchParams }) => {
   
   const dispatch = useDispatch();
-  const history = useHistory();
   const classes = useStyles();
   const { data } = useSelector(state => state.groupReducer);
   const { group_idx } = query;
-  
-
   
   const changeGroup = (groupIdx) => {
     searchParams.delete("grade");
@@ -148,9 +146,10 @@ const Groups = ({ selectGroup, selectedGroup, setSelectedGroup, selectGrade, sel
   )
 }
 
-const Buttons = ({ userIdx, history, currentPage, value, setValue, downPersonalExcel }) => {
+const Buttons = ({ userIdx, history, currentPage, value, setValue }) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [excelLoading, setExcelLoading] = useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -159,11 +158,6 @@ const Buttons = ({ userIdx, history, currentPage, value, setValue, downPersonalE
     setAnchorEl(null);
   };
   
-  const userDetail = () => {
-    const path = location.pathname;
-    history.push(`${path}/${userIdx}`);
-  }
-
   const onDelete = () => {
     if(confirm("해당 유저를 삭제 하시겠습니까?")){
       dispatch(deleteUser(userIdx))
@@ -187,6 +181,21 @@ const Buttons = ({ userIdx, history, currentPage, value, setValue, downPersonalE
     }
   }
 
+  const downPersonalExcel = (userIdx) => {
+    if(excelLoading) return;
+    setExcelLoading(true);
+    requestPrivateStatisticsExcel(userIdx)
+    .then(response => {
+      downExcel(response);
+      setExcelLoading(false);
+      handleClose();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("server error");
+    });
+  }
+
   return (
     <>
       <IconButton
@@ -203,13 +212,14 @@ const Buttons = ({ userIdx, history, currentPage, value, setValue, downPersonalE
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={userDetail}>상세정보</MenuItem>
         {value === 0 ? 
           <MenuItem onClick={onDelete}><Delete />삭제</MenuItem> :
           <MenuItem onClick={onRestore}>복원</MenuItem>
         }
         
-        <MenuItem onClick={() => { downPersonalExcel(userIdx) }}><FormatAlignLeft/>엑셀 다운</MenuItem>
+        <MenuItem onClick={() => { downPersonalExcel(userIdx) }}>
+          <FormatAlignLeft/>엑셀 다운
+        </MenuItem>
         <MenuItem onClick={handleClose}><Close/>닫기</MenuItem>
       </Menu>
     </>
@@ -254,6 +264,11 @@ const DataListPage = ({ history, location }) => {
     setCurrentPage(page);
     dispatch(getUserList(3, page, searchParams));
   };
+
+  const userDetail = (e, userIdx) => {
+    e.preventDefault();
+    history.push(`/ground/users/${userIdx}`);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -316,14 +331,6 @@ const DataListPage = ({ history, location }) => {
   const refresh = () => {
     history.push("/ground/users");
     dispatch(getUserList(3, 1, {}));
-  }
-
-
-  const downPersonalExcel = (userIdx) => {
-    downPrivateStatisticsExcel(userIdx)
-    .then(response => {
-      console.log(response);
-    });
   }
 
   const { data, loading } = useSelector(state => state.userReducer);
@@ -409,7 +416,7 @@ const DataListPage = ({ history, location }) => {
                   {startNum--}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Link onClick={() => {history.push(`/ground/users/${userIdx}`)}}>
+                  <Link href="#" onClick={(e) => {userDetail(e, userIdx)}}>
                     <Typography variant="h5">
                       {userName}
                     </Typography>
@@ -420,7 +427,7 @@ const DataListPage = ({ history, location }) => {
                 <StyledTableCell align="center">{userEtc}</StyledTableCell>
                 <StyledTableCell align="center">{dateFormat(cdate)}</StyledTableCell>
                 <StyledTableCell align="center">
-                  <Buttons userIdx={userIdx} history={history} currentPage={currentPage} value={value} setValue={setValue} downPersonalExcel={downPersonalExcel}/>
+                  <Buttons userIdx={userIdx} history={history} currentPage={currentPage} value={value} setValue={setValue}/>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

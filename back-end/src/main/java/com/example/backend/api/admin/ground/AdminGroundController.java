@@ -44,13 +44,10 @@ public class AdminGroundController {
     }
 
     @GetMapping("/excel/statistics/users/{userIdx}")
-    public ResponseEntity downPrivateStatisticsExcel(@PathVariable int userIdx, HttpServletResponse response) throws IOException {
+    public void downPrivateStatisticsExcel(@PathVariable int userIdx, HttpServletResponse response) throws IOException {
 
         User user = userServcice.getUserDetail(userIdx);
         List<UserAnswer> userAnswers = userServcice.getUserDetailAnswers(userIdx);
         ExcelGenerator.groundPersonalStatisticsExcel(user, userAnswers, response);
-
-        return ResponseEntity.ok().body(CommonResponse.successResult());
-
     }
 }

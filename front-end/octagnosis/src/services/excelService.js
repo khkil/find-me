@@ -11,7 +11,7 @@ export const downExcel = (response) => {
   link.click();
 }
 
-export const downPrivateStatisticsExcel = (userIdx) => {
+export const requestPrivateStatisticsExcel = (userIdx) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'GET',
@@ -20,9 +20,9 @@ export const downPrivateStatisticsExcel = (userIdx) => {
     })    
     .then((response) => {
       if (response.status === 200) {
-        resolve(response.data);
+        resolve(response);
       }
-      reject(response.data);
+      reject(response);
     })
     .catch((error) => {
       reject(error);
