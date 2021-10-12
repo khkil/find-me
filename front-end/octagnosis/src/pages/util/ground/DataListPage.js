@@ -320,7 +320,10 @@ const DataListPage = ({ history, location }) => {
 
 
   const downPersonalExcel = (userIdx) => {
-    downPrivateStatisticsExcel(userIdx);
+    downPrivateStatisticsExcel(userIdx)
+    .then(response => {
+      console.log(response);
+    });
   }
 
   const { data, loading } = useSelector(state => state.userReducer);

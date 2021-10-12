@@ -3,6 +3,7 @@ package com.example.backend.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 import com.example.backend.api.question.Question;
@@ -13,8 +14,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.servlet.http.HttpServletResponse;
 
 public class ExcelGenerator {
+
+    private static final String EXCEL_EXTENSION = ".xlsx";
 
     public static ByteArrayInputStream groundStatisticsExcel(JSONObject data) throws IOException {
         String[] userColumns = {"이름", "기관", "학년", "반"};
@@ -117,14 +121,12 @@ public class ExcelGenerator {
 
 
 
-    public static ByteArrayInputStream groundPersonalStatisticsExcel(User user, List<UserAnswer> userAnswers) throws IOException {
+    public static void groundPersonalStatisticsExcel(User user, List<UserAnswer> userAnswers, HttpServletResponse response) throws IOException {
         String[] userColumns = {"이름", "기관명", "학년(나이)", "반", "시행일"};
 
         Workbook workbook = new XSSFWorkbook();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        Sheet sheet = workbook.createSheet("ttt");
-
+        Sheet sheet = workbook.createSheet("sheet");
 
         Font boldFont = workbook.createFont();
         boldFont.setBold(true);
@@ -136,23 +138,22 @@ public class ExcelGenerator {
         CellStyle headerCellStyle = workbook.createCellStyle();
         headerCellStyle.setFont(headerFont);
 
-
-
         int rowIdx = 0;
         int cellIdx = 0;
 
         Row row = null;
         Cell cell = null;
 
+        String groupName = user.getGroup() != null ? user.getGroup().getName() : "";
         for (int i = 0; i < userColumns.length; i++) {
             //"이름", "기관명", "학년(나이)", "반", "시행일"
             String cellValue =
                     i == 0 ? user.getUserName()
-                    : i == 1 ? (user.getGroup() != null ? user.getGroup().getName() : "")
-                    : i == 2 ? user.getUserGrade()
-                    : i == 3 ? user.getUserEtc()
-                    : i == 4 ? user.getCdate()
-                    : "";
+                            : i == 1 ? groupName
+                            : i == 2 ? user.getUserGrade()
+                            : i == 3 ? user.getUserEtc()
+                            : i == 4 ? user.getCdate()
+                            : "";
             cellIdx = 0;
             row = sheet.createRow(rowIdx++);
             cell = row.createCell(cellIdx++);
@@ -163,7 +164,6 @@ public class ExcelGenerator {
 
         }
 
-
         JSONObject answerMap = new JSONObject();
         for(UserAnswer userAnswer : userAnswers){
             Question question = userAnswer.getQuestion();
@@ -173,8 +173,6 @@ public class ExcelGenerator {
             String key = "result_" + resultIdx;
             answerMap.accumulate(key, answerIdx);
         }
-
-
 
         List<Integer> countList = new ArrayList<>();
         int maxCount = 0;
@@ -251,9 +249,8 @@ public class ExcelGenerator {
             cell.setCellStyle(questionCellStyle);
             cell.setCellValue(GroundUtil.resultMap.get(key));
 
-
-
-            JSONArray answers = answerMap.getJSONArray(resultKey);
+            JSONArray answers = answerMap.optJSONArray(resultKey);
+            if(answers == null) continue;
 
             for(Object o : answers){
                 int answer = (Integer)o;
@@ -270,12 +267,14 @@ public class ExcelGenerator {
             cell = row.createCell(cellIdx++);
             cell.setCellStyle(resultCellStyle);
             cell.setCellValue(map.get("rank").toString());
-
-
         }
 
-        workbook.write(out);
-        return new ByteArrayInputStream(out.toByteArray());
+        String fileName = URLEncoder.encode(groupName + "_" +user.getUserName() + EXCEL_EXTENSION, "UTF-8").replaceAll("\\+", "%20");
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", "attachment;filename=example.xlsx");
+        response.setHeader("file_name", fileName);
 
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 }

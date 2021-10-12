@@ -4,6 +4,7 @@ import com.example.backend.api.result.statistics.StatisticsService;
 import com.example.backend.api.user.User;
 import com.example.backend.api.user.UserAnswer;
 import com.example.backend.api.user.UserServcice;
+import com.example.backend.common.CommonResponse;
 import com.example.backend.util.ExcelGenerator;
 import com.github.pagehelper.PageHelper;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -42,17 +44,13 @@ public class AdminGroundController {
     }
 
     @GetMapping("/excel/statistics/users/{userIdx}")
-    public ResponseEntity downPrivateStatisticsExcel(@PathVariable int userIdx) throws IOException {
+    public ResponseEntity downPrivateStatisticsExcel(@PathVariable int userIdx, HttpServletResponse response) throws IOException {
 
         User user = userServcice.getUserDetail(userIdx);
         List<UserAnswer> userAnswers = userServcice.getUserDetailAnswers(userIdx);
-        ByteArrayInputStream in = ExcelGenerator.groundPersonalStatisticsExcel(user, userAnswers);
-        HttpHeaders headers = new HttpHeaders();
-        String fileName = URLEncoder.encode(user.getUserName() + "_문항", "UTF-8").replaceAll("\\+", "%20");
-        headers.add("Content-Type", "application/octet-stream");
-        headers.add("Content-Disposition", "attachment; filename="+ fileName +".xlsx");
+        ExcelGenerator.groundPersonalStatisticsExcel(user, userAnswers, response);
 
-        return ResponseEntity.ok().headers(headers).body(new InputStreamResource(in));
+        return ResponseEntity.ok().body(CommonResponse.successResult());
 
     }
 }
