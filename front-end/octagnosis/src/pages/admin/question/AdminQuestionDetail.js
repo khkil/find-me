@@ -3,12 +3,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Typography, RadioGroup, Radio, FormControlLabel, Divider } from '@material-ui/core';
+import { Card, CardActionArea, CardMedia, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Typography, RadioGroup, Radio, FormControlLabel, Divider } from '@material-ui/core';
 import { DropzoneAreaBase, DropzoneDialog } from "material-ui-dropzone";
-import { getQuestionDetail } from '../../../services/questionService';
+import * as questionService from '../../../services/questionService';
 import Loader from '../../../components/Loader';
 import { CloseIcon } from '@material-ui/data-grid';
 import { fileUpload } from '../../../services/fileService';
+import { FTP_URL } from "../../../constants/index";
+import { Delete, Refresh } from "@material-ui/icons"
+import SaveIcon from '@material-ui/icons/Save';;
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -39,34 +42,75 @@ const useStyles = makeStyles((theme) => ({
     padding: "0px",
     margin: "0 auto",
     marginTop: "15px",
-    
+  },
+  imageBox: {
+    height: "250px",
+    border: "1px solid #e0e0e0"
+  },
+  plusArea: {
+    padding: 50
   }
 }));
+
+const AnswerImage = memo(({ answerIdx, file, changeAnswer }) => {
+  const classes = useStyles();
+  const imageUrl = FTP_URL + file.path;
+  
+  const deleteImage = () => {
+    const emptyFile = {
+      filePath: null
+    }
+    changeAnswer(answerIdx, null, emptyFile );
+  }
+  return (
+    <Card className={classes.imageBox}>
+      <Grid item xs={8}>
+        <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>} onClick={deleteImage}/> 
+      </Grid>
+      <Divider my={3}/>
+      <img src={imageUrl}/>
+    </Card>
+  )
+});
 
 const Answer = memo(({ answer, changeAnswer }) => {
   const classes = useStyles();
   const { answerIdx, answerText, answerScore, filePath } = answer;
-  const files = JSON.parse(filePath);
+  const files = typeof filePath === "string" ? JSON.parse(filePath) : filePath;
 
   const uploadFile = useCallback(files => {
-    const { file } = files[0];
-    console.log(file);
-    fileUpload(file);
-  })
+    
+    if(files.length && files.length > 0){
+      const { file } = files[0];
+      fileUpload(file)
+      .then(({ success }) => {
+        if(success){
+          const uploadedFile = { name: file.name, path: `/${file.path}` };
+          const uploadedFiles = [uploadedFile];
+          changeAnswer(answerIdx, null, { filePath: JSON.stringify(uploadedFiles)});
+        }else{
+          alert("업로드에 실패 하였습니다");
+        }
+      })
+      .catch(e => {
+        alert("server error");
+        console.error(e);
+      });
+    }
+  });
+
+
   return (
     <Grid  key={answerIdx} item xs className={classes.answer}>
       {!filePath ? 
         <DropzoneAreaBase 
           filesLimit={1}
-          onChange={() => { console.log(e) }}
           onAdd={uploadFile}
           previewGridClasses={{
             item: classes.preview,
           }}
         /> :
-        <>
-          {JSON.stringify(files[0])}
-        </>
+        <AnswerImage answerIdx={answerIdx} file={files[0]} changeAnswer={changeAnswer}/>
           
       }
       <TextField
@@ -109,18 +153,44 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
     })
   }
 
-  const changeAnswer = (answerIdx, e) => {
+  const changeAnswer = (answerIdx, e, obj) => {
 
-    const { name, value } = e.target;
     let { answers } = question;
-    
     const index = answers.map(answer => answer.answerIdx).indexOf(answerIdx);
-    answers.splice(index, 1, { ...answers[index], [name] : value });
+    const answer = answers[index];
+    let changedValue;
+    if(e && e.target){
+      const { name, value } = e.target;
+      changedValue = {
+        [name]: value
+      }
+    }else if(!e && obj){
+      changedValue = obj;
+    }
+
+    if(!changedValue) return false;
+    const changedAnswser = {...answer, ...changedValue };
+    answers.splice(index, 1, changedAnswser);
 
     setQuestion({
       ...question,
       answers: answers
     });
+  }
+
+  const updateQuestion = () => {
+    const questionIdx = selectedQuestionIdx;
+    questionService.updateQuestion(questionIdx, question)
+    .then(response => {
+      console.log(response);
+      alert("수정되었습니다");
+    })
+    .catch(e => {
+      console.error(e);
+      alert("server error");
+
+    })
+    
   }
 
   useEffect(() => { 
@@ -131,12 +201,11 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
     setSelectedQuestionIdx(0)
   };
 
-  useEffect(() => {
-    console.log("selectedQuestionIdx", selectedQuestionIdx);
-    if(open){
-      setQuestion({ questionIdx: selectedQuestionIdx });
+  const initQuestion = () => {
+   
+    setQuestion({ questionIdx: selectedQuestionIdx });
       setLoading(true);
-      getQuestionDetail(selectedQuestionIdx)
+      questionService.getQuestionDetail(selectedQuestionIdx)
       .then(response => {
         setQuestion(response);
         setLoading(false);
@@ -146,6 +215,12 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
         alert("server error");
         setLoading(false);
       })
+  }
+
+  useEffect(() => {
+    
+    if(open){
+      initQuestion();
     }
     
   }, [selectedQuestionIdx])
@@ -188,12 +263,21 @@ const AdminQuestionDetail = ({ selectedQuestionIdx, setSelectedQuestionIdx}) => 
                 {question.answers.map((answer, index) => (
                   <Answer key={index} answer={answer} changeAnswer={changeAnswer}/>
                 ))}
+                <Grid className={classes.plusArea}>
+
+                  <IconButton edge="end" aria-label="delete" children={<Delete color="error"/>}/> 
+                </Grid>
               </Grid>
             </Box>
             {JSON.stringify(question)}
           </DialogContent>
           <DialogActions>
-            <Button color="primary" variant="contained">수정</Button>
+            <Button variant="contained" color="primary" size="large" startIcon={<Refresh />} onClick={initQuestion}>
+              초기화
+            </Button>
+            <Button variant="contained" color="primary" size="large" startIcon={<SaveIcon />} onClick={updateQuestion}>
+              저장
+            </Button>
           </DialogActions>
           
         </>

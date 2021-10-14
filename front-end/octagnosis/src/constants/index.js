@@ -13,7 +13,7 @@ export const THEMES = {
 };
 
 //common
-export const FTP_URL = "https://storage.googleapis.com/careercompany/";
+export const FTP_URL = "https://storage.googleapis.com/careercompany";
 export const DATA_REQUEST = "DATA_REQUEST";
 export const DATA_SUCCESS = "DATA_SUCCESS";
 export const DATA_FAILURE = "DATA_FAILURE";

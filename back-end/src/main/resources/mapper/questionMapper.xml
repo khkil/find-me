@@ -46,6 +46,7 @@
             UPDATE answer SET
                 answer_text = IFNULL(#{answer.answerText}, answer_text)
                 ,answer_score = IFNULL(#{answer.answerScore}, answer_score)
+                ,file_path = IFNULL(#{answer.filePath}, file_path)
             WHERE
                 answer_idx = #{answer.answerIdx};
 
