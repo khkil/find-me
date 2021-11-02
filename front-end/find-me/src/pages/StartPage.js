@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getUsers } from '../modules/user';
@@ -13,19 +13,29 @@ const StartPage = () => {
   const inspection = useSelector(state => state.inspection);
 
   const [userCounts, setUserCounts] = useState(0);
+  const userCountsRef = useRef(0);
 
+  const plusCount = () => {
+    
+  }
   useEffect(() => {
     const inspectionIdx = inspection.data.inspection_idx;
+
     getUserCounts(inspectionIdx)
     .then(res => {
       if(res.data){
-        setUserCounts(res.data);
-      }
-    })
-    console.log(inspectionIdx);
-  },[])
+        const toalCounts = res.data;
 
-  
+        setInterval(() => {
+          setUserCounts(userCountsRef.current += 59);
+          if(userCountsRef.current > toalCounts){
+            clearInterval(this);  
+            setUserCounts(toalCounts);
+          }
+        }, 1);
+      }
+    });
+  },[]);
   
   return (
 
