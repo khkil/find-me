@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Redirect, useLocation } from 'react-router';
-import { getUserResult } from '../modules/result';
-import '../css/result.css';
-import HeaderPage from './common/HeaderPage';
-import FooterPage from './common/FooterPage';
-import queryString from 'query-string';
-import KakaoShareButton from '../components/share/KakaoShareButton';
-import Result from '../components/inspection/Result';
-import FacebookShareButton from '../components/share/FacebookShareButton';
-import NaverBlogShareButton from '../components/share/NaverBlogShareButton';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect, useLocation } from "react-router";
+import { getUserResult } from "../modules/result";
+import "../css/result.css";
+import HeaderPage from "./common/HeaderPage";
+import FooterPage from "./common/FooterPage";
+import queryString from "query-string";
+import KakaoShareButton from "../components/share/KakaoShareButton";
+import Result from "../components/inspection/Result";
+import FacebookShareButton from "../components/share/FacebookShareButton";
+import NaverBlogShareButton from "../components/share/NaverBlogShareButton";
+import ResultContents from "../components/result/ResultContents";
 
 const ResultPage = ({ history }) => {
   const dispatch = useDispatch();
   const { state, search, pathname } = useLocation();
-  const [shareUrl, setShareUrl] = useState('');
+  const [shareUrl, setShareUrl] = useState("");
   const inspection = useSelector((state) => state.inspection);
 
   const calculatedResults = (answerState) => {
@@ -23,7 +24,7 @@ const ResultPage = ({ history }) => {
     console.log(answerState);
 
     for (const key in answerState) {
-      const result = key.replace('result_', '');
+      const result = key.replace("result_", "");
       const answers = answerState[key];
       let totalScore = 0;
       answers.forEach((answer) => {
@@ -53,27 +54,27 @@ const ResultPage = ({ history }) => {
   };
 
   const copyToClipboard = () => {
-    const element = document.createElement('textarea');
+    const element = document.createElement("textarea");
     element.value = shareUrl;
-    element.setAttribute('readonly', '');
-    element.style.position = 'absolute';
-    element.style.left = '-9999px';
+    element.setAttribute("readonly", "");
+    element.style.position = "absolute";
+    element.style.left = "-9999px";
     document.body.appendChild(element);
     element.select();
-    var returnValue = document.execCommand('copy');
+    var returnValue = document.execCommand("copy");
     document.body.removeChild(element);
     if (!returnValue) {
-      throw new Error('copied nothing');
+      throw new Error("copied nothing");
     } else {
-      alert('URL이 복사되었습니다');
+      alert("URL이 복사되었습니다");
     }
   };
 
   const goSite = () => {
-    window.open('http://aptitude-x.com/');
+    window.open("http://aptitude-x.com/");
   };
   const goHome = () => {
-    history.push({ pathname: '/' });
+    history.push({ pathname: "/" });
   };
 
   useEffect(() => {
@@ -87,7 +88,7 @@ const ResultPage = ({ history }) => {
       const query = queryString.parse(search);
       const { result_idx } = query;
       const value =
-        typeof result_idx === 'string' ? [result_idx] : [result_idx[0]];
+        typeof result_idx === "string" ? [result_idx] : [result_idx[0]];
       results = value;
     }
     const params = {
@@ -112,7 +113,7 @@ const ResultPage = ({ history }) => {
       <div className="findme__result__share">
         <div className="findme__result__share__label">결과 공유하기</div>
         <div className="findme__result__share__buttons">
-          <KakaoShareButton shareUrl={shareUrl} />
+          {/* <KakaoShareButton shareUrl={shareUrl} /> */}
           <NaverBlogShareButton shareUrl={shareUrl} />
           <FacebookShareButton shareUrl={shareUrl} />
           <button
@@ -120,7 +121,7 @@ const ResultPage = ({ history }) => {
             onClick={copyToClipboard}
           >
             <img
-              src={process.env.PUBLIC_URL + '/images/icons/url.png'}
+              src={process.env.PUBLIC_URL + "/images/icons/url.png"}
               alt="url_share_image"
             />
           </button>
@@ -129,7 +130,7 @@ const ResultPage = ({ history }) => {
           </button>
         </div>
       </div>
-
+      <ResultContents />
       <div className="findme__result__more">
         <div className="findme__result__more__text">
           내게 맞는 전공·직업·직무·학습법·교과목 등등
