@@ -217,6 +217,39 @@
           <div class="swiper-slide">
             <div
               class="findme__result__other__detail__head"
+              style="background-color: #33b8e8"
+            >
+              <div class="findme__result__other__detail__num">01</div>
+              <div class="findme__result__other__detail__cont">
+                <div class="findme__result__other__detail__title">관찰형</div>
+                <div class="findme__result__other__detail__subtitle">
+                  눈으로 직접 확인하고 경험한 결과만 신뢰
+                </div>
+              </div>
+            </div>
+            <div class="findme__result__other__detail__body">
+              <div class="findme__result__other__detail__img">
+                <img src="./images/illustration/result-img-01.png" alt="" />
+              </div>
+              <div class="findme__result__other__detail__text">
+                당신은 눈에 보이는 자연, 환경, 우주에 관심이 많으며,
+                자신의 관심분야에 집중합니다. <br />
+                관찰형 특유의 말과 행동이 느린 당신, 주변에서 느리다는
+                말을 많이 듣지만 묵묵하게 목표를 향해 갑니다. 당신은
+                스피드를 원하는 일보다는 시간이 걸리더라도 완성도 높은
+                일이 잘 맞습니다. <br />
+                속내를 잘 드러내지 않는 당신은 관심사가 같거나 공유할 수
+                있는 사람과만 친하게 지내는 편이라 사회성이 부족하다는
+                말을 듣기도 합니다. <br />
+                단기적인 성과보다는 오랜 실험이나 관찰을 필요로 하는
+                장기적인 성과를 내는 자연, 기상, 우주, 지구, 환경 관련
+                연구업무에 유리합니다.
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div
+              class="findme__result__other__detail__head"
               style="background-color: #678557"
             >
               <div class="findme__result__other__detail__num">02</div>
@@ -720,9 +753,44 @@
       function bodyAuto() {
         $("body").css("overflow", "");
       }
-      console.log(1);
-      const lists = document.querySelector(".findme__result__other__tendency");
-      console.log(lists);
+      
+      let lists = Array.from(document.querySelector(".findme__result__other__tendency").childNodes)
+        .filter(({ tagName }) => 
+          tagName == "DL"
+        ).map(({childNodes}) => {
+          const element = childNodes[3];
+          return {
+            title: element.childNodes[1].innerHTML,
+            desc: element.childNodes[3].innerHTML,
+            imgUrl: childNodes[1].childNodes[1].getAttribute("src"),
+            background: window.getComputedStyle(element).getPropertyValue("background"),
+            detail: {
+              // title:
+              // subTitle:
+              // background:
+              // desc
+            }
+          }
+          
+        });
+
+      const details = Array.from(document.getElementsByClassName("swiper-slide"));
+      details.forEach((detail, index) => {
+        const head = detail.childNodes[1];
+        const body = detail.childNodes[3];
+        const result = {
+          title: head.childNodes[3].childNodes[1].innerHTML,
+          subTitle: head.childNodes[3].childNodes[3].innerHTML,
+          desc: body.childNodes[3].innerHTML,
+          background: window.getComputedStyle(head).getPropertyValue("background")
+        }
+        console.log(index, head.childNodes[3].childNodes[1].innerHTML)
+        
+        lists[index].detail = result
+        
+        
+      })
+      console.log(JSON.stringify(lists));
     </script>
     <!--// 20230219 수정 -->
   </body>

@@ -96,18 +96,18 @@ const ResultPage = ({ history }) => {
       results: results,
     };
     setShareUrl(getShareUrl(results));
-    dispatch(getUserResult(params));
+    //dispatch(getUserResult(params));
   }, []);
 
   const { data, loading, error } = useSelector((state) => state.result);
-  if (loading || !data) return null;
-  if (error) return <div>에러 발생!</div>;
+  //if (loading || !data) return null;
+  //if (error) return <div>에러 발생!</div>;
   //if (data.length === 0) return <Redirect path="/"/>
 
   return (
     <>
       <HeaderPage />
-      {data.map((result, index) => {
+      {data?.map((result, index) => {
         return <Result result={result} key={index} />;
       })}
       <div className="findme__result__share">
