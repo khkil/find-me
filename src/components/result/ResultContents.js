@@ -4,19 +4,11 @@ import ResultContentPopup from "./ResultContentPopup";
 import contents from "../../dummy/contentsApi.json"
 
 const ResultContents = () => {
-  const [selectedContent, setSelectedContent] = useState(null);
+  const [selectedContent, setSelectedContent] = useState(-1);
 
-  const showContent = (content, index) => {
-    setSelectedContent({
-      ...content,
-      detail: {
-        index: index,
-        ...content.detail
-      }
-    });
+  const selectContent = (index) => {
+    setSelectedContent(index);
   };
-
-  const contentDetail = useMemo(() => selectedContent?.detail, [selectedContent]);
 
   return (
     <div id="root">
@@ -29,7 +21,7 @@ const ResultContents = () => {
             </p>
             <div className="findme__result__other__tendency">
               {contents.map((content, index) => (
-                <dl key={index} onClick={() => showContent(content, index)}>
+                <dl key={index} onClick={() => selectContent(index)}>
                   <dt>
                     <img src={`${process.env.PUBLIC_URL}/template${content.imgUrl}`} />
                   </dt>
@@ -47,8 +39,8 @@ const ResultContents = () => {
         </div>
       </div>
       {
-        contentDetail && 
-          <ResultContentPopup contentDetail={contentDetail} setSelectedContent={setSelectedContent} lastIndex={contents.length}/>
+        selectedContent > 0 && 
+          <ResultContentPopup contents={contents} selectedContent={selectedContent} setSelectedContent={setSelectedContent}/>
       }
       
     </div>

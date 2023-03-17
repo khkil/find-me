@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-const ResultContentPopup = ({ contentDetail, setSelectedContent, lastIndex }) => {
+const ResultContentPopup = ({ contents, selectedContent, setSelectedContent }) => {
   const closePopup = () => {
     setSelectedContent(null);
   };
@@ -12,6 +12,8 @@ const ResultContentPopup = ({ contentDetail, setSelectedContent, lastIndex }) =>
   const movePrev = () => {
 
   }
+
+  const contentDetail = useMemo(() => contents[selectedContent].detail, [selectedContent])
 
   return (
     <div id="root">
@@ -27,7 +29,7 @@ const ResultContentPopup = ({ contentDetail, setSelectedContent, lastIndex }) =>
           <div className="swiper-wrapper">
             <div className="swiper-slide">
               <div className="findme__result__other__detail__head" style={{ background: contentDetail.background }}>
-                <div className="findme__result__other__detail__num">{`${contentDetail.index < 9 ? 0 : ''}${contentDetail.index + 1}`}</div>
+                <div className="findme__result__other__detail__num">{`${selectedContent < 9 ? 0 : ''}${selectedContent + 1}`}</div>
                 <div className="findme__result__other__detail__cont">
                   <div className="findme__result__other__detail__title">
                     {contentDetail.title}
@@ -51,6 +53,9 @@ const ResultContentPopup = ({ contentDetail, setSelectedContent, lastIndex }) =>
             </div>
           </div>
         </div>
+        <div className="swiper-button-next"></div>
+        <div className="swiper-button-prev"></div>
+
       </div>
       <div className="dim"></div>
     </div>
