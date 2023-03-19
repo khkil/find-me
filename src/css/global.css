@@ -763,9 +763,19 @@ button {
   width: 60px;
   height: 60px;
 }
-.findme__result__other__detail .swiper-button-prev:after,
-.findme__result__other__detail .swiper-button-next:after {
-  display: none;
+.swiper-button-next,
+.swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  width: calc(var(--swiper-navigation-size) / 44 * 27);
+  height: var(--swiper-navigation-size);
+  margin-top: calc(0px - (var(--swiper-navigation-size) / 2));
+  z-index: 10;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--swiper-navigation-color, var(--swiper-theme-color));
 }
 .findme__result__other__detail .swiper-button-next {
   background-size: 100%;

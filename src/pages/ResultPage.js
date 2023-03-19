@@ -96,13 +96,13 @@ const ResultPage = ({ history }) => {
       results: results,
     };
     setShareUrl(getShareUrl(results));
-    //dispatch(getUserResult(params));
+    dispatch(getUserResult(params));
   }, []);
 
   const { data, loading, error } = useSelector((state) => state.result);
-  //if (loading || !data) return null;
-  //if (error) return <div>에러 발생!</div>;
-  //if (data.length === 0) return <Redirect path="/"/>
+  if (loading || !data) return null;
+  if (error) return <div>에러 발생!</div>;
+  if (data.length === 0) return <Redirect path="/" />;
 
   return (
     <>
@@ -113,7 +113,7 @@ const ResultPage = ({ history }) => {
       <div className="findme__result__share">
         <div className="findme__result__share__label">결과 공유하기</div>
         <div className="findme__result__share__buttons">
-          {/* <KakaoShareButton shareUrl={shareUrl} /> */}
+          <KakaoShareButton shareUrl={shareUrl} />
           <NaverBlogShareButton shareUrl={shareUrl} />
           <FacebookShareButton shareUrl={shareUrl} />
           <button

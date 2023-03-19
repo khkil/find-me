@@ -8,7 +8,7 @@ const KakaoShareButton = ({ shareUrl }) => {
     if (window.Kakao) {
       const kakao = window.Kakao;
       if (!kakao.isInitialized()) {
-        kakao.init(process.env.REACT_APP_KAKAO_KEY);
+        kakao.init("f08187227e9f06bc2c882ab7c6228a8a");
       }
       kakao.Link.createDefaultButton({
         container: "#kakao-link-btn",
@@ -44,6 +44,9 @@ const KakaoShareButton = ({ shareUrl }) => {
       <button
         id="kakao-link-btn"
         className="findme__result__share__buttons--kakao"
+        onClick={() => {
+          alert(process.env.REACT_APP_KAKAO_KEY);
+        }}
       >
         <img
           src={process.env.PUBLIC_URL + "/images/icons/kakao.png"}
