@@ -19,7 +19,10 @@ const ResultContents = () => {
               옥타그노시스 <br />
               15가지 성형 알아보기
             </p>
-            <div className="findme__result__other__tendency">
+            <div
+              className="findme__result__other__tendency"
+              style={{ whiteSpace: "pre-line" }}
+            >
               {contents.map((content, index) => (
                 <dl key={index} onClick={() => selectContent(index)}>
                   <dt>

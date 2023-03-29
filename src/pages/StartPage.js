@@ -27,7 +27,7 @@ const StartPage = () => {
         const toalCounts = res.data;
 
         setInterval(() => {
-          setUserCounts(userCountsRef.current += 59);
+          setUserCounts(userCountsRef.current += 591);
           if(userCountsRef.current > toalCounts){
             clearInterval(this);  
             setUserCounts(toalCounts);

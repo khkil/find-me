@@ -901,6 +901,7 @@ button {
   }
   .findme__result__other__tendency {
     align-items: stretch;
+    white-space: pre-line;
   }
   .findme__result__other__tendency dl {
     width: calc(50% - 10px);

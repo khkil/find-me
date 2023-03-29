@@ -24,7 +24,10 @@ const ResultContentPopup = ({
 
   return (
     <div id="root">
-      <div className="findme__result__other__detail">
+      <div
+        className="findme__result__other__detail"
+        style={{ whiteSpace: "pre-line" }}
+      >
         <button
           className="findme__result__other__detail__close"
           style={{
@@ -54,7 +57,11 @@ const ResultContentPopup = ({
               <div className="findme__result__other__detail__body">
                 <div className="findme__result__other__detail__img">
                   <img
-                    src={`${process.env.PUBLIC_URL}/template/images/illustration/result-img-01.png`}
+                    src={`${
+                      process.env.PUBLIC_URL
+                    }/template/images/illustration/result-img-${
+                      selectedContent < 9 ? 0 : ""
+                    }${selectedContent + 1}.png`}
                     alt=""
                   />
                 </div>
