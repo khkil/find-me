@@ -11,6 +11,7 @@ import Result from "../components/inspection/Result";
 import FacebookShareButton from "../components/share/FacebookShareButton";
 import NaverBlogShareButton from "../components/share/NaverBlogShareButton";
 import ResultContents from "../components/result/ResultContents";
+import InstagramShareButton from "../components/share/InstagramShareButton";
 
 const ResultPage = ({ history }) => {
   const dispatch = useDispatch();
@@ -116,6 +117,7 @@ const ResultPage = ({ history }) => {
           <KakaoShareButton shareUrl={shareUrl} />
           <NaverBlogShareButton shareUrl={shareUrl} />
           <FacebookShareButton shareUrl={shareUrl} />
+          <InstagramShareButton/>
           <button
             className="findme__result__share__buttons--link"
             onClick={copyToClipboard}
