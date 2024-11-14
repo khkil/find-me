@@ -8,7 +8,7 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
-    "http-proxy-middleware": "^1.0.6",
+    "http-proxy-middleware": "^3.0.3",
     "query-string": "^6.13.8",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
@@ -48,6 +48,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:8088"
+  }
 }
