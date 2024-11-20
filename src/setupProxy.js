@@ -5,7 +5,7 @@ module.exports = function (app) {
     '/api/v2',
     createProxyMiddleware({
       //target: 'http://3.39.44.40:8089',
-      target: 'http://localhost:8089',
+      target: 'http://localhost:8089/api/v2',
       changeOrigin: true,
       // pathRewrite를 제거해서 /api/v2 경로 그대로 전달
     })
@@ -14,7 +14,7 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://3.39.44.40:8088',
+      target: 'http://3.39.44.40:8088/api',
       changeOrigin: true,
       // pathRewrite를 제거해서 /api 경로 그대로 전달
     })
