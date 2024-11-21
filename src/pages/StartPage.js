@@ -5,7 +5,7 @@ import {getUsers} from '../modules/user';
 import FooterPage from './common/FooterPage';
 import HeaderPage from './common/HeaderPage';
 import '../css/index.css'
-import {getUserCounts} from '../api/userAPI';
+import {fetchUserCounts} from '../api/userAPI';
 
 const StartPage = () => {
 
@@ -18,7 +18,7 @@ const StartPage = () => {
   useEffect(() => {
     const inspectionIdx = inspection.data.inspection_idx;
 
-    getUserCounts(inspectionIdx)
+    fetchUserCounts(inspectionIdx)
       .then(res => {
         if (res.data) {
           const toalCounts = res.data;

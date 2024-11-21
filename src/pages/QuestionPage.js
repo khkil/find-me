@@ -23,13 +23,15 @@ const QuestionPage = ({match, history}) => {
   const [validated, setValidated] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
   const [proceeding, setProceeding] = useState(false);
+
   const insertUserResult = (params, userState) => {
-    userApi.insertUserAnswer(params).then(({data}) => {
-      const {success} = data;
+    userApi.insertUserAnswer(params).then(({success, data}) => {
       if (success) {
+        const {user_idx} = data;
+        console.log(11111, data)
         history.replace({
           pathname: ('/pages/user/privacy'),
-          state: userState
+          state: {...userState, userInfo: {...userState.userInfo, userIdx: user_idx}}
         });
       } else {
         alert('정보 저장에 실패 하였습니다');
@@ -56,7 +58,7 @@ const QuestionPage = ({match, history}) => {
        })
      }, 3000);*/
   }
-  
+
   const goNextPage = (e) => {
     const {userInfo, answerState} = state;
     const {inspection_idx, totalPages} = inspection.data && inspection.data;
@@ -78,6 +80,7 @@ const QuestionPage = ({match, history}) => {
         ...answers
       }
     }
+    //const isLastPage = (page === totalPages);
     const isLastPage = (page === 1);
     if (isLastPage) {
       let userAllAnswers = [];
