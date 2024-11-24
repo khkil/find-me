@@ -80,8 +80,8 @@ const QuestionPage = ({match, history}) => {
         ...answers
       }
     }
-    //const isLastPage = (page === totalPages);
-    const isLastPage = (page === 1);
+    const isLastPage = (page === totalPages);
+    //const isLastPage = (page === 1);
     if (isLastPage) {
       let userAllAnswers = [];
       for (const [key, value] of Object.entries(userState.answerState)) {

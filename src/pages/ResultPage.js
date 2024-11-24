@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect, useLocation } from "react-router";
-import { getUserResult } from "../modules/result";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Redirect, useLocation} from "react-router";
+import {getUserResult} from "../modules/result";
 import "../css/result.css";
 import HeaderPage from "./common/HeaderPage";
 import FooterPage from "./common/FooterPage";
@@ -13,9 +13,9 @@ import NaverBlogShareButton from "../components/share/NaverBlogShareButton";
 import ResultContents from "../components/result/ResultContents";
 import InstagramShareButton from "../components/share/InstagramShareButton";
 
-const ResultPage = ({ history }) => {
+const ResultPage = ({history}) => {
   const dispatch = useDispatch();
-  const { state, search, pathname } = useLocation();
+  const {state, search, pathname} = useLocation();
   const [shareUrl, setShareUrl] = useState("");
   const inspection = useSelector((state) => state.inspection);
 
@@ -75,19 +75,19 @@ const ResultPage = ({ history }) => {
     window.open("http://aptitude-x.com/");
   };
   const goHome = () => {
-    history.push({ pathname: "/" });
+    history.push({pathname: "/"});
   };
 
   useEffect(() => {
-    const { inspection_idx } = inspection.data;
+    const {inspection_idx} = inspection.data;
     let results = [];
     console.log(state);
     if (state && state.answerState) {
-      const { answerState } = state;
+      const {answerState} = state;
       results = [calculatedResults(answerState)[0]];
     } else if (search) {
       const query = queryString.parse(search);
-      const { result_idx } = query;
+      const {result_idx} = query;
       const value =
         typeof result_idx === "string" ? [result_idx] : [result_idx[0]];
       results = value;
@@ -100,23 +100,23 @@ const ResultPage = ({ history }) => {
     dispatch(getUserResult(params));
   }, []);
 
-  const { data, loading, error } = useSelector((state) => state.result);
+  const {data, loading, error} = useSelector((state) => state.result);
   if (loading || !data) return null;
   if (error) return <div>에러 발생!</div>;
-  if (data.length === 0) return <Redirect path="/" />;
+  //if (data.length === 0) return <Redirect path="/" />;
 
   return (
     <>
-      <HeaderPage />
+      <HeaderPage/>
       {data?.map((result, index) => {
-        return <Result result={result} key={index} />;
+        return <Result result={result} key={index}/>;
       })}
       <div className="findme__result__share">
         <div className="findme__result__share__label">결과 공유하기</div>
         <div className="findme__result__share__buttons">
-          <KakaoShareButton shareUrl={shareUrl} />
-          <NaverBlogShareButton shareUrl={shareUrl} />
-          <FacebookShareButton shareUrl={shareUrl} />
+          <KakaoShareButton shareUrl={shareUrl}/>
+          <NaverBlogShareButton shareUrl={shareUrl}/>
+          <FacebookShareButton shareUrl={shareUrl}/>
           <InstagramShareButton/>
           <button
             className="findme__result__share__buttons--link"
@@ -132,17 +132,17 @@ const ResultPage = ({ history }) => {
           </button>
         </div>
       </div>
-      <ResultContents />
+      <ResultContents/>
       <div className="findme__result__more">
         <div className="findme__result__more__text">
           내게 맞는 전공·직업·직무·학습법·교과목 등등
-          <br />더 구체적으로 알고 싶다면
+          <br/>더 구체적으로 알고 싶다면
         </div>
         <button className="findme__result__more__button" onClick={goSite}>
           한국진로적성센터 바로가기
         </button>
       </div>
-      <FooterPage />
+      <FooterPage/>
     </>
   );
 };

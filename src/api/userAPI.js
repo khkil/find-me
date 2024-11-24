@@ -5,8 +5,8 @@ export const fetchUsers = async inspectionIdx => {
   return data;
 }
 
-export const fetchUserCounts = async inspectionIdx => {
-  const {data} = await axios.get(`/api/users/inspections/${inspectionIdx}/counts`);
+export const fetchUserCounts = async id => {
+  const {data} = await axios.get(`/api/v2/assessments/${id}/users/count`);
   return data;
 }
 

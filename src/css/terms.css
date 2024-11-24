@@ -1253,7 +1253,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 .terms_box {
     overflow: auto;
     box-sizing: border-box;
-    max-height: 100px;
+    max-height: 500px;
     /*margin: 9px 0 0 32px;*/
     padding: 15px;
     border-radius: 6px;

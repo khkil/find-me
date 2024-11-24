@@ -9,6 +9,7 @@ import TermsList from "../components/terms/TermsList";
 import {fetchTermsList} from "../api/termsAPI";
 import {insertUserPrivacy} from "../api/userAPI";
 import Proceeding from "../components/common/Proceeding";
+import Notice from "../components/terms/Notice";
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
 
@@ -24,14 +25,14 @@ const privacyData = [
     name: "userBirth",
   },
   {
-    title: "휴대폰",
-    type: "text",
-    name: "userPhone",
-  },
-  {
     title: "이메일",
     type: "text",
     name: "userEmail",
+  },
+  {
+    title: "휴대폰",
+    type: "text",
+    name: "userPhone",
   },
 ];
 
@@ -40,6 +41,7 @@ const UserPrivacyTermsPage = ({history, match}) => {
 
   const {state: {userInfo, answerState}} = useLocation();
   const [validated, setValidated] = useState(false);
+  const [checkedNotice, setCheckedNotice] = useState(false);
   const [inputs, setInputs] = useState({});
   const [termsList, setTermsList] = useState([]);
   const [proceeding, setProceeding] = useState(false);
@@ -119,7 +121,7 @@ const UserPrivacyTermsPage = ({history, match}) => {
   return (
     <>
       <HeaderPage/>
-      <Form noValidate validated={validated} onSubmit={handleSubmit} className="information_form">
+      {!checkedNotice ? <Notice onClick={setCheckedNotice}/> : <Form noValidate validated={validated} onSubmit={handleSubmit} className="information_form">
         <TermsList termsList={termsList} onChange={onChange}/>
         <div className="findme__info__select">
           {privacyData.map(({name, type, title}, index) => (
@@ -147,7 +149,8 @@ const UserPrivacyTermsPage = ({history, match}) => {
             <img className="findme__common__next__button--image" src={PUBLIC_URL + '/images/icons/next.svg'} alt="next"/>
           </button>
         </div>
-      </Form>
+      </Form>}
+
       <FooterPage/>
     </>
   )
