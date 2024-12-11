@@ -21,7 +21,8 @@ const privacyData = [
   },
   {
     title: "생년월일",
-    type: "date",
+    subTitle: "ex)961104",
+    type: "text",
     name: "userBirth",
   },
   {
@@ -124,10 +125,13 @@ const UserPrivacyTermsPage = ({history, match}) => {
       {!checkedNotice ? <Notice onClick={setCheckedNotice}/> : <Form noValidate validated={validated} onSubmit={handleSubmit} className="information_form">
         <TermsList termsList={termsList} onChange={onChange}/>
         <div className="findme__info__select">
-          {privacyData.map(({name, type, title}, index) => (
+          {privacyData.map(({name, type, subTitle, title}, index) => (
             <Form.Group key={index}>
               <div className="findme__info__select__label">
                 {title}
+              </div>
+              <div style={{color: '#a9a9a9'}}>
+                {subTitle}
               </div>
               <div>
               </div>
